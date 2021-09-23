@@ -5,8 +5,8 @@ import (
 	"time"
 	"flag"
 
-	"logger"
-	"secret"
+	"github.com/youngzhu/go-eds-logger/logger"
+	"github.com/youngzhu/go-eds-logger/secret"
 )
 
 var (

@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/youngzhu/go-eds-logger"
+	"github.com/youngzhu/go-eds-logger/logger"
 )
 
 func main() {
