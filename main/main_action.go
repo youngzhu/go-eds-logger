@@ -38,9 +38,5 @@ func main() {
 		// os.Exit(1)
 	}
 
-	logFrom, _ := time.Parse("2006-01-02", "2021-09-20")
-	log.Println(logFrom)
-
-	// logFromSpecificDay(logFrom)
-
+	logger.LogFromSpecificDay(time.Now())
 }

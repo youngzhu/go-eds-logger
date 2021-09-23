@@ -1,7 +1,7 @@
 name: auto-log-every-monday
 
 on:
-  push:
+  # push:
   schedule: 
   # 1: minute (0-59)
   # 2: hour (0-23)
@@ -30,6 +30,7 @@ jobs:
         go-version: 1.16
 
     # uses 和 run 不能在一个步骤里
+    # with 只能和 uses 配合使用
 
     - name: Run
       env:
@@ -38,9 +39,5 @@ jobs:
         cookie: ${{ secrets.LOGIN_COOKIE }}
         # 时区设置为上海
         TZ: Asia/Shanghai
-        # run: go run main/main_action.go -i $id -p $pwd -c $cookie
-      run: go run main/main_action.go
-      with:
-          i: $id
-          p: $pwd
-          c: $cookie
+      run: go run main/main_action.go -i $id -p $pwd -c $cookie
+
