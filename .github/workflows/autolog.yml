@@ -38,4 +38,9 @@ jobs:
         cookie: ${{ secrets.LOGIN_COOKIE }}
         # 时区设置为上海
         TZ: Asia/Shanghai
-      run: go run main/main_action.go -i $id -p $pwd -c $cookie
+        # run: go run main/main_action.go -i $id -p $pwd -c $cookie
+        run: go run main/main_action.go
+        with:
+          i: $id
+          p: $pwd
+          c: $cookie
