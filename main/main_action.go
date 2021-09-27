@@ -25,9 +25,9 @@ func main() {
 	// 还以为用上面的方式已经将参数赋给了变量
 	flag.Parse() // 解析入参
 
-	// log.Println("id", userId)
-	// log.Println("pwd", userPsd)
-	// log.Println("cookie", cookie)
+	log.Println("id", userId)
+	log.Println("pwd", userPsd)
+	log.Println("cookie", cookie)
 
 	loginInfo := secret.Secret{userId, userPsd, cookie}
 	err := logger.Login(&loginInfo)
