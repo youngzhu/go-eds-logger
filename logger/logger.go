@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	myhttp "http"
-	"secret"
+	myhttp "github.com/youngzhu/go-eds-logger/http"
+	"github.com/youngzhu/go-eds-logger/secret"
 
 	"github.com/PuerkitoBio/goquery"
 )
