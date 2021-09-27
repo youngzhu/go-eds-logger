@@ -38,5 +38,5 @@ func main() {
 		// os.Exit(1)
 	}
 
-	logger.LogFromSpecificDay(time.Now())
+	logger.LogFromSpecifiedDay(time.Now())
 }

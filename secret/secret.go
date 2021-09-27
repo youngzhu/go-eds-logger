@@ -8,7 +8,7 @@ import (
 )
 
 // go run main 的相对路径
-const secretFile = "widget/secretdata/eds.json"
+const secretFile = "secret/eds.json"
 
 type Secret struct {
 	UserId  string

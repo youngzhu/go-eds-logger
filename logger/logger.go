@@ -188,8 +188,13 @@ func getValueFromHtml(html, key string) string {
 	return value
 }
 
-// 按指定的日期填写eds
-func LogFromSpecificDay(logFrom time.Time) {
+// 按指定的日期填写日报（只填当天）
+func LogTheSpecifiedDay(logDate time.Time) {
+	workLog(logDate.Format("2006-01-02"))
+}
+
+// 从周一开始，填写本周的周报和日报
+func LogFromSpecifiedDay(logFrom time.Time) {
 
 	logDateWeekly := logFrom.Format("2006-01-02")
 	logDateDaliy := logFrom
@@ -202,7 +207,7 @@ func LogFromSpecificDay(logFrom time.Time) {
 
 	// 再写日报
 	for i := 0; i < 5; i++ {
-		workLog(logDateDaliy.Format("2006-01-02"))
+		LogTheSpecifiedDay(logDateDaliy)
 
 		time.Sleep(time.Duration(rand.Intn(3000)) * time.Millisecond)
 		logDateDaliy = logDateDaliy.Add(time.Hour * 24)
