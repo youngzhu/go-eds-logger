@@ -1,7 +1,7 @@
 name: auto-log-every-monday
 
 on:
-  push:
+  # push:
   schedule: 
   # 1: minute (0-59)
   # 2: hour (0-23)
