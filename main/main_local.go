@@ -18,11 +18,13 @@ func main() {
 	}
 	log.Println("登陆成功")
 
-	logFrom, _ := time.Parse("2006-01-02", "2021-10-09")
+	logFrom, _ := time.Parse("2006-01-02", "2021-12-27")
 	log.Println(logFrom)
 
-	// logger.LogFromSpecificDay(logFrom)
-	logger.LogTheSpecifiedDay(logFrom)
+	// 填一周
+	logger.LogFromSpecifiedDay(logFrom)
+	// 填一天
+	// logger.LogTheSpecifiedDay(logFrom)
 
 	// logger.LogTheSpecifiedDay(time.Now())
 
