@@ -1,22 +1,22 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"time"
-	"flag"
 
 	"github.com/youngzhu/go-eds-logger/logger"
 	"github.com/youngzhu/go-eds-logger/secret"
 )
 
 var (
-	userId string
+	userId  string
 	userPsd string
-	cookie string
+	cookie  string
 )
 
 func main() {
-	
+
 	flag.StringVar(&userId, "i", "", "login user id")
 	flag.StringVar(&userPsd, "p", "", "login password")
 	// action 执行时，不需要""

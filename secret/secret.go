@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// go run main 的相对路径
+// go run local 的相对路径
 const secretFile = "secret/eds.json"
 
 type Secret struct {
