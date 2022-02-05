@@ -81,6 +81,7 @@ func workLog(logDate string) {
 }
 
 func doWorkLog(workLogUrl, logDate, timeFlag string, hiddenParams map[string]string) {
+	memo := "1.开发和测试新需求\n2.开发过程中重构部分相关代码"
 
 	startTime := "10:00"
 	endTime := "12:00"
@@ -101,7 +102,7 @@ func doWorkLog(workLogUrl, logDate, timeFlag string, hiddenParams map[string]str
 	logParams.Set("hplbWorkType", "0106")
 	logParams.Set("hplbAction", "010601")
 	logParams.Set("TextBox1", "")
-	logParams.Set("txtMemo", "编码+测试，偶尔重构")
+	logParams.Set("txtMemo", memo)
 	logParams.Set("btnSave", "+%E7%A1%AE+%E5%AE%9A+")
 	logParams.Set("txtnodate", logDate)
 	logParams.Set("txtnoStartTime", startTime)
@@ -133,11 +134,11 @@ func workWeeklyLog(logDate string) {
 	logParams.Set("hidCurrRole", "")
 	logParams.Set("hidWeeklyState", "")
 	logParams.Set("WeekReportDate", logDate)
-	logParams.Set("txtWorkContent", "编码与测试")
-	logParams.Set("txtStudyContent", "算法与数据结构")
+	logParams.Set("txtWorkContent", "新需求的开发、设计与测试")
+	logParams.Set("txtStudyContent", "重构：主要在于将大方法解构成小方法，便于理解和维护（二次开发）")
 	logParams.Set("txtSummary", "性能不能不考虑，也不能过度优化")
-	logParams.Set("txtPlanWork", "大方法的重构")
-	logParams.Set("txtPlanStudy", "Oracle")
+	logParams.Set("txtPlanWork", "大方法（几百甚至上千行）的重构")
+	logParams.Set("txtPlanStudy", "新架构的学习")
 	logParams.Set("btnSubmit", "%E6%8F%90%E4%BA%A4")
 
 	for key, value := range hiddenParams {
