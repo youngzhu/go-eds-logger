@@ -14,9 +14,10 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
+
 var secretInfo *secret.Secret
 var err error
-var cookie string
 
 // secretStr 输入参数
 // 如果为空，则从文件中读取
@@ -37,8 +38,6 @@ func Login(loginInfo *secret.Secret) error {
 			log.Fatal(err)
 		}
 	}
-
-	cookie = secretInfo.Cookie
 
 	loginUrl := "http://eds.newtouch.cn/eds3/DefaultLogin.aspx?lan=zh-cn"
 	// 登录
