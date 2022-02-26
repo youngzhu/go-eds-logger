@@ -134,7 +134,7 @@ func workWeeklyLog(logDate string) {
 	logParams.Set("hidWeeklyState", "")
 	logParams.Set("WeekReportDate", logDate)
 	logParams.Set("txtWorkContent", "新需求的开发、设计与测试")
-	logParams.Set("txtStudyContent", "重构：主要在于将大方法解构成小方法，便于理解和维护（二次开发）")
+	logParams.Set("txtStudyContent", "JSON的封装与解析")
 	logParams.Set("txtSummary", "性能不能不考虑，也不能过度优化")
 	logParams.Set("txtPlanWork", "大方法（几百甚至上千行）的重构")
 	logParams.Set("txtPlanStudy", "新架构的学习")
