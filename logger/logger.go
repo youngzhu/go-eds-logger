@@ -80,7 +80,7 @@ func workLog(logDate string) {
 }
 
 func doWorkLog(workLogUrl, logDate, timeFlag string, hiddenParams map[string]string) {
-	memo := "1.开发和测试新需求\n2.开发过程中重构部分相关代码"
+	memo := "蚂蚁自动理赔的开发测试与联调"
 
 	startTime := "10:00"
 	endTime := "12:00"
@@ -133,10 +133,10 @@ func workWeeklyLog(logDate string) {
 	logParams.Set("hidCurrRole", "")
 	logParams.Set("hidWeeklyState", "")
 	logParams.Set("WeekReportDate", logDate)
-	logParams.Set("txtWorkContent", "新需求的开发、设计与测试")
+	logParams.Set("txtWorkContent", "蚂蚁自动理赔的开发测试与联调")
 	logParams.Set("txtStudyContent", "JSON的封装与解析")
-	logParams.Set("txtSummary", "性能不能不考虑，也不能过度优化")
-	logParams.Set("txtPlanWork", "大方法（几百甚至上千行）的重构")
+	logParams.Set("txtSummary", "好的设计便于开发和扩展")
+	logParams.Set("txtPlanWork", "蚂蚁自动理赔的开发测试与联调")
 	logParams.Set("txtPlanStudy", "新架构的学习")
 	logParams.Set("btnSubmit", "%E6%8F%90%E4%BA%A4")
 
