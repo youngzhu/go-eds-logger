@@ -19,6 +19,7 @@ const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601;
 var secretInfo *secret.Secret
 var err error
 
+// Login 登录
 // secretStr 输入参数
 // 如果为空，则从文件中读取
 func Login(loginInfo *secret.Secret) error {
@@ -68,8 +69,10 @@ func Login(loginInfo *secret.Secret) error {
 	return nil
 }
 
+var workLogURL = "http://eds.newtouch.cn/eds3/worklog.aspx?tabid=0"
+
 func workLog(logDate string) {
-	url := "http://eds.newtouch.cn/eds3/worklog.aspx?tabid=0&LogDate=" + logDate
+	url := workLogURL + "&LogDate=" + logDate
 
 	// 先通过get获取一些隐藏参数，用作后台校验
 	hiddenParams := getHiddenParams(url)
@@ -97,7 +100,7 @@ func doWorkLog(workLogUrl, logDate, timeFlag string, hiddenParams map[string]str
 	logParams.Set("txtDate", logDate)
 	logParams.Set("txtStartTime", startTime)
 	logParams.Set("txtEndTime", endTime)
-	logParams.Set("ddlProjectList", "10868")
+	logParams.Set("ddlProjectList", ddlProjectList)
 	logParams.Set("hplbWorkType", "0106")
 	logParams.Set("hplbAction", "010601")
 	logParams.Set("TextBox1", "")
@@ -156,7 +159,7 @@ func getHiddenParams(url string) map[string]string {
 	result := make(map[string]string)
 
 	respHtml := myhttp.DoRequest(url, http.MethodGet, cookie, nil)
-	// fmt.Println(respHtml)
+	//println(respHtml)
 
 	keys := []string{"__EVENTVALIDATION", "__VIEWSTATE"}
 
@@ -188,12 +191,12 @@ func getValueFromHtml(html, key string) string {
 	return value
 }
 
-// 按指定的日期填写日报（只填当天）
+// LogTheSpecifiedDay 按指定的日期填写日报（只填当天）
 func LogTheSpecifiedDay(logDate time.Time) {
 	workLog(logDate.Format("2006-01-02"))
 }
 
-// 从周一开始，填写本周的周报和日报
+// LogFromSpecifiedDay 从周一开始，填写本周的周报和日报
 func LogFromSpecifiedDay(logFrom time.Time) {
 
 	logDateWeekly := logFrom.Format("2006-01-02")

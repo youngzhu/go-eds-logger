@@ -18,7 +18,7 @@ func main() {
 	}
 	log.Println("登陆成功")
 
-	logFrom, _ := time.Parse("2006-01-02", "2022-01-30")
+	logFrom, _ := time.Parse("2006-01-02", "2022-04-03")
 	log.Println(logFrom)
 
 	// 填一周
@@ -28,4 +28,6 @@ func main() {
 
 	// logger.LogTheSpecifiedDay(time.Now())
 
+	//projectID := logger.GetProjectID()
+	//println("projectID:", projectID)
 }
