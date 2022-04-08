@@ -17,7 +17,6 @@ import (
 const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
 
 var secretInfo *secret.Secret
-var err error
 
 // Login 登录
 // secretStr 输入参数
@@ -82,9 +81,9 @@ func workLog(logDate string) {
 	doWorkLog(url, logDate, "PM", hiddenParams)
 }
 
-func doWorkLog(workLogUrl, logDate, timeFlag string, hiddenParams map[string]string) {
-	memo := "蚂蚁自动理赔的开发测试与联调"
+var dailyLog = "编码与测试" // 日志工作内容
 
+func doWorkLog(workLogUrl, logDate, timeFlag string, hiddenParams map[string]string) {
 	startTime := "10:00"
 	endTime := "12:00"
 	if "PM" == timeFlag {
@@ -104,7 +103,7 @@ func doWorkLog(workLogUrl, logDate, timeFlag string, hiddenParams map[string]str
 	logParams.Set("hplbWorkType", "0106")
 	logParams.Set("hplbAction", "010601")
 	logParams.Set("TextBox1", "")
-	logParams.Set("txtMemo", memo)
+	logParams.Set("txtMemo", dailyLog)
 	logParams.Set("btnSave", "+%E7%A1%AE+%E5%AE%9A+")
 	logParams.Set("txtnodate", logDate)
 	logParams.Set("txtnoStartTime", startTime)
@@ -126,6 +125,20 @@ func doWorkLog(workLogUrl, logDate, timeFlag string, hiddenParams map[string]str
 	log.Println("日志操作成功", logDate, timeFlag)
 }
 
+var weeklyLog = struct {
+	workContent  string
+	studyContent string
+	summary      string
+	planWork     string
+	planStudy    string
+}{
+	workContent:  "需求的开发测试与联调",
+	studyContent: "JSON的封装与解析",
+	summary:      "好的设计，刚开发时可能觉得麻烦似乎没有必要，但再次改动或二次开发时会容易的多",
+	planWork:     "新需求的开发测试与联调",
+	planStudy:    "设计模式的研究与学习",
+}
+
 func workWeeklyLog(logDate string) {
 	logUrl := "http://eds.newtouch.cn/eds36web/WorkWeekly/WorkWeeklyInfo.aspx"
 
@@ -136,11 +149,11 @@ func workWeeklyLog(logDate string) {
 	logParams.Set("hidCurrRole", "")
 	logParams.Set("hidWeeklyState", "")
 	logParams.Set("WeekReportDate", logDate)
-	logParams.Set("txtWorkContent", "蚂蚁自动理赔的开发测试与联调")
-	logParams.Set("txtStudyContent", "JSON的封装与解析")
-	logParams.Set("txtSummary", "好的设计便于开发和扩展")
-	logParams.Set("txtPlanWork", "蚂蚁自动理赔的开发测试与联调")
-	logParams.Set("txtPlanStudy", "新架构的学习")
+	logParams.Set("txtWorkContent", weeklyLog.workContent)
+	logParams.Set("txtStudyContent", weeklyLog.studyContent)
+	logParams.Set("txtSummary", weeklyLog.summary)
+	logParams.Set("txtPlanWork", weeklyLog.planWork)
+	logParams.Set("txtPlanStudy", weeklyLog.planStudy)
 	logParams.Set("btnSubmit", "%E6%8F%90%E4%BA%A4")
 
 	for key, value := range hiddenParams {
