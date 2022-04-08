@@ -8,11 +8,11 @@ import (
 	// "os"
 )
 
-const URL_HOME = "http://eds.newtouch.cn"
+const UrlHome = "http://eds.newtouch.cn"
 const HOST = "eds.newtouch.cn"
-const USET_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"
-const ACCEPT_LANGUAGE = "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7"
-const ACCEPT_ENCODING = "gzip, deflate"
+const UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"
+const AcceptLanguage = "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7"
+const AcceptEncoding = "gzip, deflate"
 
 var postProperties = make(map[string]string)
 var getProperties = make(map[string]string)
@@ -22,27 +22,27 @@ func init() {
 	postProperties["Host"] = HOST
 	postProperties["Content-Length"] = "6955"
 	postProperties["Cache-Control"] = "max-age=0"
-	postProperties["Origin"] = URL_HOME
+	postProperties["Origin"] = UrlHome
 	postProperties["Upgrade-Insecure-Requests"] = "1"
 	postProperties["Content-Type"] = "application/x-www-form-urlencoded"
 	postProperties["User-Agent"] = "Mozilla/5.0"
 	postProperties["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
-	postProperties["Accept-Encoding"] = ACCEPT_ENCODING
-	postProperties["Accept-Language"] = ACCEPT_LANGUAGE
+	postProperties["Accept-Encoding"] = AcceptEncoding
+	postProperties["Accept-Language"] = AcceptLanguage
 	postProperties["connection"] = "Keep-Alive"
 	postProperties["accept"] = "*/*"
 	postProperties["user-agent"] = "Mozilla/5.0"
 
 	// get
 	getProperties["Upgrade-Insecure-Requests"] = "1"
-	getProperties["User-Agent"] = USET_AGENT
+	getProperties["User-Agent"] = UserAgent
 	getProperties["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
-	getProperties["Accept-Encoding"] = ACCEPT_ENCODING
-	getProperties["Accept-Language"] = ACCEPT_LANGUAGE
+	getProperties["Accept-Encoding"] = AcceptEncoding
+	getProperties["Accept-Language"] = AcceptLanguage
 	getProperties["Host"] = HOST
 }
 
-// http请求，返回 string
+// DoRequest http请求，返回 string
 func DoRequest(url, method, cookie string, body io.Reader) string {
 	// log.Println(url)
 	request, err := http.NewRequest(method, url, body)

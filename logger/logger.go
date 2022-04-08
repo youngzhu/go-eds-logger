@@ -23,7 +23,7 @@ var secretInfo *secret.Secret
 // 如果为空，则从文件中读取
 func Login(loginInfo *secret.Secret) error {
 	// 检验网站是否正常
-	resp, err := http.Head(myhttp.URL_HOME) // 只请求网站的 http header信息
+	resp, err := http.Head(myhttp.UrlHome) // 只请求网站的 http header信息
 	if err != nil {
 		return err
 	}
