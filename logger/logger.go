@@ -81,7 +81,7 @@ func workLog(logDate string) {
 	doWorkLog(url, logDate, "PM", hiddenParams)
 }
 
-var dailyLog = "编码与测试" // 日志工作内容
+var dailyLog = "需求的开发、联调与测试" // 日志工作内容
 
 func doWorkLog(workLogUrl, logDate, timeFlag string, hiddenParams map[string]string) {
 	startTime := "10:00"
