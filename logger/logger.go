@@ -132,11 +132,11 @@ var weeklyLog = struct {
 	planWork     string
 	planStudy    string
 }{
-	workContent:  "需求的开发测试与联调",
+	workContent:  "需求的讨论/开发/测试与联调",
 	studyContent: "JSON的封装与解析",
 	summary:      "好的设计，刚开发时可能觉得麻烦似乎没有必要，但再次改动或二次开发时会容易的多",
-	planWork:     "新需求的开发测试与联调",
-	planStudy:    "设计模式的研究与学习",
+	planWork:     "新需求的讨论/设计与开发",
+	planStudy:    "代码的重构",
 }
 
 func workWeeklyLog(logDate string) {
