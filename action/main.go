@@ -5,6 +5,7 @@ import (
 	"github.com/youngzhu/go-eds-logger/logger"
 	"github.com/youngzhu/go-eds-logger/secret"
 	"log"
+	"time"
 )
 
 var (
@@ -39,5 +40,5 @@ func main() {
 		// os.Exit(1)
 	}
 
-	//logger.LogFromSpecifiedDay(time.Now())
+	logger.LogFromSpecifiedDay(time.Now())
 }
