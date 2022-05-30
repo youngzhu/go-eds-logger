@@ -2,11 +2,9 @@ package main
 
 import (
 	"flag"
-	"log"
-	"time"
-
 	"github.com/youngzhu/go-eds-logger/logger"
 	"github.com/youngzhu/go-eds-logger/secret"
+	"log"
 )
 
 var (
@@ -41,5 +39,5 @@ func main() {
 		// os.Exit(1)
 	}
 
-	logger.LogFromSpecifiedDay(time.Now())
+	//logger.LogFromSpecifiedDay(time.Now())
 }
