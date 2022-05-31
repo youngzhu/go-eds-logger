@@ -1,0 +1,55 @@
+name: Docker Run
+
+on:
+  schedule:
+  - cron: '50 0 * * MON'
+  
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16.4
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Fetch required Go modules
+        run:  go mod download
+
+      - name: Build
+        run:  go build -v ./...
+
+      - name: Set up Docker Buildx
+        id:   buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with: 
+          path: /tmp/.buildx-cache
+          key:  ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          push:    false
+          load:    true
+          tags: docker-eds-logger:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to:   type=local,dest=/tmp/.buildx-cache
+
+      - name: Run Container
+        env:
+          id: ${{ secrets.LOGIN_ID }}
+          pwd: ${{ secrets.LOGIN_PWD }}
+          # 时区设置为上海
+          TZ: Asia/Shanghai
+        run: docker run  -e USER_ID=$id -e USER_PWD=$pwd docker-eds-logger
