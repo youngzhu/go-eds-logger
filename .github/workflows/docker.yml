@@ -48,8 +48,8 @@ jobs:
 
       - name: Run Container
         env:
-          id: ${{ secrets.LOGIN_ID }}
-          pwd: ${{ secrets.LOGIN_PWD }}
+          USER_ID: ${{ secrets.LOGIN_ID }}
+          USER_PWD: ${{ secrets.LOGIN_PWD }}
           # 时区设置为上海
           TZ: Asia/Shanghai
-        run: docker run  -e USER_ID=$id -e USER_PWD=$pwd docker-eds-logger
+        run: docker run docker-eds-logger
