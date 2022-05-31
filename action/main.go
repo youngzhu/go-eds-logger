@@ -2,11 +2,10 @@ package main
 
 import (
 	"flag"
-	"log"
-	"time"
-
 	"github.com/youngzhu/go-eds-logger/logger"
 	"github.com/youngzhu/go-eds-logger/secret"
+	"log"
+	"time"
 )
 
 var (

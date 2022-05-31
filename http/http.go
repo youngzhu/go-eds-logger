@@ -77,7 +77,7 @@ func DoRequest(url, method, cookie string, body io.Reader) string {
 	// log.Println(resp.StatusCode)
 
 	if resp.StatusCode != http.StatusOK {
-		// io.Copy(os.Stdout, resp.Body)
+		//io.Copy(os.Stdout, resp.Body)
 		log.Panicln(resp.StatusCode)
 	}
 
