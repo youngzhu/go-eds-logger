@@ -1,4 +1,4 @@
-name: auto-log-every-monday
+name: Log Every Mon via Go
 
 on:
   # push:
@@ -13,11 +13,13 @@ on:
   # 每周一10:15（北京时间）执行一次
   - cron: '50 0 * * MON'
 
+  workflow_dispatch:
+
 # jobs 是总的，可以包含多个工作流
 jobs:
 
   # 工作流
-  do-log:
+  go-log:
     runs-on: ubuntu-latest
     
     steps:

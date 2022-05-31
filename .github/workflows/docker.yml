@@ -1,4 +1,4 @@
-name: Docker Run
+name: Log Every Mon via Docker
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-run:
+  docker-log:
     runs-on: ubuntu-latest
     steps:
       - name: Install Go
