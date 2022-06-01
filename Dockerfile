@@ -14,10 +14,11 @@ RUN go mod download
 
 # Copy the source code. Note the slash at the end, as explained in
 # https://docs.docker.com/engine/reference/builder/#copy
-COPY docker ./
+COPY *.go ./
 COPY http ./http/
-COPY logger ./logger/
-COPY secret/secret.go ./secret/
+COPY logger/action.go ./logger/
+COPY logger/logger.go ./logger/
+COPY logger/project.go ./logger/
 
 # Build
 RUN go build -o /docker-eds-logger
