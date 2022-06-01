@@ -1,17 +1,17 @@
 package logger
 
 import (
+	"fmt"
+	"github.com/PuerkitoBio/goquery"
+	myhttp "github.com/youngzhu/go-eds-logger/http"
+	"github.com/youngzhu/go-eds-logger/secret"
 	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
-
-	myhttp "github.com/youngzhu/go-eds-logger/http"
-	"github.com/youngzhu/go-eds-logger/secret"
-
-	"github.com/PuerkitoBio/goquery"
 )
 
 type EDSLogger interface {
@@ -32,10 +32,37 @@ const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601;
 
 var secretInfo *secret.Secret
 
-// Login 登录
-// secretStr 输入参数
-// 如果为空，则从文件中读取
 func Login(loginInfo *secret.Secret) error {
+	return nil
+}
+
+const loginEnvErr = "环境变量[%s]未配置\n"
+
+type user struct {
+	id       string
+	password string
+}
+
+func getLoginInfo() (*user, error) {
+	var loginID, loginPassword string
+	var found bool
+	if loginID, found = os.LookupEnv("EDS_USR_ID"); !found {
+		return nil, fmt.Errorf(loginEnvErr, "EDS_USR_ID")
+	}
+
+	if loginPassword, found = os.LookupEnv("EDS_USR_PWD"); !found {
+		return nil, fmt.Errorf(loginEnvErr, "EDS_USR_PWD")
+	}
+
+	return &user{id: loginID, password: loginPassword}, nil
+}
+
+func LoginX() error {
+	user, err := getLoginInfo()
+	if err != nil {
+		return err
+	}
+
 	// 检验网站是否正常
 	resp, err := http.Head(myhttp.UrlHome) // 只请求网站的 http header信息
 	if err != nil {
@@ -43,15 +70,6 @@ func Login(loginInfo *secret.Secret) error {
 	}
 
 	defer resp.Body.Close()
-
-	if loginInfo != nil {
-		secretInfo = loginInfo
-	} else {
-		secretInfo, err = secret.RetrieveSecret()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
 
 	loginUrl := "http://eds.newtouch.cn/eds3/DefaultLogin.aspx?lan=zh-cn"
 	// 登录
@@ -62,8 +80,8 @@ func Login(loginInfo *secret.Secret) error {
 	// 	"UserPsd": {"***"},
 	// }
 	params := url.Values{}
-	params.Add("UserId", secretInfo.UserId)
-	params.Add("UserPsd", secretInfo.UserPsd)
+	params.Add("UserId", user.id)
+	params.Add("UserPsd", user.password)
 	// var request *http.Request
 	// request, err = http.NewRequest(http.MethodPost, URL_LOGIN, strings.NewReader(data))
 	// request, err = http.NewRequest(http.MethodPost, loginUrl, strings.NewReader(params.Encode()))
