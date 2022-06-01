@@ -28,6 +28,4 @@ func main() {
 
 	// logger.LogTheSpecifiedDay(time.Now())
 
-	//projectID := logger.GetProjectID()
-	//println("projectID:", projectID)
 }

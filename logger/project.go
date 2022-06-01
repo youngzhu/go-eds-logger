@@ -28,7 +28,6 @@ func GetProjectID() string {
 			projectId, _ = s.Children().Attr("value")
 			return
 		}
-
 	})
 	return projectId
 }
