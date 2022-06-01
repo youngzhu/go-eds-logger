@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"math/rand"
+	"os"
 	"testing"
 	"time"
 )
@@ -41,4 +42,12 @@ func TestX(t *testing.T) {
 
 	// date := time.Date(2021, 9, 18, 13, 14, 59, 0, time.UTC)
 
+}
+
+func TestEnv(t *testing.T) {
+	log.Println(os.LookupEnv("EDS_USR_ID"))
+	log.Println(os.LookupEnv("USER_PWD"))
+
+	log.Println(os.Getenv("EDS_USR_ID"))
+	log.Println(os.Getenv("USER_PWD"))
 }
