@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	myhttp "github.com/youngzhu/go-eds-logger/http"
-	"github.com/youngzhu/go-eds-logger/secret"
 	"log"
-	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
@@ -30,12 +28,6 @@ func Run() {
 
 const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
 
-var secretInfo *secret.Secret
-
-func Login(loginInfo *secret.Secret) error {
-	return nil
-}
-
 const loginEnvErr = "环境变量[%s]未配置\n"
 
 type user struct {
@@ -57,7 +49,7 @@ func getLoginInfo() (*user, error) {
 	return &user{id: loginID, password: loginPassword}, nil
 }
 
-func LoginX() error {
+func Login() error {
 	user, err := getLoginInfo()
 	if err != nil {
 		return err
@@ -236,29 +228,28 @@ func getValueFromHtml(html, key string) string {
 	return value
 }
 
-// LogTheSpecifiedDay 按指定的日期填写日报（只填当天）
-func LogTheSpecifiedDay(logDate time.Time) {
+// 按指定的日期填写日报（只填当天）
+func logTheSpecifiedDay(logDate time.Time) {
 	workLog(logDate.Format("2006-01-02"))
 }
 
-// LogFromSpecifiedDay 从周一开始，填写本周的周报和日报
-func LogFromSpecifiedDay(logFrom time.Time) {
-
-	logDateWeekly := logFrom.Format("2006-01-02")
-	logDateDaliy := logFrom
+func logWholeWeek(dateFrom time.Time) {
+	var workday []string
+	for i := 0; i < 5; i++ {
+		workday = append(workday, dateFrom.Format("2006-01-02"))
+		dateFrom = dateFrom.Add(time.Hour * 24)
+	}
 
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
-	workWeeklyLog(logDateWeekly)
+	workWeeklyLog(workday[0])
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(5 * time.Second)
 
 	// 再写日报
-	for i := 0; i < 5; i++ {
-		LogTheSpecifiedDay(logDateDaliy)
-
-		time.Sleep(time.Duration(rand.Intn(3000)) * time.Millisecond)
-		logDateDaliy = logDateDaliy.Add(time.Hour * 24)
+	for _, day := range workday {
+		workLog(day)
+		time.Sleep(1 * time.Second)
 	}
 }
 

@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	err := logger.LoginX()
+	err := logger.Login()
 	if err != nil {
 		// 正常返回还不行，需要有错误发送邮件通知
 		// return
