@@ -4,10 +4,15 @@ import (
 	"time"
 )
 
-type ActionLogger struct{}
+type actionLogger struct{}
+
+func init() {
+	var action actionLogger
+	register("action", action)
+}
 
 // Execute 每周一执行，填写周报和5天的日报
-func (a ActionLogger) Execute() {
+func (a actionLogger) Execute() {
 	logDate := time.Now()
 
 	var workday []string

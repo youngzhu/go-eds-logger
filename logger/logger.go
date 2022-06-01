@@ -18,6 +18,16 @@ type EDSLogger interface {
 	Execute()
 }
 
+var loggers = make(map[string]EDSLogger)
+
+func Run() {
+	edsLogger, exists := loggers["manual"]
+	if !exists {
+		edsLogger = loggers["action"]
+	}
+	edsLogger.Execute()
+}
+
 const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
 
 var secretInfo *secret.Secret
@@ -232,5 +242,13 @@ func LogFromSpecifiedDay(logFrom time.Time) {
 		time.Sleep(time.Duration(rand.Intn(3000)) * time.Millisecond)
 		logDateDaliy = logDateDaliy.Add(time.Hour * 24)
 	}
+}
 
+func register(logType string, edsLogger EDSLogger) {
+	if _, exists := loggers[logType]; exists {
+		log.Fatalln(logType, "already registered")
+	}
+
+	log.Println("Register logger:", logType)
+	loggers[logType] = edsLogger
 }

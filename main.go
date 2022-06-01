@@ -17,5 +17,5 @@ func main() {
 		// os.Exit(1)
 	}
 
-	//logger.LogFromSpecifiedDay(time.Now())
+	logger.Run()
 }
