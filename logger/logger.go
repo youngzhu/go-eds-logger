@@ -241,8 +241,8 @@ func logTheSpecifiedDay(logDate time.Time) {
 func logWholeWeek(dateFrom time.Time) {
 	var workday []string
 	for i := 0; i < 5; i++ {
-		workday = append(workday, ParseToStr(dateFrom))
-		dateFrom = dateFrom.Add(time.Hour * 24)
+		logDay := AddDay(dateFrom, i)
+		workday = append(workday, ParseToStr(logDay))
 	}
 
 	// 先写周报
