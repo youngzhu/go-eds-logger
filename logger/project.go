@@ -11,6 +11,10 @@ import (
 const ddlProjectList = "11945"
 
 func GetProjectID() string {
+	err := Login()
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	respHtml := myhttp.DoRequest(workLogURL, http.MethodGet, cookie, nil)
 	//println(respHtml)

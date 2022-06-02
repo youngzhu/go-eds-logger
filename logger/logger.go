@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	myhttp "github.com/youngzhu/go-eds-logger/http"
@@ -35,7 +36,7 @@ type user struct {
 	password string
 }
 
-func getLoginInfo() (*user, error) {
+func getUser() (*user, error) {
 	var loginID, loginPassword string
 	var found bool
 	if loginID, found = os.LookupEnv("EDS_USR_ID"); !found {
@@ -49,21 +50,20 @@ func getLoginInfo() (*user, error) {
 	return &user{id: loginID, password: loginPassword}, nil
 }
 
+const loginUrl = "http://eds.newtouch.cn/eds3/DefaultLogin.aspx?lan=zh-cn"
+
 func Login() error {
-	user, err := getLoginInfo()
+	user, err := getUser()
 	if err != nil {
 		return err
 	}
 
 	// 检验网站是否正常
-	resp, err := http.Head(myhttp.UrlHome) // 只请求网站的 http header信息
+	_, err = http.Head(myhttp.UrlHome) // 只请求网站的 http header信息
 	if err != nil {
 		return err
 	}
 
-	defer resp.Body.Close()
-
-	loginUrl := "http://eds.newtouch.cn/eds3/DefaultLogin.aspx?lan=zh-cn"
 	// 登录
 	// data := `{"UserId":"###", "UserPsd":"***"}`
 	// data := "UserId=###&UserPsd=***"
@@ -84,7 +84,7 @@ func Login() error {
 
 	errMsg := "用户名或密码错误"
 	if strings.Contains(respStr, errMsg) {
-		log.Fatalln(errMsg)
+		return errors.New(errMsg)
 	}
 
 	log.Println("登陆成功")
@@ -92,7 +92,15 @@ func Login() error {
 	return nil
 }
 
-var workLogURL = "http://eds.newtouch.cn/eds3/worklog.aspx?tabid=0"
+const workLogURL = "http://eds.newtouch.cn/eds3/worklog.aspx?tabid=0"
+
+type dayTime struct {
+	startTime string
+	endTime   string
+}
+
+var am = dayTime{startTime: "10:00", endTime: "12:00"}
+var pm = dayTime{startTime: "13:00", endTime: "18:00"}
 
 func workLog(logDate string) {
 	url := workLogURL + "&LogDate=" + logDate
@@ -101,19 +109,16 @@ func workLog(logDate string) {
 	hiddenParams := getHiddenParams(url)
 	// fmt.Println(hiddenParams)
 
-	doWorkLog(url, logDate, "AM", hiddenParams)
-	doWorkLog(url, logDate, "PM", hiddenParams)
+	doWorkLog(url, logDate, am, hiddenParams)
+	doWorkLog(url, logDate, pm, hiddenParams)
+
+	log.Println("日志操作成功", logDate)
 }
 
-var dailyLog = "需求的开发、联调与测试" // 日志工作内容
+const dailyLog = "需求的开发、联调与测试" // 日志工作内容
 
-func doWorkLog(workLogUrl, logDate, timeFlag string, hiddenParams map[string]string) {
-	startTime := "10:00"
-	endTime := "12:00"
-	if "PM" == timeFlag {
-		startTime = "13:00"
-		endTime = "18:00"
-	}
+func doWorkLog(workLogUrl, logDate string, dt dayTime, hiddenParams map[string]string) {
+	startTime, endTime := dt.startTime, dt.endTime
 
 	logParams := url.Values{}
 	logParams.Set("__EVENTTARGET", "hplbWorkType")
@@ -146,7 +151,6 @@ func doWorkLog(workLogUrl, logDate, timeFlag string, hiddenParams map[string]str
 
 	myhttp.DoRequest(workLogUrl, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
 
-	log.Println("日志操作成功", logDate, timeFlag)
 }
 
 var weeklyLog = struct {
@@ -163,11 +167,12 @@ var weeklyLog = struct {
 	planStudy:    "代码的重构",
 }
 
+const urlWeekly = "http://eds.newtouch.cn/eds36web/WorkWeekly/WorkWeeklyInfo.aspx"
+
 func workWeeklyLog(logDate string) {
-	logUrl := "http://eds.newtouch.cn/eds36web/WorkWeekly/WorkWeeklyInfo.aspx"
 
 	// 先通过get获取一些隐藏参数，用作后台校验
-	hiddenParams := getHiddenParams(logUrl)
+	hiddenParams := getHiddenParams(urlWeekly)
 
 	logParams := url.Values{}
 	logParams.Set("hidCurrRole", "")
@@ -184,9 +189,9 @@ func workWeeklyLog(logDate string) {
 		logParams.Set(key, value)
 	}
 
-	myhttp.DoRequest(logUrl, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
+	myhttp.DoRequest(urlWeekly, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
 
-	// resp := myhttp.DoRequest(logUrl, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
+	// resp := myhttp.DoRequest(urlWeekly, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
 	// log.Println(resp)
 
 	log.Println("周报填写成功", logDate)
