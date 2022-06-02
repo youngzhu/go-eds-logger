@@ -19,6 +19,7 @@ COPY http ./http/
 COPY logger/action.go ./logger/
 COPY logger/logger.go ./logger/
 COPY logger/project.go ./logger/
+COPY logger/date.go ./logger/
 
 # Build
 RUN go build -o /docker-eds-logger

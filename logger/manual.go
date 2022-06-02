@@ -2,7 +2,6 @@ package logger
 
 import (
 	"log"
-	"time"
 )
 
 type manualLogger struct{}
@@ -14,7 +13,7 @@ func init() {
 
 // Execute 手动执行指定日期的日志
 func (a manualLogger) Execute() {
-	logFrom, _ := time.Parse("2006-01-02", "2022-05-16")
+	logFrom, _ := ParseFromStr("2022-05-16")
 	log.Println(logFrom)
 
 	// 填一周

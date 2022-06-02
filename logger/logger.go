@@ -235,13 +235,13 @@ func getValueFromHtml(html, key string) string {
 
 // 按指定的日期填写日报（只填当天）
 func logTheSpecifiedDay(logDate time.Time) {
-	workLog(logDate.Format("2006-01-02"))
+	workLog(ParseToStr(logDate))
 }
 
 func logWholeWeek(dateFrom time.Time) {
 	var workday []string
 	for i := 0; i < 5; i++ {
-		workday = append(workday, dateFrom.Format("2006-01-02"))
+		workday = append(workday, ParseToStr(dateFrom))
 		dateFrom = dateFrom.Add(time.Hour * 24)
 	}
 
