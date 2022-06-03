@@ -38,7 +38,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v3
         with:
-          build-args: EDS_USR_ID=${{ secrets.LOGIN_ID }}
+          build-args: EDS_USR_ID=${{ secrets.LOGIN_ID }}, EDS_USR_PWD=${{ secrets.LOGIN_PWD }}
           builder: ${{ steps.buildx.outputs.name }}
           push:    false
           load:    true
@@ -48,8 +48,6 @@ jobs:
 
       - name: Run Container
         env:
-          EDS_USR_ID: ${{ secrets.LOGIN_ID }}
-          EDS_USR_PWD: ${{ secrets.LOGIN_PWD }}
           # 时区设置为上海
           TZ: Asia/Shanghai
         run: docker run docker-eds-logger

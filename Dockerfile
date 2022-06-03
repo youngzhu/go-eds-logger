@@ -21,8 +21,13 @@ COPY logger/logger.go ./logger/
 COPY logger/project.go ./logger/
 COPY logger/date.go ./logger/
 
+# arg 只在编译时起作用
+# env 只在运行时起作用
 ARG EDS_USR_ID
+ARG EDS_USR_PWD
+
 ENV EDS_USR_ID=$EDS_USR_ID
+ENV EDS_USR_PWD=$EDS_USR_PWD
 
 # Build
 RUN go build -o /docker-eds-logger
