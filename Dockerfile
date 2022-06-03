@@ -21,6 +21,7 @@ COPY logger/logger.go ./logger/
 COPY logger/project.go ./logger/
 COPY logger/date.go ./logger/
 
+ARG EDS_USR_ID
 ENV EDS_USR_ID=$EDS_USR_ID
 
 # Build

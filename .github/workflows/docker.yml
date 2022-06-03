@@ -37,9 +37,6 @@ jobs:
 
       - name: Build Docker image
         uses: docker/build-push-action@v3
-        env:
-          EDS_USR_ID: ${{ secrets.LOGIN_ID }}
-          EDS_USR_PWD: ${{ secrets.LOGIN_PWD }}
         with:
           build-args: EDS_USR_ID=${{ secrets.LOGIN_ID }}
           builder: ${{ steps.buildx.outputs.name }}
