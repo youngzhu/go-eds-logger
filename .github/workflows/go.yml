@@ -33,8 +33,6 @@ jobs:
 
     # uses 和 run 不能在一个步骤里
     # with 只能和 uses 配合使用
-    - name: Build
-      run: go build -v ./...
 
     - name: Run
       env:
@@ -42,5 +40,5 @@ jobs:
         EDS_USR_PWD: ${{ secrets.LOGIN_PWD }}
         # 时区设置为上海
         TZ: Asia/Shanghai
-      run: go run
+      run: go run main.go
 
