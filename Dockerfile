@@ -5,6 +5,7 @@ FROM golang:1.16-alpine
 # Set destination for COPY
 WORKDIR /app
 
+ENV TZ="Asia/Shanghai"
 ENV GOPROXY=https://goproxy.cn,direct
 
 # Download Go modules
