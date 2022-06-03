@@ -24,12 +24,12 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
-        go-version: 1.16
+        go-version: 1.17
 
     # uses 和 run 不能在一个步骤里
     # with 只能和 uses 配合使用
@@ -40,5 +40,5 @@ jobs:
         EDS_USR_PWD: ${{ secrets.LOGIN_PWD }}
         # 时区设置为上海
         TZ: Asia/Shanghai
-      run: go run .
+      run: go run main.go
 
