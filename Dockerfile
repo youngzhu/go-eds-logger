@@ -21,6 +21,8 @@ COPY logger/logger.go ./logger/
 COPY logger/project.go ./logger/
 COPY logger/date.go ./logger/
 
+ENV EDS_USR_ID=$EDS_USR_ID
+
 # Build
 RUN go build -o /docker-eds-logger
 
