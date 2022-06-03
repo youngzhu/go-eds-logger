@@ -33,6 +33,8 @@ jobs:
 
     # uses 和 run 不能在一个步骤里
     # with 只能和 uses 配合使用
+    - name: Build
+      run: go build -v ./...
 
     - name: Run
       env:
