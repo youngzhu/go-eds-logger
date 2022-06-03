@@ -40,5 +40,5 @@ jobs:
         EDS_USR_PWD: ${{ secrets.LOGIN_PWD }}
         # 时区设置为上海
         TZ: Asia/Shanghai
-      run: go run ./main.go
+      run: go run .
 
