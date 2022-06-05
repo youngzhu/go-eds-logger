@@ -4,6 +4,9 @@ import (
 	"log"
 )
 
+// 尝试过为了简化docker的引入，将它放入单独的目录下
+// 结果发生编译错误
+
 type manualLogger struct{}
 
 func init() {

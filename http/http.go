@@ -18,6 +18,8 @@ var postProperties = make(map[string]string)
 var getProperties = make(map[string]string)
 
 func init() {
+	log.Println("http init")
+
 	// post
 	postProperties["Host"] = HOST
 	postProperties["Content-Length"] = "6955"
