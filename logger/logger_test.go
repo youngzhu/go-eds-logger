@@ -18,3 +18,7 @@ func TestRetrieveLogContent(t *testing.T) {
 	t.Logf("c1:%v", c1)
 	t.Log("c2:", c2)
 }
+
+func TestGetProjectID(t *testing.T) {
+	t.Log("projectID:", RetrieveProjectID())
+}

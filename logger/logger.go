@@ -93,7 +93,8 @@ func Login() error {
 }
 
 var (
-	lc *logContent
+	lc             *logContent
+	ddlProjectList string
 )
 
 func PrepareData() error {
@@ -103,6 +104,8 @@ func PrepareData() error {
 	}
 	lc = c
 
+	ddlProjectList = RetrieveProjectID()
+	
 	return nil
 }
 

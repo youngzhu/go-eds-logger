@@ -8,14 +8,7 @@ import (
 	"strings"
 )
 
-const ddlProjectList = "11945"
-
-func GetProjectID() string {
-	err := Login()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
+func RetrieveProjectID() string {
 	respHtml := myhttp.DoRequest(workLogURL, http.MethodGet, cookie, nil)
 	//println(respHtml)
 
