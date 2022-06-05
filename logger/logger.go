@@ -92,6 +92,20 @@ func Login() error {
 	return nil
 }
 
+var (
+	lc *logContent
+)
+
+func PrepareData() error {
+	c, err := RetrieveLogContent()
+	if err != nil {
+		return err
+	}
+	lc = c
+
+	return nil
+}
+
 const workLogURL = "http://eds.newtouch.cn/eds3/worklog.aspx?tabid=0"
 
 type dayTime struct {
@@ -115,8 +129,6 @@ func workLog(logDate string) {
 	log.Println("日志操作成功", logDate)
 }
 
-const dailyLog = "需求的开发、联调与测试" // 日志工作内容
-
 func doWorkLog(workLogUrl, logDate string, dt dayTime, hiddenParams map[string]string) {
 	startTime, endTime := dt.startTime, dt.endTime
 
@@ -132,7 +144,7 @@ func doWorkLog(workLogUrl, logDate string, dt dayTime, hiddenParams map[string]s
 	logParams.Set("hplbWorkType", "0106")
 	logParams.Set("hplbAction", "010601")
 	logParams.Set("TextBox1", "")
-	logParams.Set("txtMemo", dailyLog)
+	logParams.Set("txtMemo", lc.DailyWorkContent)
 	logParams.Set("btnSave", "+%E7%A1%AE+%E5%AE%9A+")
 	logParams.Set("txtnodate", logDate)
 	logParams.Set("txtnoStartTime", startTime)
@@ -153,20 +165,6 @@ func doWorkLog(workLogUrl, logDate string, dt dayTime, hiddenParams map[string]s
 
 }
 
-var weeklyLog = struct {
-	workContent  string
-	studyContent string
-	summary      string
-	planWork     string
-	planStudy    string
-}{
-	workContent:  "需求的讨论/开发/测试与联调",
-	studyContent: "JSON的封装与解析",
-	summary:      "好的设计，刚开发时可能觉得麻烦似乎没有必要，但再次改动或二次开发时会容易的多",
-	planWork:     "新需求的讨论/设计与开发",
-	planStudy:    "代码的重构",
-}
-
 const urlWeekly = "http://eds.newtouch.cn/eds36web/WorkWeekly/WorkWeeklyInfo.aspx"
 
 func workWeeklyLog(logDate string) {
@@ -178,11 +176,11 @@ func workWeeklyLog(logDate string) {
 	logParams.Set("hidCurrRole", "")
 	logParams.Set("hidWeeklyState", "")
 	logParams.Set("WeekReportDate", logDate)
-	logParams.Set("txtWorkContent", weeklyLog.workContent)
-	logParams.Set("txtStudyContent", weeklyLog.studyContent)
-	logParams.Set("txtSummary", weeklyLog.summary)
-	logParams.Set("txtPlanWork", weeklyLog.planWork)
-	logParams.Set("txtPlanStudy", weeklyLog.planStudy)
+	logParams.Set("txtWorkContent", lc.WeeklyWorkContent)
+	logParams.Set("txtStudyContent", lc.WeeklyStudyContent)
+	logParams.Set("txtSummary", lc.WeeklySummary)
+	logParams.Set("txtPlanWork", lc.WeeklyPlanWork)
+	logParams.Set("txtPlanStudy", lc.WeeklyPlanStudy)
 	logParams.Set("btnSubmit", "%E6%8F%90%E4%BA%A4")
 
 	for key, value := range hiddenParams {

@@ -14,5 +14,10 @@ func main() {
 		// os.Exit(1)
 	}
 
+	err = logger.PrepareData()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	logger.Run()
 }
