@@ -13,5 +13,5 @@
    export EDS_USR_ID="your id"
    export EDS_USR_PWD="your password"
    ```
-3. 生效 `source .bash_profile`
+3. 生效 `source ~/.bash_profile`
 4. 重启Goland
