@@ -22,7 +22,7 @@ COPY logger/logger.go ./logger/
 COPY logger/project.go ./logger/
 COPY logger/date.go ./logger/
 COPY logger/log_content.go ./logger/
-COPY logger/data ./logger/data/
+COPY data ./data/
 
 # arg 只在编译时起作用
 # env 只在运行时起作用

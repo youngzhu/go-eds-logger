@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const dataFile = "data/data.json"
+const dataFile = "/data/data.json"
 
 type logContent struct {
 	DailyWorkContent   string `json:"dailyWorkContent"`
