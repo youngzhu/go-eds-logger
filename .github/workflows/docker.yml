@@ -2,7 +2,7 @@ name: Log Every Mon via Docker
 
 on:
   schedule:
-  - cron: '50 0 * * MON'
+  - cron: '40 0 * * 1'
   
   workflow_dispatch:
 
@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Show time
         run: date
+        
+      - name: Show Timezone
+        run: date -R
         
       - name: Install Go
         uses: actions/setup-go@v3
