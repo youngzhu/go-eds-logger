@@ -1,10 +1,10 @@
 package logger
 
-/*
+
 import (
 	"time"
 )
-*/
+
 type actionLogger struct{}
 
 func init() {
@@ -14,5 +14,5 @@ func init() {
 
 // Execute 每周一自动执行，填写周报和5天的日报
 func (a actionLogger) Execute() {
-	//logWholeWeek(time.Now())
+	logWholeWeek(time.Now())
 }
