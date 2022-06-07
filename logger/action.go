@@ -1,9 +1,10 @@
 package logger
 
+/*
 import (
 	"time"
 )
-
+*/
 type actionLogger struct{}
 
 func init() {
