@@ -1,8 +1,8 @@
 {
-  "dailyWorkContent": "需求的开发、联调与测试",
-  "weeklyWorkContent": "需求的讨论/开发/测试与联调",
+  "dailyWorkContent": "新核心接口改造",
+  "weeklyWorkContent": "新核心接口改造",
   "weeklyStudyContent": "JSON的封装与解析",
-  "weeklySummary": "好的设计，刚开发时可能觉得麻烦似乎没有必要，但再次改动或二次开发时会容易的多",
-  "weeklyPlanWork": "新需求的讨论/设计与开发",
+  "weeklySummary": "ETC：Easy To Change",
+  "weeklyPlanWork": "新核心接口改造",
   "weeklyPlanStudy": "docker容器"
 }
