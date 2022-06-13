@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"github.com/youngzhu/godate"
 	"log"
 )
 
@@ -16,7 +17,8 @@ func init() {
 
 // Execute 手动执行指定日期的日志
 func (a manualLogger) Execute() {
-	logFrom, _ := ParseFromStr("2022-06-06")
+	//logFrom, _ := godate.NewDateYMD(2022, 6, 6)
+	logFrom := godate.Today()
 	log.Println(logFrom)
 
 	// 填一周

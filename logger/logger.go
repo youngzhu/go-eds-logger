@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	myhttp "github.com/youngzhu/go-eds-logger/http"
+	"github.com/youngzhu/godate"
 	"log"
 	"net/http"
 	"net/url"
@@ -12,6 +13,8 @@ import (
 	"strings"
 	"time"
 )
+
+var d godate.Date
 
 type EDSLogger interface {
 	Execute()
@@ -105,7 +108,7 @@ func PrepareData() error {
 	lc = c
 
 	ddlProjectList = RetrieveProjectID()
-	
+
 	return nil
 }
 
@@ -236,25 +239,21 @@ func getValueFromHtml(html, key string) string {
 
 // 按指定的日期填写日报（只填当天）
 func logTheSpecifiedDay(logDate time.Time) {
-	workLog(ParseToStr(logDate))
+	//workLog(ParseToStr(logDate))
 }
 
-func logWholeWeek(dateFrom time.Time) {
-	var workday []string
-	for i := 0; i < 5; i++ {
-		logDay := AddDay(dateFrom, i)
-		workday = append(workday, ParseToStr(logDay))
-	}
+func logWholeWeek(d godate.Date) {
+	workdays := d.Workdays()
 
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
-	workWeeklyLog(workday[0])
+	workWeeklyLog(workdays[0].String())
 
 	time.Sleep(5 * time.Second)
 
 	// 再写日报
-	for _, day := range workday {
-		workLog(day)
+	for _, day := range workdays {
+		workLog(day.String())
 		time.Sleep(1 * time.Second)
 	}
 }

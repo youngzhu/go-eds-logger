@@ -20,7 +20,6 @@ COPY http ./http/
 COPY logger/action.go ./logger/
 COPY logger/logger.go ./logger/
 COPY logger/project.go ./logger/
-COPY logger/date.go ./logger/
 COPY logger/log_content.go ./logger/
 COPY data ./data/
 
