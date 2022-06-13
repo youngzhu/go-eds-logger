@@ -15,13 +15,12 @@ RUN go mod download
 
 # Copy the source code. Note the slash at the end, as explained in
 # https://docs.docker.com/engine/reference/builder/#copy
-COPY *.go ./
+COPY main.go ./
 COPY http ./http/
-COPY logger/action.go ./logger/
-COPY logger/logger.go ./logger/
-COPY logger/project.go ./logger/
-COPY logger/log_content.go ./logger/
+COPY logger/*.go ./logger/
 COPY data ./data/
+
+RUN rm ./logger/manually.go
 
 # arg 只在编译时起作用
 # env 只在运行时起作用
