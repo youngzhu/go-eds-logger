@@ -7,12 +7,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  docker-log:
+  show-time:
     runs-on: ubuntu-latest
     steps:
       - name: Show time
         run: date
         
       - name: Show Timezone
-        run: date -R
+        run: timedatectl
 
