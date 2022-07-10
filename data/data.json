@@ -1,8 +1,8 @@
 {
-  "dailyWorkContent": "新核心接口改造",
-  "weeklyWorkContent": "新核心接口改造",
-  "weeklyStudyContent": "JSON的封装与解析",
-  "weeklySummary": "ETC：Easy To Change",
-  "weeklyPlanWork": "新核心接口改造",
-  "weeklyPlanStudy": "docker容器"
+  "dailyWorkContent": "新核心理赔适配接口联调与测试",
+  "weeklyWorkContent": "新核心理赔适配接口改造",
+  "weeklyStudyContent": "JSON字符串的封装与解析",
+  "weeklySummary": "存在即有存在的道理。在完全理解之前不要动它，即使它看着像是错的。",
+  "weeklyPlanWork": "新核心理赔适配接口改造",
+  "weeklyPlanStudy": "Docker容器的使用"
 }
