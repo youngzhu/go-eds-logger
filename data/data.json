@@ -1,8 +1,8 @@
 {
-  "dailyWorkContent": "新核心理赔适配接口联调与测试",
-  "weeklyWorkContent": "新核心理赔适配接口改造",
-  "weeklyStudyContent": "JSON字符串的封装与解析",
+  "dailyWorkContent": "需求分析设计与开发",
+  "weeklyWorkContent": "需求分析设计与开发",
+  "weeklyStudyContent": "JSON的封装与解析",
   "weeklySummary": "存在即有存在的道理。在完全理解之前不要动它，即使它看着像是错的。",
-  "weeklyPlanWork": "新核心理赔适配接口改造",
-  "weeklyPlanStudy": "Map/Reduce的学习"
+  "weeklyPlanWork": "需求分析设计与开发",
+  "weeklyPlanStudy": "软件工程"
 }
