@@ -268,18 +268,22 @@ func register(logType string, edsLogger EDSLogger) {
 	loggers[logType] = edsLogger
 }
 
-func RetrieveExtraDays() (days []string) {
+// RetrieveExtraDays
+// 返回map方便使用（查找）
+func RetrieveExtraDays() map[string]struct{} {
+	days := make(map[string]struct{})
+
 	f, err := os.Open("data/extraDays.txt")
 	defer f.Close()
 	if err != nil {
 		log.Println(err)
-		return
+		return days
 	}
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
-		days = append(days, scanner.Text())
+		days[scanner.Text()] = struct{}{}
 	}
 
-	return
+	return days
 }
