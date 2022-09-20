@@ -15,3 +15,9 @@
    ```
 3. 生效 `source ~/.bash_profile`
 4. 重启Goland
+
+## Dev Notes
+### v0.2.0
+周末如果有调休也要填日志
+### v0.1.0
+略

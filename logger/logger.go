@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
@@ -265,4 +266,20 @@ func register(logType string, edsLogger EDSLogger) {
 
 	log.Println("Register logger:", logType)
 	loggers[logType] = edsLogger
+}
+
+func RetrieveExtraDays() (days []string) {
+	f, err := os.Open("data/extraDays.txt")
+	defer f.Close()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		days = append(days, scanner.Text())
+	}
+
+	return
 }
