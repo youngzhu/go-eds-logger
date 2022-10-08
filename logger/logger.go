@@ -238,11 +238,6 @@ func getValueFromHtml(html, key string) string {
 	return value
 }
 
-// 按指定的日期填写日报（只填当天）
-func logTheSpecifiedDay(logDate time.Time) {
-	//workLog(ParseToStr(logDate))
-}
-
 func logWholeWeek(d godate.Date) {
 	workdays := d.Workdays()
 
