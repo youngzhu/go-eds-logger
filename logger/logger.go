@@ -245,12 +245,12 @@ func logWholeWeek(d godate.Date) {
 	// 只能填写本周周报（周一）!!!
 	workWeeklyLog(workdays[0].String())
 
-	time.Sleep(5 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	// 再写日报
 	for _, day := range workdays {
 		workLog(day.String())
-		time.Sleep(1 * time.Second)
+		time.Sleep(500 * time.Millisecond)
 	}
 }
 

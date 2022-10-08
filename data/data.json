@@ -1,8 +1,8 @@
 {
   "dailyWorkContent": "需求分析设计与开发",
   "weeklyWorkContent": "需求分析设计与开发",
-  "weeklyStudyContent": "JSON的封装与解析",
-  "weeklySummary": "存在即有存在的道理。在完全理解之前不要动它，即使它看着像是错的。",
+  "weeklyStudyContent": "Java函数式编程",
+  "weeklySummary": "优化就要测试要比较。并发不一定就比顺序执行效率高，用数据说话",
   "weeklyPlanWork": "需求分析设计与开发",
   "weeklyPlanStudy": "软件工程"
 }
