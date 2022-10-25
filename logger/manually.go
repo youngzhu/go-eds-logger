@@ -17,14 +17,13 @@ func init() {
 
 // Execute 手动执行指定日期的日志
 func (a manualLogger) Execute() {
-	//logFrom, _ := godate.NewDateYMD(2022, 6, 6)
-	logFrom, _ := godate.Today().AddDay(1)
-	log.Println(logFrom)
-
 	// 填一周
-	//logWholeWeek(logFrom)
+	logWholeWeek(godate.Today())
+
+	//logDay, _ := godate.NewDateYMD(2022, 6, 6)
+	logDay, _ := godate.Today().AddDay(1)
+	log.Println(logDay)
 
 	// 填一天
-	workLog(logFrom.String())
-	//LogTheSpecifiedDay(time.Now())
+	workLog(logDay.String())
 }
