@@ -7,15 +7,19 @@ import (
 	"os"
 )
 
-var from, fromPwd, to string
-
-func init() {
-	from, _ = os.LookupEnv("MAIL_FROM")
-	fromPwd, _ = os.LookupEnv("MAIL_FROM_PWD")
-	to, _ = os.LookupEnv("MAIL_TO")
+func getSecret(key string) string {
+	val, ok := os.LookupEnv(key)
+	if !ok {
+		log.Printf("%s not set\n", key)
+	}
+	return val
 }
 
 func SendMail(subject, body string) {
+	from := getSecret("MAIL_FROM")
+	fromPwd := getSecret("MAIL_FROM_PWD")
+	to := getSecret("MAIL_TO")
+
 	m := gomail.NewMessage()
 
 	m.SetHeader("From", from)
