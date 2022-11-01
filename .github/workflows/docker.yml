@@ -39,7 +39,7 @@ jobs:
           build-args: |
             EDS_USR_ID=${{ secrets.LOGIN_ID }}
             EDS_USR_PWD=${{ secrets.LOGIN_PWD }}
-            MAIL_FROM=${{ secrets.LOGIN_PWD }}
+            MAIL_FROM=${{ secrets.MAIL_FROM }}
             MAIL_FROM_PWD=${{ secrets.MAIL_FROM_PWD }}
             MAIL_TO=${{ secrets.MAIL_TO }}
           builder: ${{ steps.buildx.outputs.name }}
