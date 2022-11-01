@@ -20,6 +20,8 @@ func SendMail(subject, body string) {
 	fromPwd := getSecret("MAIL_FROM_PWD")
 	to := getSecret("MAIL_TO")
 
+	log.Println(from, fromPwd, to)
+
 	m := gomail.NewMessage()
 
 	m.SetHeader("From", from)
