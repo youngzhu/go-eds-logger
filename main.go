@@ -21,7 +21,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	//logger.Run()
+	logger.Run()
 
 	sendSuccessfulMail()
 }
