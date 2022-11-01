@@ -33,8 +33,6 @@ func Run() {
 
 const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
 
-const loginEnvErr = "环境变量[%s]未配置\n"
-
 type user struct {
 	id       string
 	password string
@@ -42,16 +40,27 @@ type user struct {
 
 func getUser() (*user, error) {
 	var loginID, loginPassword string
-	var found bool
-	if loginID, found = os.LookupEnv("EDS_USR_ID"); !found {
-		return nil, fmt.Errorf(loginEnvErr, "EDS_USR_ID")
-	}
+	var err error
 
-	if loginPassword, found = os.LookupEnv("EDS_USR_PWD"); !found {
-		return nil, fmt.Errorf(loginEnvErr, "EDS_USR_PWD")
+	if loginID, err = getSecret("EDS_USR_ID"); err != nil {
+		return nil, err
+	}
+	if loginPassword, err = getSecret("EDS_USR_PWD"); err != nil {
+		return nil, err
 	}
 
 	return &user{id: loginID, password: loginPassword}, nil
+}
+
+const secretErr = "变量[%s]未配置\n"
+
+func getSecret(key string) (string, error) {
+	val, ok := os.LookupEnv(key)
+	if !ok {
+		log.Printf(secretErr, key)
+		return "", fmt.Errorf(secretErr, key)
+	}
+	return val, nil
 }
 
 const loginUrl = "http://eds.newtouch.cn/eds3/DefaultLogin.aspx?lan=zh-cn"
