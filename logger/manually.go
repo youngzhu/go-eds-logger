@@ -2,7 +2,6 @@ package logger
 
 import (
 	"github.com/youngzhu/godate"
-	"log"
 )
 
 // 尝试过为了简化docker的引入，将它放入单独的目录下
@@ -20,10 +19,9 @@ func (a manualLogger) Execute() {
 	// 填一周
 	logWholeWeek(godate.Today())
 
-	//logDay, _ := godate.NewDateYMD(2022, 6, 6)
-	logDay, _ := godate.Today().AddDay(1)
-	log.Println(logDay)
-
 	// 填一天
-	workLog(logDay.String())
+	//logDay, _ := godate.NewDateYMD(2022, 6, 6)
+	//logDay, _ := godate.Today().AddDay(1)
+	//log.Println(logDay)
+	//workLog(logDay.String())
 }
