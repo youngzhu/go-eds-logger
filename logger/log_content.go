@@ -2,6 +2,7 @@ package logger
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 )
 
@@ -16,16 +17,23 @@ type logContent struct {
 	WeeklyPlanStudy    string `json:"weeklyPlanStudy"`
 }
 
-func RetrieveLogContent() (*logContent, error) {
+var lc logContent
+
+func loadLogContent() (err error) {
 	file, err := os.Open(dataFile)
-	if err != nil {
-		return nil, err
+	if err == nil {
+		defer file.Close()
+
+		decoder := json.NewDecoder(file)
+		err = decoder.Decode(&lc)
 	}
 
-	defer file.Close()
+	return
+}
 
-	var content *logContent
-	err = json.NewDecoder(file).Decode(&content)
-
-	return content, err
+func init() {
+	err := loadLogContent()
+	if err != nil {
+		log.Fatal(err)
+	}
 }

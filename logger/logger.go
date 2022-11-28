@@ -106,17 +106,10 @@ func Login() error {
 }
 
 var (
-	lc             *logContent
 	ddlProjectList string
 )
 
 func PrepareData() error {
-	c, err := RetrieveLogContent()
-	if err != nil {
-		return err
-	}
-	lc = c
-
 	ddlProjectList = RetrieveProjectID()
 
 	return nil
