@@ -151,6 +151,7 @@ func workLog(cfg config.Configuration, logDate string) {
 	}
 
 	log.Println("日志操作成功", logDate)
+	time.Sleep(800 * time.Millisecond)
 }
 
 func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams map[string]string) {
@@ -221,6 +222,7 @@ func workWeeklyLog(cfg config.Configuration, logDate string) {
 	// log.Println(resp)
 
 	log.Println("周报填写成功", logDate)
+	time.Sleep(2 * time.Second)
 }
 
 func getHiddenParams(url string) map[string]string {
@@ -266,12 +268,9 @@ func logWholeWeek(cfg config.Configuration, d godate.Date) {
 	// 只能填写本周周报（周一）!!!
 	workWeeklyLog(cfg, workdays[0].String())
 
-	time.Sleep(2 * time.Second)
-
 	// 再写日报
 	for _, day := range workdays {
 		workLog(cfg, day.String())
-		time.Sleep(500 * time.Millisecond)
 	}
 
 	// 周末调休
