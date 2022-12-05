@@ -1,27 +1,29 @@
 package main
 
 import (
+	"github.com/youngzhu/go-eds-logger/config"
 	"github.com/youngzhu/go-eds-logger/logger"
 	"github.com/youngzhu/godate"
 	"log"
 )
 
+var cfg config.Configuration
+
+func init() {
+	var err error
+	c, err := config.Load("config.json")
+	if err != nil {
+		panic(err)
+	}
+	cfg = c
+}
+
 func main() {
-
-	err := logger.Login()
+	err := logger.Run(cfg)
 	if err != nil {
 		sendFailedMail(err.Error())
-		log.Fatalln(err)
-		// os.Exit(1)
+		log.Fatalln(err) // 结束
 	}
-
-	err = logger.PrepareData()
-	if err != nil {
-		sendFailedMail(err.Error())
-		log.Fatalln(err)
-	}
-
-	logger.Run()
 
 	sendSuccessfulMail()
 }

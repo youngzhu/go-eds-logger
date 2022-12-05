@@ -17,6 +17,10 @@ func TestEnv(t *testing.T) {
 	log.Println(os.Getenv("EDS_USR_PWD"))
 }
 
+func TestGetProjectID(t *testing.T) {
+	t.Log("projectID:", logger.RetrieveProjectID(cfg))
+}
+
 func TestRetrieveLogContent(t *testing.T) {
 	days := logger.RetrieveExtraDays()
 

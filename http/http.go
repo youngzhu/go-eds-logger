@@ -8,7 +8,6 @@ import (
 	// "os"
 )
 
-const UrlHome = "http://eds.newtouch.cn"
 const HOST = "eds.newtouch.cn"
 const UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"
 const AcceptLanguage = "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7"
@@ -24,7 +23,7 @@ func init() {
 	postProperties["Host"] = HOST
 	postProperties["Content-Length"] = "6955"
 	postProperties["Cache-Control"] = "max-age=0"
-	postProperties["Origin"] = UrlHome
+	postProperties["Origin"] = "http://eds.newtouch.cn"
 	postProperties["Upgrade-Insecure-Requests"] = "1"
 	postProperties["Content-Type"] = "application/x-www-form-urlencoded"
 	postProperties["User-Agent"] = "Mozilla/5.0"
@@ -44,8 +43,10 @@ func init() {
 	getProperties["Host"] = HOST
 }
 
+const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
+
 // DoRequest http请求，返回 string
-func DoRequest(url, method, cookie string, body io.Reader) string {
+func DoRequest(url, method string, body io.Reader) string {
 	// log.Println(url)
 	request, err := http.NewRequest(method, url, body)
 	if err != nil {

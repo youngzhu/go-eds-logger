@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/youngzhu/go-eds-logger/config"
 	myhttp "github.com/youngzhu/go-eds-logger/http"
 	"github.com/youngzhu/godate"
 	"log"
@@ -18,20 +19,33 @@ import (
 var d godate.Date
 
 type EDSLogger interface {
-	Execute()
+	Execute(cfg config.Configuration)
 }
 
 var loggers = make(map[string]EDSLogger)
 
-func Run() {
+func Run(cfg config.Configuration) (err error) {
+	// 登录
+	err = login(cfg)
+	if err != nil {
+		return err
+	}
+
+	// 动态获取一些参数
+	err = prepareData(cfg)
+	if err != nil {
+		return err
+	}
+
+	//
 	edsLogger, exists := loggers["manual"]
 	if !exists {
 		edsLogger = loggers["action"]
 	}
-	edsLogger.Execute()
-}
+	edsLogger.Execute(cfg)
 
-const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
+	return
+}
 
 type user struct {
 	id       string
@@ -63,16 +77,16 @@ func getSecret(key string) (string, error) {
 	return val, nil
 }
 
-const loginUrl = "http://eds.newtouch.cn/eds3/DefaultLogin.aspx?lan=zh-cn"
+var logined = false
 
-func Login() error {
+func login(cfg config.Configuration) error {
 	user, err := getUser()
 	if err != nil {
 		return err
 	}
 
 	// 检验网站是否正常
-	_, err = http.Head(myhttp.UrlHome) // 只请求网站的 http header信息
+	_, err = http.Head(cfg.GetStringDefault("urls:home", "")) // 只请求网站的 http header信息
 	if err != nil {
 		return err
 	}
@@ -91,7 +105,8 @@ func Login() error {
 	// request, err = http.NewRequest(http.MethodPost, URL_LOGIN, strings.NewReader(data))
 	// request, err = http.NewRequest(http.MethodPost, loginUrl, strings.NewReader(params.Encode()))
 
-	respStr := myhttp.DoRequest(loginUrl, http.MethodPost, cookie, strings.NewReader(params.Encode()))
+	respStr := myhttp.DoRequest(cfg.GetStringDefault("urls:login", ""),
+		http.MethodPost, strings.NewReader(params.Encode()))
 
 	// log.Println(respStr)
 
@@ -100,6 +115,7 @@ func Login() error {
 		return errors.New(errMsg)
 	}
 
+	logined = true
 	log.Println("登陆成功")
 
 	return nil
@@ -109,13 +125,11 @@ var (
 	ddlProjectList string
 )
 
-func PrepareData() error {
-	ddlProjectList = RetrieveProjectID()
+func prepareData(cfg config.Configuration) error {
+	ddlProjectList = RetrieveProjectID(cfg)
 
 	return nil
 }
-
-const workLogURL = "http://eds.newtouch.cn/eds3/worklog.aspx?tabid=0"
 
 type dayTime struct {
 	startTime string
@@ -125,20 +139,22 @@ type dayTime struct {
 var am = dayTime{startTime: "10:00", endTime: "12:00"}
 var pm = dayTime{startTime: "13:00", endTime: "18:00"}
 
-func workLog(logDate string) {
-	url := workLogURL + "&LogDate=" + logDate
+func workLog(cfg config.Configuration, logDate string) {
+	url := cfg.GetStringDefault("urls:worklog", "") + "&LogDate=" + logDate
 
 	// 先通过get获取一些隐藏参数，用作后台校验
 	hiddenParams := getHiddenParams(url)
 	// fmt.Println(hiddenParams)
 
-	doWorkLog(url, logDate, am, hiddenParams)
-	doWorkLog(url, logDate, pm, hiddenParams)
+	logContent := cfg.GetStringDefault("logContent:dailyWorkContent", "")
+	for _, t := range []dayTime{am, pm} {
+		doWorkLog(url, logDate, logContent, t, hiddenParams)
+	}
 
 	log.Println("日志操作成功", logDate)
 }
 
-func doWorkLog(workLogUrl, logDate string, dt dayTime, hiddenParams map[string]string) {
+func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams map[string]string) {
 	startTime, endTime := dt.startTime, dt.endTime
 
 	logParams := url.Values{}
@@ -153,7 +169,7 @@ func doWorkLog(workLogUrl, logDate string, dt dayTime, hiddenParams map[string]s
 	logParams.Set("hplbWorkType", "0106")
 	logParams.Set("hplbAction", "010601")
 	logParams.Set("TextBox1", "")
-	logParams.Set("txtMemo", lc.DailyWorkContent)
+	logParams.Set("txtMemo", logContent)
 	logParams.Set("btnSave", "+%E7%A1%AE+%E5%AE%9A+")
 	logParams.Set("txtnodate", logDate)
 	logParams.Set("txtnoStartTime", startTime)
@@ -170,13 +186,12 @@ func doWorkLog(workLogUrl, logDate string, dt dayTime, hiddenParams map[string]s
 		logParams.Set(key, value)
 	}
 
-	myhttp.DoRequest(workLogUrl, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
+	myhttp.DoRequest(workLogUrl, http.MethodPost, strings.NewReader(logParams.Encode()))
 
 }
 
-const urlWeekly = "http://eds.newtouch.cn/eds36web/WorkWeekly/WorkWeeklyInfo.aspx"
-
-func workWeeklyLog(logDate string) {
+func workWeeklyLog(cfg config.Configuration, logDate string) {
+	urlWeekly := cfg.GetStringDefault("urls:workWeekly", "")
 
 	// 先通过get获取一些隐藏参数，用作后台校验
 	hiddenParams := getHiddenParams(urlWeekly)
@@ -185,18 +200,23 @@ func workWeeklyLog(logDate string) {
 	logParams.Set("hidCurrRole", "")
 	logParams.Set("hidWeeklyState", "")
 	logParams.Set("WeekReportDate", logDate)
-	logParams.Set("txtWorkContent", lc.WeeklyWorkContent)
-	logParams.Set("txtStudyContent", lc.WeeklyStudyContent)
-	logParams.Set("txtSummary", lc.WeeklySummary)
-	logParams.Set("txtPlanWork", lc.WeeklyPlanWork)
-	logParams.Set("txtPlanStudy", lc.WeeklyPlanStudy)
+	logParams.Set("txtWorkContent",
+		cfg.GetStringDefault("logContent:weeklyWorkContent", ""))
+	logParams.Set("txtStudyContent",
+		cfg.GetStringDefault("logContent:weeklyStudyContent", ""))
+	logParams.Set("txtSummary",
+		cfg.GetStringDefault("logContent:weeklySummary", ""))
+	logParams.Set("txtPlanWork",
+		cfg.GetStringDefault("logContent:weeklyPlanWork", ""))
+	logParams.Set("txtPlanStudy",
+		cfg.GetStringDefault("logContent:weeklyPlanStudy", ""))
 	logParams.Set("btnSubmit", "%E6%8F%90%E4%BA%A4")
 
 	for key, value := range hiddenParams {
 		logParams.Set(key, value)
 	}
 
-	myhttp.DoRequest(urlWeekly, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
+	myhttp.DoRequest(urlWeekly, http.MethodPost, strings.NewReader(logParams.Encode()))
 
 	// resp := myhttp.DoRequest(urlWeekly, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
 	// log.Println(resp)
@@ -207,7 +227,7 @@ func workWeeklyLog(logDate string) {
 func getHiddenParams(url string) map[string]string {
 	result := make(map[string]string)
 
-	respHtml := myhttp.DoRequest(url, http.MethodGet, cookie, nil)
+	respHtml := myhttp.DoRequest(url, http.MethodGet, nil)
 	//println(respHtml)
 
 	keys := []string{"__EVENTVALIDATION", "__VIEWSTATE"}
@@ -240,19 +260,32 @@ func getValueFromHtml(html, key string) string {
 	return value
 }
 
-func logWholeWeek(d godate.Date) {
+func logWholeWeek(cfg config.Configuration, d godate.Date) {
 	workdays := d.Workdays()
 
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
-	workWeeklyLog(workdays[0].String())
+	workWeeklyLog(cfg, workdays[0].String())
 
 	time.Sleep(2 * time.Second)
 
 	// 再写日报
 	for _, day := range workdays {
-		workLog(day.String())
+		workLog(cfg, day.String())
 		time.Sleep(500 * time.Millisecond)
+	}
+
+	// 周末调休
+	sat, _ := d.AddDay(5)
+	sun, _ := d.AddDay(6)
+
+	extraDays := RetrieveExtraDays()
+
+	for _, dd := range []string{sat.String(), sun.String()} {
+		if _, ok := extraDays[dd]; ok {
+			log.Println("调休", dd)
+			workLog(cfg, dd)
+		}
 	}
 }
 

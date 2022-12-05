@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"github.com/youngzhu/go-eds-logger/config"
 	"github.com/youngzhu/godate"
 )
 
@@ -15,9 +16,9 @@ func init() {
 }
 
 // Execute 手动执行指定日期的日志
-func (a manualLogger) Execute() {
+func (a manualLogger) Execute(cfg config.Configuration) {
 	// 填一周
-	logWholeWeek(godate.Today())
+	logWholeWeek(cfg, godate.Today())
 
 	// 填一天
 	//logDay, _ := godate.NewDateYMD(2022, 6, 6)
