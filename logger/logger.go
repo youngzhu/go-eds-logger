@@ -6,10 +6,9 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/go-eds-logger/config"
-	myhttp "github.com/youngzhu/go-eds-logger/http"
+	"github.com/youngzhu/go-eds-logger/http"
 	"github.com/youngzhu/godate"
 	"log"
-	"net/http"
 	"net/url"
 	"os"
 	"strings"
@@ -86,7 +85,7 @@ func login(cfg config.Configuration) error {
 	}
 
 	// 检验网站是否正常
-	_, err = http.Head(cfg.GetStringDefault("urls:home", "")) // 只请求网站的 http header信息
+	err = http.Connect(cfg.GetStringDefault("urls:home", ""))
 	if err != nil {
 		return err
 	}
@@ -105,8 +104,8 @@ func login(cfg config.Configuration) error {
 	// request, err = http.NewRequest(http.MethodPost, URL_LOGIN, strings.NewReader(data))
 	// request, err = http.NewRequest(http.MethodPost, loginUrl, strings.NewReader(params.Encode()))
 
-	respStr := myhttp.DoRequest(cfg.GetStringDefault("urls:login", ""),
-		http.MethodPost, strings.NewReader(params.Encode()))
+	respStr := http.DoPost(cfg.GetStringDefault("urls:login", ""),
+		strings.NewReader(params.Encode()))
 
 	// log.Println(respStr)
 
@@ -186,7 +185,7 @@ func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams 
 		logParams.Set(key, value)
 	}
 
-	myhttp.DoRequest(workLogUrl, http.MethodPost, strings.NewReader(logParams.Encode()))
+	http.DoPost(workLogUrl, strings.NewReader(logParams.Encode()))
 
 }
 
@@ -216,9 +215,9 @@ func workWeeklyLog(cfg config.Configuration, logDate string) {
 		logParams.Set(key, value)
 	}
 
-	myhttp.DoRequest(urlWeekly, http.MethodPost, strings.NewReader(logParams.Encode()))
+	http.DoPost(urlWeekly, strings.NewReader(logParams.Encode()))
 
-	// resp := myhttp.DoRequest(urlWeekly, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
+	// resp := http.DoRequest(urlWeekly, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
 	// log.Println(resp)
 
 	log.Println("周报填写成功", logDate)
@@ -227,7 +226,7 @@ func workWeeklyLog(cfg config.Configuration, logDate string) {
 func getHiddenParams(url string) map[string]string {
 	result := make(map[string]string)
 
-	respHtml := myhttp.DoRequest(url, http.MethodGet, nil)
+	respHtml := http.DoGet(url)
 	//println(respHtml)
 
 	keys := []string{"__EVENTVALIDATION", "__VIEWSTATE"}

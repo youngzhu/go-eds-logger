@@ -43,10 +43,17 @@ func init() {
 	getProperties["Host"] = HOST
 }
 
+func DoGet(url string) string {
+	return doRequest(url, http.MethodGet, nil)
+}
+func DoPost(url string, body io.Reader) string {
+	return doRequest(url, http.MethodPost, body)
+}
+
 const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
 
 // DoRequest http请求，返回 string
-func DoRequest(url, method string, body io.Reader) string {
+func doRequest(url, method string, body io.Reader) string {
 	// log.Println(url)
 	request, err := http.NewRequest(method, url, body)
 	if err != nil {
@@ -90,4 +97,9 @@ func DoRequest(url, method string, body io.Reader) string {
 	}
 
 	return string(respBody)
+}
+
+func Connect(url string) (err error) {
+	_, err = http.Head(url) // 只请求网站的 http header信息
+	return
 }

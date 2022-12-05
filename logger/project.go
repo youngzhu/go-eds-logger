@@ -5,7 +5,6 @@ import (
 	"github.com/youngzhu/go-eds-logger/config"
 	myhttp "github.com/youngzhu/go-eds-logger/http"
 	"log"
-	"net/http"
 	"strings"
 )
 
@@ -14,8 +13,7 @@ func RetrieveProjectID(cfg config.Configuration) string {
 		login(cfg)
 	}
 
-	respHtml := myhttp.DoRequest(cfg.GetStringDefault("urls:worklog", ""),
-		http.MethodGet, nil)
+	respHtml := myhttp.DoGet(cfg.GetStringDefault("urls:worklog", ""))
 	//println(respHtml)
 
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(respHtml))
