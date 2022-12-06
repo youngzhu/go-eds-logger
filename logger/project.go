@@ -1,9 +1,9 @@
 package logger
 
 import (
+	"edser/config"
+	myhttp "edser/http"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/youngzhu/go-eds-logger/config"
-	myhttp "github.com/youngzhu/go-eds-logger/http"
 	"log"
 	"strings"
 )

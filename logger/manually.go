@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"github.com/youngzhu/go-eds-logger/config"
+	"edser/config"
 	"github.com/youngzhu/godate"
 )
 

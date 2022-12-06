@@ -1,4 +1,4 @@
-module github.com/youngzhu/go-eds-logger
+module edser
 
 go 1.16
 

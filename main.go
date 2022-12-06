@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/youngzhu/go-eds-logger/config"
-	"github.com/youngzhu/go-eds-logger/logger"
+	"edser/config"
+	"edser/logger"
 	"github.com/youngzhu/godate"
 	"log"
 )

@@ -17,6 +17,8 @@
 4. 重启Goland
 
 ## Dev Notes
+### v0.5.0
+修改module名称。只是自己用，不对外提供服务，所以不需要github.com
 ### v0.4.0
 使用config配置项
 ### v0.3.0

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/youngzhu/go-eds-logger/logger"
+	"edser/logger"
 	"log"
 	"os"
 	"testing"

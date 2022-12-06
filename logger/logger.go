@@ -2,11 +2,11 @@ package logger
 
 import (
 	"bufio"
+	"edser/config"
+	"edser/http"
 	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/youngzhu/go-eds-logger/config"
-	"github.com/youngzhu/go-eds-logger/http"
 	"github.com/youngzhu/godate"
 	"log"
 	"net/url"

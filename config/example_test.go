@@ -1,8 +1,8 @@
 package config_test
 
 import (
+	"edser/config"
 	"fmt"
-	"github.com/youngzhu/go-eds-logger/config"
 )
 
 var cfg config.Configuration
