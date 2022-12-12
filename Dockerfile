@@ -20,6 +20,7 @@ COPY config.json ./
 COPY http ./http/
 COPY logger/*.go ./logger/
 COPY data ./data/
+COPY config ./config/
 
 RUN rm ./logger/manually.go
 
