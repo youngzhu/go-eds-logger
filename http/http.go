@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
+
 	// "os"
 )
 
@@ -52,6 +54,12 @@ func DoPost(url string, body io.Reader) string {
 
 const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
 
+func newClient() *http.Client {
+	return &http.Client{
+		Timeout: 30 * time.Second,
+	}
+}
+
 // DoRequest http请求，返回 string
 func doRequest(url, method string, body io.Reader) string {
 	// log.Println(url)
@@ -73,7 +81,7 @@ func doRequest(url, method string, body io.Reader) string {
 
 	request.Header.Set("Cookie", cookie)
 
-	resp, err := http.DefaultClient.Do(request)
+	resp, err := newClient().Do(request)
 
 	if err != nil {
 		panic(err)
@@ -100,6 +108,6 @@ func doRequest(url, method string, body io.Reader) string {
 }
 
 func Connect(url string) (err error) {
-	_, err = http.Head(url) // 只请求网站的 http header信息
+	_, err = newClient().Head(url) // 只请求网站的 http header信息
 	return
 }
