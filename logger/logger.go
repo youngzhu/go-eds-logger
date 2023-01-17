@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"edser/config"
 	"edser/http"
-	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
@@ -24,6 +23,12 @@ type EDSLogger interface {
 var loggers = make(map[string]EDSLogger)
 
 func Run(cfg config.Configuration) (err error) {
+	// 检验网站是否正常
+	err = http.CheckURL(cfg.GetStringDefault("urls:home", ""))
+	if err != nil {
+		return err
+	}
+
 	// 登录
 	err = login(cfg)
 	if err != nil {
@@ -78,40 +83,17 @@ func getSecret(key string) (string, error) {
 
 var logined = false
 
+// 登录
 func login(cfg config.Configuration) error {
 	user, err := getUser()
 	if err != nil {
 		return err
 	}
 
-	// 检验网站是否正常
-	err = http.Connect(cfg.GetStringDefault("urls:home", ""))
+	loginURL := cfg.GetStringDefault("urls:login", "")
+	err = http.Login(loginURL, user.id, user.password)
 	if err != nil {
 		return err
-	}
-
-	// 登录
-	// data := `{"UserId":"###", "UserPsd":"***"}`
-	// data := "UserId=###&UserPsd=***"
-	// params := url.Values{
-	// 	"UserId":  {"###"},
-	// 	"UserPsd": {"***"},
-	// }
-	params := url.Values{}
-	params.Add("UserId", user.id)
-	params.Add("UserPsd", user.password)
-	// var request *http.Request
-	// request, err = http.NewRequest(http.MethodPost, URL_LOGIN, strings.NewReader(data))
-	// request, err = http.NewRequest(http.MethodPost, loginUrl, strings.NewReader(params.Encode()))
-
-	respStr := http.DoPost(cfg.GetStringDefault("urls:login", ""),
-		strings.NewReader(params.Encode()))
-
-	// log.Println(respStr)
-
-	errMsg := "用户名或密码错误"
-	if strings.Contains(respStr, errMsg) {
-		return errors.New(errMsg)
 	}
 
 	logined = true
@@ -228,7 +210,10 @@ func workWeeklyLog(cfg config.Configuration, logDate string) {
 func getHiddenParams(url string) map[string]string {
 	result := make(map[string]string)
 
-	respHtml := http.DoGet(url)
+	respHtml, err := http.DoGet(url)
+	if err != nil {
+		log.Println("getHiddenParams error:", err)
+	}
 	//println(respHtml)
 
 	keys := []string{"__EVENTVALIDATION", "__VIEWSTATE"}
