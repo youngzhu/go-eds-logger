@@ -13,7 +13,7 @@ func RetrieveProjectID(cfg config.Configuration) string {
 		login(cfg)
 	}
 
-	respHtml := myhttp.DoGet(cfg.GetStringDefault("urls:worklog", ""))
+	respHtml, _ := myhttp.DoGet(cfg.GetStringDefault("urls:worklog", ""))
 	//println(respHtml)
 
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(respHtml))
