@@ -1,4 +1,4 @@
-module edser
+module goeds
 
 go 1.16
 

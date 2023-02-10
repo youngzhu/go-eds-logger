@@ -1,8 +1,8 @@
 package logger
 
 import (
-	"edser/config"
 	"github.com/youngzhu/godate"
+	"goeds/config"
 	"log"
 )
 

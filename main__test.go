@@ -1,7 +1,7 @@
 package main
 
 import (
-	"edser/logger"
+	"goeds/logger"
 	"log"
 	"os"
 	"testing"

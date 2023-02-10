@@ -1,9 +1,9 @@
 package main
 
 import (
-	"edser/config"
-	"edser/logger"
 	"github.com/youngzhu/godate"
+	"goeds/config"
+	"goeds/logger"
 	"log"
 )
 

@@ -1,8 +1,8 @@
 package config_test
 
 import (
-	"edser/config"
 	"fmt"
+	"goeds/config"
 )
 
 var cfg config.Configuration
