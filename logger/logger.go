@@ -35,12 +35,6 @@ func Run(cfg config.Configuration) (err error) {
 		return err
 	}
 
-	// 动态获取一些参数
-	err = prepareData(cfg)
-	if err != nil {
-		return err
-	}
-
 	//
 	edsLogger, exists := loggers["manual"]
 	if !exists {
@@ -105,12 +99,6 @@ func login(cfg config.Configuration) error {
 var (
 	ddlProjectList string
 )
-
-func prepareData(cfg config.Configuration) error {
-	ddlProjectList = RetrieveProjectID(cfg)
-
-	return nil
-}
 
 type dayTime struct {
 	startTime string

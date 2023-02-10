@@ -18,7 +18,7 @@ func init() {
 	cfg = c
 }
 
-func main() {
+func _main() {
 	err := logger.Run(cfg)
 	if err != nil {
 		sendFailedMail(err.Error())
