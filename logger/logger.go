@@ -108,6 +108,10 @@ type dayTime struct {
 var am = dayTime{startTime: "10:00", endTime: "12:00"}
 var pm = dayTime{startTime: "13:00", endTime: "18:00"}
 
+func Daily(date string) {
+
+}
+
 func workLog(cfg config.Configuration, logDate string) {
 	url := cfg.GetStringDefault("urls:worklog", "") + "&LogDate=" + logDate
 

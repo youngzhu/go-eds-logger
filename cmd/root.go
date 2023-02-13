@@ -9,7 +9,6 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	myhttp "goeds/http"
 	"os"
 	"strings"
 
@@ -30,11 +29,12 @@ var rootCmd = &cobra.Command{
 	// PreRun 达不到效果
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		// 获取参数
-		loginURL := viper.GetString("urls.login")
-		userID := viper.GetString("usr-id")
-		userPwd := viper.GetString("usr-pwd")
-
-		return myhttp.Login(loginURL, userID, userPwd)
+		//loginURL := viper.GetString("urls.login")
+		//userID := viper.GetString("usr-id")
+		//userPwd := viper.GetString("usr-pwd")
+		//
+		//return myhttp.Login(loginURL, userID, userPwd)
+		return nil
 	},
 	// Uncomment the following line if your bare application
 	// has an action associated with it:

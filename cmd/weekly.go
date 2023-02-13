@@ -7,22 +7,25 @@ Check LICENSE for details.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
 // weeklyCmd represents the weekly command
 var weeklyCmd = &cobra.Command{
-	Use:   "weekly",
-	Short: "填写这一周的日志",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("weekly called")
+	Use:     "weekly(w)",
+	Short:   "填写这一周的日志",
+	Aliases: []string{"w"},
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return weeklyAction()
 	},
 }
 
+func weeklyAction() error {
+	return nil
+}
+
 func init() {
-	rootCmd.AddCommand(weeklyCmd)
+	logCmd.AddCommand(weeklyCmd)
 
 	// Here you will define your flags and configuration settings.
 
