@@ -17,25 +17,19 @@ import (
 
 // projectCmd represents the project command
 var projectCmd = &cobra.Command{
-	Use:   "project",
-	Short: "获取项目编号",
+	Use:     "project",
+	Short:   "获取项目编号",
+	Aliases: []string{"p"},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// 获取参数
-		loginURL := viper.GetString("urls.login")
-		userID := viper.GetString("usr-id")
-		userPwd := viper.GetString("usr-pwd")
+		reqUrl := viper.GetString("urls.daily")
 
-		return projectAction(loginURL, userID, userPwd)
+		return projectAction(reqUrl)
 	},
 }
 
-func projectAction(loginURL, userID, userPwd string) error {
-	err := myhttp.Login(loginURL, userID, userPwd)
-	if err != nil {
-		return err
-	}
-
-	respHtml, _ := myhttp.DoGet(viper.GetString("urls.daily"))
+func projectAction(reqUrl string) error {
+	respHtml, _ := myhttp.DoGet(reqUrl)
 	//println(respHtml)
 
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(respHtml))
