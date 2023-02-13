@@ -8,12 +8,24 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // logCmd represents the log command
 var logCmd = &cobra.Command{
 	Use:   "log",
 	Short: "Do EDS log",
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		// 获取参数
+		loggerFilePath := viper.GetString("logger-file")
+
+		return loadLoggerFile(loggerFilePath)
+	},
+}
+
+func loadLoggerFile(path string) error {
+
+	return nil
 }
 
 func init() {

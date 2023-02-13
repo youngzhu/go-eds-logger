@@ -1,16 +1,8 @@
-{
-  "logContent": {
+ {
     "dailyWorkContent": "常规任务开发测试与联调",
     "weeklyWorkContent": "需求分析设计与开发",
-    "weeklyStudyContent": "重构代码。不是为了效率，而是为了方便维护",
+    "weeklyStudyContent": "重构代码。不是为了代码的执行效率，而是为了方便再次开发和维护",
     "weeklySummary": "优化就要测试要比较。并发不一定就比顺序执行效率高，用数据说话",
     "weeklyPlanWork": "将共用的方法函数和常量分离出来，新建一个maven项目pai-hi-commons，以jar文件的形式共享",
     "weeklyPlanStudy": "Gradle学习"
-  },
-  "urls": {
-    "home": "http://eds.newtouch.cn",
-    "login": "http://eds.newtouch.cn/eds3/DefaultLogin.aspx?lan=zh-cn",
-    "worklog": "http://eds.newtouch.cn/eds3/worklog.aspx?tabid=0",
-    "workWeekly": "http://eds.newtouch.cn/eds36web/WorkWeekly/WorkWeeklyInfo.aspx"
   }
-}

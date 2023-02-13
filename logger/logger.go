@@ -14,8 +14,6 @@ import (
 	"time"
 )
 
-var d godate.Date
-
 type EDSLogger interface {
 	Execute(cfg config.Configuration)
 }
@@ -75,8 +73,6 @@ func getSecret(key string) (string, error) {
 	return val, nil
 }
 
-var logined = false
-
 // 登录
 func login(cfg config.Configuration) error {
 	user, err := getUser()
@@ -90,7 +86,6 @@ func login(cfg config.Configuration) error {
 		return err
 	}
 
-	logined = true
 	log.Println("登陆成功")
 
 	return nil
@@ -108,8 +103,19 @@ type dayTime struct {
 var am = dayTime{startTime: "10:00", endTime: "12:00"}
 var pm = dayTime{startTime: "13:00", endTime: "18:00"}
 
-func Daily(date string) {
+func Daily(url, logDate, logContent string) {
+	url = url + "&LogDate=" + logDate
 
+	// 先通过get获取一些隐藏参数，用作后台校验
+	hiddenParams := getHiddenParams(url)
+	// fmt.Println(hiddenParams)
+
+	for _, t := range []dayTime{am, pm} {
+		doWorkLog(url, logDate, logContent, t, hiddenParams)
+	}
+
+	log.Println("日志操作成功", logDate)
+	time.Sleep(800 * time.Millisecond)
 }
 
 func workLog(cfg config.Configuration, logDate string) {
