@@ -10,7 +10,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	myhttp "goeds/http"
+	"goeds/logger"
 	"log"
 	"strings"
 )
@@ -29,7 +29,7 @@ var projectCmd = &cobra.Command{
 }
 
 func projectAction(reqUrl string) error {
-	respHtml, _ := myhttp.DoGet(reqUrl)
+	respHtml, _ := logger.DoGet(reqUrl)
 	//println(respHtml)
 
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(respHtml))

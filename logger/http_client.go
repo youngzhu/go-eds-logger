@@ -1,4 +1,4 @@
-package http
+package logger
 
 import (
 	"errors"
@@ -57,6 +57,6 @@ func Login(loginURL, userId, password string) error {
 	}
 
 	log.Println("登陆成功")
-	
+
 	return nil
 }

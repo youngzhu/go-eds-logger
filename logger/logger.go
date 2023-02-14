@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
-	"goeds/http"
 	"log"
 	"net/url"
 	"os"
@@ -146,7 +145,7 @@ func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
 func getHiddenParams(url string) (map[string]string, error) {
 	result := make(map[string]string)
 
-	respHtml, err := http.DoGet(url)
+	respHtml, err := DoGet(url)
 	if err != nil {
 		//log.Println("getHiddenParams error:", err)
 		return nil, err
