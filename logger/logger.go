@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
-	"goeds/config"
 	"goeds/http"
 	"log"
 	"net/url"
@@ -13,35 +12,6 @@ import (
 	"strings"
 	"time"
 )
-
-type EDSLogger interface {
-	Execute(cfg config.Configuration)
-}
-
-var loggers = make(map[string]EDSLogger)
-
-func Run(cfg config.Configuration) (err error) {
-	// 检验网站是否正常
-	err = http.CheckURL(cfg.GetStringDefault("urls:home", ""))
-	if err != nil {
-		return err
-	}
-
-	// 登录
-	err = login(cfg)
-	if err != nil {
-		return err
-	}
-
-	//
-	edsLogger, exists := loggers["manual"]
-	if !exists {
-		edsLogger = loggers["action"]
-	}
-	edsLogger.Execute(cfg)
-
-	return
-}
 
 type user struct {
 	id       string
@@ -71,24 +41,6 @@ func getSecret(key string) (string, error) {
 		return "", fmt.Errorf(secretErr, key)
 	}
 	return val, nil
-}
-
-// 登录
-func login(cfg config.Configuration) error {
-	user, err := getUser()
-	if err != nil {
-		return err
-	}
-
-	loginURL := cfg.GetStringDefault("urls:login", "")
-	err = http.Login(loginURL, user.id, user.password)
-	if err != nil {
-		return err
-	}
-
-	log.Println("登陆成功")
-
-	return nil
 }
 
 var (
@@ -266,19 +218,6 @@ func DoWeekly(urlWeekly, urlDaily string, lc LogContent) error {
 	}
 
 	return nil
-}
-
-func workLog(cfg config.Configuration, s string) {
-
-}
-
-func register(logType string, edsLogger EDSLogger) {
-	if _, exists := loggers[logType]; exists {
-		log.Fatalln(logType, "already registered")
-	}
-
-	log.Println("Register logger:", logType)
-	loggers[logType] = edsLogger
 }
 
 // RetrieveExtraDays
