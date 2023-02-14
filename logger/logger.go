@@ -2,7 +2,6 @@ package logger
 
 import (
 	"bufio"
-	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
 	"log"
@@ -11,36 +10,6 @@ import (
 	"strings"
 	"time"
 )
-
-type user struct {
-	id       string
-	password string
-}
-
-func getUser() (*user, error) {
-	var loginID, loginPassword string
-	var err error
-
-	if loginID, err = getSecret("EDS_USR_ID"); err != nil {
-		return nil, err
-	}
-	if loginPassword, err = getSecret("EDS_USR_PWD"); err != nil {
-		return nil, err
-	}
-
-	return &user{id: loginID, password: loginPassword}, nil
-}
-
-const secretErr = "变量[%s]未配置\n"
-
-func getSecret(key string) (string, error) {
-	val, ok := os.LookupEnv(key)
-	if !ok {
-		log.Printf(secretErr, key)
-		return "", fmt.Errorf(secretErr, key)
-	}
-	return val, nil
-}
 
 var (
 	ddlProjectList string
