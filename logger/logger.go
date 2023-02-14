@@ -74,8 +74,8 @@ func doWorkLog(workLogUrl, logDate, logContent, projectID string, dt dayTime, hi
 		logParams.Set(key, value)
 	}
 
-	//http.DoPost(workLogUrl, strings.NewReader(logParams.Encode()))
-	return nil
+	_, err := DoPost(workLogUrl, strings.NewReader(logParams.Encode()))
+	return err
 }
 
 func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
@@ -99,7 +99,10 @@ func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
 		logParams.Set(key, value)
 	}
 
-	//http.DoPost(logUrl, strings.NewReader(logParams.Encode()))
+	_, err = DoPost(logUrl, strings.NewReader(logParams.Encode()))
+	if err != nil {
+		return err
+	}
 
 	log.Println("周报填写成功", logDate)
 	time.Sleep(2 * time.Second)
