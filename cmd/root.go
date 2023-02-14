@@ -54,7 +54,10 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "config.yaml", "config file (default is $HOME/.goeds.yaml)")
+	// 设定默认值，在项目根目录下执行可以
+	// 直接在CMD窗口执行，无法获取该配置文件
+	//rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "config.yaml", "config file (default is $HOME/.goeds.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.goeds.yaml)")
 
 	rootCmd.PersistentFlags().StringP("logger-file", "f", "", "EDS log content file")
 

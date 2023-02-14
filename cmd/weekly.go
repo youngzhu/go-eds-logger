@@ -8,6 +8,9 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"goeds/logger"
+	"log"
 )
 
 // weeklyCmd represents the weekly command
@@ -16,12 +19,20 @@ var weeklyCmd = &cobra.Command{
 	Short:   "填写这一周的日志",
 	Aliases: []string{"w"},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return weeklyAction()
+		// 获取参数
+		urlDaily := viper.GetString("urls.daily")
+		urlWeekly := viper.GetString("urls.weekly")
+
+		return weeklyAction(urlWeekly, urlDaily)
 	},
 }
 
-func weeklyAction() error {
-	return nil
+func weeklyAction(urlWeekly, urlDaily string) error {
+	log.Println("urlWeekly:", urlWeekly)
+	log.Println("urlDaily:", urlDaily)
+	log.Println("WeeklyWorkContent:", logContent.WeeklyWorkContent)
+
+	return logger.DoWeekly(urlWeekly, urlDaily, logContent)
 }
 
 func init() {

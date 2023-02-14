@@ -162,39 +162,33 @@ func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams 
 	return nil
 }
 
-func workWeeklyLog(cfg config.Configuration, logDate string) {
-	urlWeekly := cfg.GetStringDefault("urls:workWeekly", "")
-
-	// 先通过get获取一些隐藏参数，用作后台校验
-	hiddenParams, _ := getHiddenParams(urlWeekly)
-
+func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
 	logParams := url.Values{}
 	logParams.Set("hidCurrRole", "")
 	logParams.Set("hidWeeklyState", "")
 	logParams.Set("WeekReportDate", logDate)
-	logParams.Set("txtWorkContent",
-		cfg.GetStringDefault("LogContent:weeklyWorkContent", ""))
-	logParams.Set("txtStudyContent",
-		cfg.GetStringDefault("LogContent:weeklyStudyContent", ""))
-	logParams.Set("txtSummary",
-		cfg.GetStringDefault("LogContent:weeklySummary", ""))
-	logParams.Set("txtPlanWork",
-		cfg.GetStringDefault("LogContent:weeklyPlanWork", ""))
-	logParams.Set("txtPlanStudy",
-		cfg.GetStringDefault("LogContent:weeklyPlanStudy", ""))
+	logParams.Set("txtWorkContent", lc.WeeklyWorkContent)
+	logParams.Set("txtStudyContent", lc.WeeklyStudyContent)
+	logParams.Set("txtSummary", lc.WeeklySummary)
+	logParams.Set("txtPlanWork", lc.WeeklyPlanWork)
+	logParams.Set("txtPlanStudy", lc.WeeklyPlanStudy)
 	logParams.Set("btnSubmit", "%E6%8F%90%E4%BA%A4")
 
+	// 通过get获取一些隐藏参数，用作后台校验
+	hiddenParams, err := getHiddenParams(logUrl)
+	if err != nil {
+		return err
+	}
 	for key, value := range hiddenParams {
 		logParams.Set(key, value)
 	}
 
-	http.DoPost(urlWeekly, strings.NewReader(logParams.Encode()))
-
-	// resp := http.DoRequest(urlWeekly, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
-	// log.Println(resp)
+	//http.DoPost(logUrl, strings.NewReader(logParams.Encode()))
 
 	log.Println("周报填写成功", logDate)
 	time.Sleep(2 * time.Second)
+
+	return nil
 }
 
 func getHiddenParams(url string) (map[string]string, error) {
@@ -236,31 +230,42 @@ func getValueFromHtml(html, key string) string {
 
 	return value
 }
-
-func logWholeWeek(cfg config.Configuration, d godate.Date) {
-	workdays := d.Workdays()
+func DoWeekly(urlWeekly, urlDaily string, lc LogContent) error {
+	today := godate.Today()
+	workdays := today.Workdays()
 
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
-	workWeeklyLog(cfg, workdays[0].String())
+	err := doWeeklyLog(urlWeekly, workdays[0].String(), lc)
+	if err != nil {
+		return err
+	}
 
 	// 再写日报
 	for _, day := range workdays {
-		workLog(cfg, day.String())
+		err = Daily(urlDaily, day.String(), lc.DailyWorkContent)
+		if err != nil {
+			return err
+		}
 	}
 
 	// 周末调休
-	sat, _ := d.AddDay(5)
-	sun, _ := d.AddDay(6)
+	sat, _ := today.AddDay(5)
+	sun, _ := today.AddDay(6)
 
 	extraDays := RetrieveExtraDays()
 
 	for _, dd := range []string{sat.String(), sun.String()} {
 		if _, ok := extraDays[dd]; ok {
 			log.Println("调休", dd)
-			workLog(cfg, dd)
+			err = Daily(urlDaily, dd, lc.DailyWorkContent)
+			if err != nil {
+				return err
+			}
 		}
 	}
+
+	return nil
 }
 
 func workLog(cfg config.Configuration, s string) {
