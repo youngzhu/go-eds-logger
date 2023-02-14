@@ -56,7 +56,7 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "config.yaml", "config file (default is $HOME/.goeds.yaml)")
 
-	rootCmd.PersistentFlags().StringP("logger-file", "f", "logger_default.json", "EDS log content file")
+	rootCmd.PersistentFlags().StringP("logger-file", "f", "", "EDS log content file")
 
 	replacer := strings.NewReplacer("-", "_")
 	viper.SetEnvKeyReplacer(replacer)

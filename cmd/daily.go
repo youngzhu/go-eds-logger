@@ -9,6 +9,9 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/youngzhu/godate"
+	"goeds/logger"
+	"log"
 	"strconv"
 )
 
@@ -39,9 +42,20 @@ func dailyAction(logUrl string, from, days int) error {
 	//log.Println(from + 1)
 	//log.Println(days + 1)
 
-	for i := 0; i < days; i++ {
+	log.Println(logContent.DailyWorkContent)
 
+	var logDay godate.Date
+	for i := 0; i < days; i++ {
+		diff := from + i
+		if diff >= 0 {
+			logDay, _ = godate.Today().AddDay(diff)
+		} else {
+			logDay, _ = godate.Today().SubDay(-diff)
+		}
+
+		return logger.Daily(logUrl, logDay.String(), logContent.DailyWorkContent)
 	}
+
 	return nil
 }
 

@@ -9,15 +9,6 @@ import (
 
 var cfg config.Configuration
 
-func init() {
-	var err error
-	c, err := config.Load("config.json")
-	if err != nil {
-		panic(err)
-	}
-	cfg = c
-}
-
 func _main() {
 	err := logger.Run(cfg)
 	if err != nil {

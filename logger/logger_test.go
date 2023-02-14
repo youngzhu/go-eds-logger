@@ -1,8 +1,8 @@
 package logger
 
 //func TestRetrieveLogContent(t *testing.T) {
-//	var c1 logContent
-//	var c2 *logContent
+//	var c1 LogContent
+//	var c2 *LogContent
 //
 //	c2, err := RetrieveLogContent()
 //	if err != nil {

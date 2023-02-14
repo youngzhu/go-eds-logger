@@ -103,38 +103,30 @@ type dayTime struct {
 var am = dayTime{startTime: "10:00", endTime: "12:00"}
 var pm = dayTime{startTime: "13:00", endTime: "18:00"}
 
-func Daily(url, logDate, logContent string) {
+func Daily(url, logDate, logContent string) error {
 	url = url + "&LogDate=" + logDate
 
 	// 先通过get获取一些隐藏参数，用作后台校验
-	hiddenParams := getHiddenParams(url)
+	hiddenParams, err := getHiddenParams(url)
+	if err != nil {
+		return err
+	}
 	// fmt.Println(hiddenParams)
 
 	for _, t := range []dayTime{am, pm} {
-		doWorkLog(url, logDate, logContent, t, hiddenParams)
+		err := doWorkLog(url, logDate, logContent, t, hiddenParams)
+		if err != nil {
+			return err
+		}
 	}
 
 	log.Println("日志操作成功", logDate)
 	time.Sleep(800 * time.Millisecond)
+
+	return nil
 }
 
-func workLog(cfg config.Configuration, logDate string) {
-	url := cfg.GetStringDefault("urls:worklog", "") + "&LogDate=" + logDate
-
-	// 先通过get获取一些隐藏参数，用作后台校验
-	hiddenParams := getHiddenParams(url)
-	// fmt.Println(hiddenParams)
-
-	logContent := cfg.GetStringDefault("logContent:dailyWorkContent", "")
-	for _, t := range []dayTime{am, pm} {
-		doWorkLog(url, logDate, logContent, t, hiddenParams)
-	}
-
-	log.Println("日志操作成功", logDate)
-	time.Sleep(800 * time.Millisecond)
-}
-
-func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams map[string]string) {
+func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams map[string]string) error {
 	startTime, endTime := dt.startTime, dt.endTime
 
 	logParams := url.Values{}
@@ -166,30 +158,30 @@ func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams 
 		logParams.Set(key, value)
 	}
 
-	http.DoPost(workLogUrl, strings.NewReader(logParams.Encode()))
-
+	//http.DoPost(workLogUrl, strings.NewReader(logParams.Encode()))
+	return nil
 }
 
 func workWeeklyLog(cfg config.Configuration, logDate string) {
 	urlWeekly := cfg.GetStringDefault("urls:workWeekly", "")
 
 	// 先通过get获取一些隐藏参数，用作后台校验
-	hiddenParams := getHiddenParams(urlWeekly)
+	hiddenParams, _ := getHiddenParams(urlWeekly)
 
 	logParams := url.Values{}
 	logParams.Set("hidCurrRole", "")
 	logParams.Set("hidWeeklyState", "")
 	logParams.Set("WeekReportDate", logDate)
 	logParams.Set("txtWorkContent",
-		cfg.GetStringDefault("logContent:weeklyWorkContent", ""))
+		cfg.GetStringDefault("LogContent:weeklyWorkContent", ""))
 	logParams.Set("txtStudyContent",
-		cfg.GetStringDefault("logContent:weeklyStudyContent", ""))
+		cfg.GetStringDefault("LogContent:weeklyStudyContent", ""))
 	logParams.Set("txtSummary",
-		cfg.GetStringDefault("logContent:weeklySummary", ""))
+		cfg.GetStringDefault("LogContent:weeklySummary", ""))
 	logParams.Set("txtPlanWork",
-		cfg.GetStringDefault("logContent:weeklyPlanWork", ""))
+		cfg.GetStringDefault("LogContent:weeklyPlanWork", ""))
 	logParams.Set("txtPlanStudy",
-		cfg.GetStringDefault("logContent:weeklyPlanStudy", ""))
+		cfg.GetStringDefault("LogContent:weeklyPlanStudy", ""))
 	logParams.Set("btnSubmit", "%E6%8F%90%E4%BA%A4")
 
 	for key, value := range hiddenParams {
@@ -205,12 +197,13 @@ func workWeeklyLog(cfg config.Configuration, logDate string) {
 	time.Sleep(2 * time.Second)
 }
 
-func getHiddenParams(url string) map[string]string {
+func getHiddenParams(url string) (map[string]string, error) {
 	result := make(map[string]string)
 
 	respHtml, err := http.DoGet(url)
 	if err != nil {
-		log.Println("getHiddenParams error:", err)
+		//log.Println("getHiddenParams error:", err)
+		return nil, err
 	}
 	//println(respHtml)
 
@@ -220,7 +213,7 @@ func getHiddenParams(url string) map[string]string {
 		result[k] = getValueFromHtml(respHtml, k)
 	}
 
-	return result
+	return result, nil
 }
 
 func getValueFromHtml(html, key string) string {
@@ -268,6 +261,10 @@ func logWholeWeek(cfg config.Configuration, d godate.Date) {
 			workLog(cfg, dd)
 		}
 	}
+}
+
+func workLog(cfg config.Configuration, s string) {
+
 }
 
 func register(logType string, edsLogger EDSLogger) {

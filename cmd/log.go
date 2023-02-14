@@ -7,25 +7,40 @@ Check LICENSE for details.
 package cmd
 
 import (
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"goeds/logger"
+	"log"
+	"path/filepath"
 )
+
+var logContent logger.LogContent
 
 // logCmd represents the log command
 var logCmd = &cobra.Command{
 	Use:   "log",
 	Short: "Do EDS log",
-	PreRunE: func(cmd *cobra.Command, args []string) error {
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		// 获取参数
 		loggerFilePath := viper.GetString("logger-file")
+		if loggerFilePath == "" {
+			// Find home directory.
+			home, err := homedir.Dir()
+			cobra.CheckErr(err)
+
+			loggerFilePath = filepath.Join(home, "edsLogger.json")
+		}
 
 		return loadLoggerFile(loggerFilePath)
 	},
 }
 
-func loadLoggerFile(path string) error {
+func loadLoggerFile(path string) (err error) {
+	log.Printf("加载日志内容[%s]...", path)
+	logContent, err = logger.RetrieveLogContent(path)
 
-	return nil
+	return
 }
 
 func init() {
