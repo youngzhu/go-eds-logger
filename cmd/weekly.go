@@ -22,17 +22,18 @@ var weeklyCmd = &cobra.Command{
 		// 获取参数
 		urlDaily := viper.GetString("urls.daily")
 		urlWeekly := viper.GetString("urls.weekly")
+		projectID := viper.GetString("projectID")
 
-		return weeklyAction(urlWeekly, urlDaily)
+		return weeklyAction(urlWeekly, urlDaily, projectID)
 	},
 }
 
-func weeklyAction(urlWeekly, urlDaily string) error {
+func weeklyAction(urlWeekly, urlDaily, projectID string) error {
 	log.Println("urlWeekly:", urlWeekly)
 	log.Println("urlDaily:", urlDaily)
 	log.Println("WeeklyWorkContent:", logContent.WeeklyWorkContent)
 
-	return logger.DoWeekly(urlWeekly, urlDaily, logContent)
+	return logger.DoWeekly(urlWeekly, urlDaily, projectID, logContent)
 }
 
 func init() {

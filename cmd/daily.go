@@ -24,6 +24,7 @@ var dailyCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// 获取参数
 		logUrl := viper.GetString("urls.daily")
+		projectID := viper.GetString("projectID")
 
 		from, err := strconv.Atoi(args[0])
 		if err != nil {
@@ -34,14 +35,15 @@ var dailyCmd = &cobra.Command{
 			return err
 		}
 
-		return dailyAction(logUrl, from, days)
+		return dailyAction(logUrl, projectID, from, days)
 	},
 }
 
-func dailyAction(logUrl string, from, days int) error {
+func dailyAction(logUrl, projectID string, from, days int) error {
 	//log.Println(from + 1)
 	//log.Println(days + 1)
 
+	log.Println("projectID:", projectID)
 	log.Println(logContent.DailyWorkContent)
 
 	var logDay godate.Date
@@ -53,7 +55,7 @@ func dailyAction(logUrl string, from, days int) error {
 			logDay, _ = godate.Today().SubDay(-diff)
 		}
 
-		return logger.Daily(logUrl, logDay.String(), logContent.DailyWorkContent)
+		return logger.Daily(logUrl, logDay.String(), projectID, logContent.DailyWorkContent)
 	}
 
 	return nil

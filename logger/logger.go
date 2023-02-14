@@ -11,10 +11,6 @@ import (
 	"time"
 )
 
-var (
-	ddlProjectList string
-)
-
 type dayTime struct {
 	startTime string
 	endTime   string
@@ -23,7 +19,7 @@ type dayTime struct {
 var am = dayTime{startTime: "10:00", endTime: "12:00"}
 var pm = dayTime{startTime: "13:00", endTime: "18:00"}
 
-func Daily(url, logDate, logContent string) error {
+func Daily(url, logDate, logContent, projectID string) error {
 	url = url + "&LogDate=" + logDate
 
 	// 先通过get获取一些隐藏参数，用作后台校验
@@ -34,7 +30,7 @@ func Daily(url, logDate, logContent string) error {
 	// fmt.Println(hiddenParams)
 
 	for _, t := range []dayTime{am, pm} {
-		err := doWorkLog(url, logDate, logContent, t, hiddenParams)
+		err := doWorkLog(url, logDate, logContent, projectID, t, hiddenParams)
 		if err != nil {
 			return err
 		}
@@ -46,7 +42,7 @@ func Daily(url, logDate, logContent string) error {
 	return nil
 }
 
-func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams map[string]string) error {
+func doWorkLog(workLogUrl, logDate, logContent, projectID string, dt dayTime, hiddenParams map[string]string) error {
 	startTime, endTime := dt.startTime, dt.endTime
 
 	logParams := url.Values{}
@@ -57,7 +53,7 @@ func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams 
 	logParams.Set("txtDate", logDate)
 	logParams.Set("txtStartTime", startTime)
 	logParams.Set("txtEndTime", endTime)
-	logParams.Set("ddlProjectList", ddlProjectList)
+	logParams.Set("ddlProjectList", projectID)
 	logParams.Set("hplbWorkType", "0106")
 	logParams.Set("hplbAction", "010601")
 	logParams.Set("TextBox1", "")
@@ -150,7 +146,7 @@ func getValueFromHtml(html, key string) string {
 
 	return value
 }
-func DoWeekly(urlWeekly, urlDaily string, lc LogContent) error {
+func DoWeekly(urlWeekly, urlDaily, projectID string, lc LogContent) error {
 	today := godate.Today()
 	workdays := today.Workdays()
 
@@ -163,7 +159,7 @@ func DoWeekly(urlWeekly, urlDaily string, lc LogContent) error {
 
 	// 再写日报
 	for _, day := range workdays {
-		err = Daily(urlDaily, day.String(), lc.DailyWorkContent)
+		err = Daily(urlDaily, day.String(), projectID, lc.DailyWorkContent)
 		if err != nil {
 			return err
 		}
@@ -178,7 +174,7 @@ func DoWeekly(urlWeekly, urlDaily string, lc LogContent) error {
 	for _, dd := range []string{sat.String(), sun.String()} {
 		if _, ok := extraDays[dd]; ok {
 			log.Println("调休", dd)
-			err = Daily(urlDaily, dd, lc.DailyWorkContent)
+			err = Daily(urlDaily, dd, projectID, lc.DailyWorkContent)
 			if err != nil {
 				return err
 			}
