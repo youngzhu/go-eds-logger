@@ -1,8 +1,9 @@
-package http
+package logger
 
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -54,6 +55,8 @@ func Login(loginURL, userId, password string) error {
 	if strings.Contains(resp, ErrInvalidUser.Error()) {
 		return ErrInvalidUser
 	}
+
+	log.Println("登陆成功")
 
 	return nil
 }

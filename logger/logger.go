@@ -2,9 +2,6 @@ package logger
 
 import (
 	"bufio"
-	"edser/config"
-	"edser/http"
-	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
 	"log"
@@ -14,104 +11,6 @@ import (
 	"time"
 )
 
-var d godate.Date
-
-type EDSLogger interface {
-	Execute(cfg config.Configuration)
-}
-
-var loggers = make(map[string]EDSLogger)
-
-func Run(cfg config.Configuration) (err error) {
-	// 检验网站是否正常
-	err = http.CheckURL(cfg.GetStringDefault("urls:home", ""))
-	if err != nil {
-		return err
-	}
-
-	// 登录
-	err = login(cfg)
-	if err != nil {
-		return err
-	}
-
-	// 动态获取一些参数
-	err = prepareData(cfg)
-	if err != nil {
-		return err
-	}
-
-	//
-	edsLogger, exists := loggers["manual"]
-	if !exists {
-		edsLogger = loggers["action"]
-	}
-	edsLogger.Execute(cfg)
-
-	return
-}
-
-type user struct {
-	id       string
-	password string
-}
-
-func getUser() (*user, error) {
-	var loginID, loginPassword string
-	var err error
-
-	if loginID, err = getSecret("EDS_USR_ID"); err != nil {
-		return nil, err
-	}
-	if loginPassword, err = getSecret("EDS_USR_PWD"); err != nil {
-		return nil, err
-	}
-
-	return &user{id: loginID, password: loginPassword}, nil
-}
-
-const secretErr = "变量[%s]未配置\n"
-
-func getSecret(key string) (string, error) {
-	val, ok := os.LookupEnv(key)
-	if !ok {
-		log.Printf(secretErr, key)
-		return "", fmt.Errorf(secretErr, key)
-	}
-	return val, nil
-}
-
-var logined = false
-
-// 登录
-func login(cfg config.Configuration) error {
-	user, err := getUser()
-	if err != nil {
-		return err
-	}
-
-	loginURL := cfg.GetStringDefault("urls:login", "")
-	err = http.Login(loginURL, user.id, user.password)
-	if err != nil {
-		return err
-	}
-
-	logined = true
-	log.Println("登陆成功")
-
-	return nil
-}
-
-var (
-	ddlProjectList string
-)
-
-func prepareData(cfg config.Configuration) error {
-	ddlProjectList = RetrieveProjectID(cfg)
-
-	return nil
-}
-
 type dayTime struct {
 	startTime string
 	endTime   string
@@ -120,23 +19,30 @@ type dayTime struct {
 var am = dayTime{startTime: "10:00", endTime: "12:00"}
 var pm = dayTime{startTime: "13:00", endTime: "18:00"}
 
-func workLog(cfg config.Configuration, logDate string) {
-	url := cfg.GetStringDefault("urls:worklog", "") + "&LogDate=" + logDate
+func Daily(url, logDate, logContent, projectID string) error {
+	url = url + "&LogDate=" + logDate
 
 	// 先通过get获取一些隐藏参数，用作后台校验
-	hiddenParams := getHiddenParams(url)
+	hiddenParams, err := getHiddenParams(url)
+	if err != nil {
+		return err
+	}
 	// fmt.Println(hiddenParams)
 
-	logContent := cfg.GetStringDefault("logContent:dailyWorkContent", "")
 	for _, t := range []dayTime{am, pm} {
-		doWorkLog(url, logDate, logContent, t, hiddenParams)
+		err := doWorkLog(url, logDate, logContent, projectID, t, hiddenParams)
+		if err != nil {
+			return err
+		}
 	}
 
 	log.Println("日志操作成功", logDate)
 	time.Sleep(800 * time.Millisecond)
+
+	return nil
 }
 
-func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams map[string]string) {
+func doWorkLog(workLogUrl, logDate, logContent, projectID string, dt dayTime, hiddenParams map[string]string) error {
 	startTime, endTime := dt.startTime, dt.endTime
 
 	logParams := url.Values{}
@@ -147,7 +53,7 @@ func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams 
 	logParams.Set("txtDate", logDate)
 	logParams.Set("txtStartTime", startTime)
 	logParams.Set("txtEndTime", endTime)
-	logParams.Set("ddlProjectList", ddlProjectList)
+	logParams.Set("ddlProjectList", projectID)
 	logParams.Set("hplbWorkType", "0106")
 	logParams.Set("hplbAction", "010601")
 	logParams.Set("TextBox1", "")
@@ -168,51 +74,49 @@ func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams 
 		logParams.Set(key, value)
 	}
 
-	http.DoPost(workLogUrl, strings.NewReader(logParams.Encode()))
-
+	_, err := DoPost(workLogUrl, strings.NewReader(logParams.Encode()))
+	return err
 }
 
-func workWeeklyLog(cfg config.Configuration, logDate string) {
-	urlWeekly := cfg.GetStringDefault("urls:workWeekly", "")
-
-	// 先通过get获取一些隐藏参数，用作后台校验
-	hiddenParams := getHiddenParams(urlWeekly)
-
+func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
 	logParams := url.Values{}
 	logParams.Set("hidCurrRole", "")
 	logParams.Set("hidWeeklyState", "")
 	logParams.Set("WeekReportDate", logDate)
-	logParams.Set("txtWorkContent",
-		cfg.GetStringDefault("logContent:weeklyWorkContent", ""))
-	logParams.Set("txtStudyContent",
-		cfg.GetStringDefault("logContent:weeklyStudyContent", ""))
-	logParams.Set("txtSummary",
-		cfg.GetStringDefault("logContent:weeklySummary", ""))
-	logParams.Set("txtPlanWork",
-		cfg.GetStringDefault("logContent:weeklyPlanWork", ""))
-	logParams.Set("txtPlanStudy",
-		cfg.GetStringDefault("logContent:weeklyPlanStudy", ""))
+	logParams.Set("txtWorkContent", lc.WeeklyWorkContent)
+	logParams.Set("txtStudyContent", lc.WeeklyStudyContent)
+	logParams.Set("txtSummary", lc.WeeklySummary)
+	logParams.Set("txtPlanWork", lc.WeeklyPlanWork)
+	logParams.Set("txtPlanStudy", lc.WeeklyPlanStudy)
 	logParams.Set("btnSubmit", "%E6%8F%90%E4%BA%A4")
 
+	// 通过get获取一些隐藏参数，用作后台校验
+	hiddenParams, err := getHiddenParams(logUrl)
+	if err != nil {
+		return err
+	}
 	for key, value := range hiddenParams {
 		logParams.Set(key, value)
 	}
 
-	http.DoPost(urlWeekly, strings.NewReader(logParams.Encode()))
-
-	// resp := http.DoRequest(urlWeekly, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
-	// log.Println(resp)
+	_, err = DoPost(logUrl, strings.NewReader(logParams.Encode()))
+	if err != nil {
+		return err
+	}
 
 	log.Println("周报填写成功", logDate)
 	time.Sleep(2 * time.Second)
+
+	return nil
 }
 
-func getHiddenParams(url string) map[string]string {
+func getHiddenParams(url string) (map[string]string, error) {
 	result := make(map[string]string)
 
-	respHtml, err := http.DoGet(url)
+	respHtml, err := DoGet(url)
 	if err != nil {
-		log.Println("getHiddenParams error:", err)
+		//log.Println("getHiddenParams error:", err)
+		return nil, err
 	}
 	//println(respHtml)
 
@@ -222,7 +126,7 @@ func getHiddenParams(url string) map[string]string {
 		result[k] = getValueFromHtml(respHtml, k)
 	}
 
-	return result
+	return result, nil
 }
 
 func getValueFromHtml(html, key string) string {
@@ -245,40 +149,42 @@ func getValueFromHtml(html, key string) string {
 
 	return value
 }
-
-func logWholeWeek(cfg config.Configuration, d godate.Date) {
-	workdays := d.Workdays()
+func DoWeekly(urlWeekly, urlDaily, projectID string, lc LogContent) error {
+	today := godate.Today()
+	workdays := today.Workdays()
 
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
-	workWeeklyLog(cfg, workdays[0].String())
+	err := doWeeklyLog(urlWeekly, workdays[0].String(), lc)
+	if err != nil {
+		return err
+	}
 
 	// 再写日报
 	for _, day := range workdays {
-		workLog(cfg, day.String())
+		err = Daily(urlDaily, day.String(), projectID, lc.DailyWorkContent)
+		if err != nil {
+			return err
+		}
 	}
 
 	// 周末调休
-	sat, _ := d.AddDay(5)
-	sun, _ := d.AddDay(6)
+	sat, _ := today.AddDay(5)
+	sun, _ := today.AddDay(6)
 
 	extraDays := RetrieveExtraDays()
 
 	for _, dd := range []string{sat.String(), sun.String()} {
 		if _, ok := extraDays[dd]; ok {
 			log.Println("调休", dd)
-			workLog(cfg, dd)
+			err = Daily(urlDaily, dd, projectID, lc.DailyWorkContent)
+			if err != nil {
+				return err
+			}
 		}
 	}
-}
 
-func register(logType string, edsLogger EDSLogger) {
-	if _, exists := loggers[logType]; exists {
-		log.Fatalln(logType, "already registered")
-	}
-
-	log.Println("Register logger:", logType)
-	loggers[logType] = edsLogger
+	return nil
 }
 
 // RetrieveExtraDays
