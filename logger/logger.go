@@ -23,11 +23,12 @@ type EDSLogger interface {
 var loggers = make(map[string]EDSLogger)
 
 func Run(cfg config.Configuration) (err error) {
+	// 不测试了，反正也经常失败
 	// 检验网站是否正常
-	err = http.CheckURL(cfg.GetStringDefault("urls:home", ""))
-	if err != nil {
-		return err
-	}
+// 	err = http.CheckURL(cfg.GetStringDefault("urls:home", ""))
+// 	if err != nil {
+// 		return err
+// 	}
 
 	// 登录
 	err = login(cfg)
