@@ -33,6 +33,8 @@ func CheckURL(url string) error {
 }
 
 func Login(loginURL, userId, password string) error {
+	log.Println("登陆...")
+
 	// data := `{"UserId":"###", "UserPsd":"***"}`
 	// data := "UserId=###&UserPsd=***"
 	// params := url.Values{
@@ -49,7 +51,7 @@ func Login(loginURL, userId, password string) error {
 	resp, err := doRequest(loginURL, http.MethodPost,
 		strings.NewReader(params.Encode()))
 	if err != nil {
-		return err
+		return fmt.Errorf("登录错误：%w", err)
 	}
 
 	if strings.Contains(resp, ErrInvalidUser.Error()) {

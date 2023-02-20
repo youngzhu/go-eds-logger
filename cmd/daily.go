@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/viper"
 	"github.com/youngzhu/godate"
 	"goeds/logger"
-	"log"
 	"strconv"
 )
 
@@ -43,8 +42,9 @@ func dailyAction(logUrl, projectID string, from, days int) error {
 	//log.Println(from + 1)
 	//log.Println(days + 1)
 
-	log.Println("projectID:", projectID)
-	log.Println(logContent.DailyWorkContent)
+	//log.Println("logUrl:", logUrl)
+	//log.Println("projectID:", projectID)
+	//log.Println(logContent.DailyWorkContent)
 
 	var logDay godate.Date
 	for i := 0; i < days; i++ {

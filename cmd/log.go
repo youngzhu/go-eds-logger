@@ -32,7 +32,18 @@ var logCmd = &cobra.Command{
 			loggerFilePath = filepath.Join(home, "edsLogger.json")
 		}
 
-		return loadLoggerFile(loggerFilePath)
+		err := loadLoggerFile(loggerFilePath)
+		if err != nil {
+			return err
+		}
+
+		// 登录
+		// 获取参数
+		loginURL := viper.GetString("urls.login")
+		userID := viper.GetString("usr-id")
+		userPwd := viper.GetString("usr-pwd")
+
+		return logger.Login(loginURL, userID, userPwd)
 	},
 }
 

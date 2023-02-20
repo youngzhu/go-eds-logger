@@ -9,7 +9,6 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"goeds/logger"
 	"os"
 	"strings"
 
@@ -28,15 +27,8 @@ var rootCmd = &cobra.Command{
 	SilenceErrors: true,
 	// 所有操作都需要登录，所以放在这里
 	// PreRun 达不到效果
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		// 获取参数
-		loginURL := viper.GetString("urls.login")
-		userID := viper.GetString("usr-id")
-		userPwd := viper.GetString("usr-pwd")
-
-		return logger.Login(loginURL, userID, userPwd)
-		//return nil
-	},
+	//PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+	//},
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },

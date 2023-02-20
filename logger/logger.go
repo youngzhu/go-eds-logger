@@ -2,6 +2,7 @@ package logger
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
 	"log"
@@ -21,18 +22,19 @@ var pm = dayTime{startTime: "13:00", endTime: "18:00"}
 
 func Daily(url, logDate, logContent, projectID string) error {
 	url = url + "&LogDate=" + logDate
+	log.Println(url)
 
 	// 先通过get获取一些隐藏参数，用作后台校验
 	hiddenParams, err := getHiddenParams(url)
 	if err != nil {
 		return err
 	}
-	// fmt.Println(hiddenParams)
+	fmt.Println(hiddenParams)
 
 	for _, t := range []dayTime{am, pm} {
 		err := doWorkLog(url, logDate, logContent, projectID, t, hiddenParams)
 		if err != nil {
-			return err
+			return fmt.Errorf("日志操作失败：%w", err)
 		}
 	}
 
@@ -116,7 +118,7 @@ func getHiddenParams(url string) (map[string]string, error) {
 	respHtml, err := DoGet(url)
 	if err != nil {
 		//log.Println("getHiddenParams error:", err)
-		return nil, err
+		return nil, fmt.Errorf("获取参数失败：%w", err)
 	}
 	//println(respHtml)
 
