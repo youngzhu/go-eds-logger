@@ -17,7 +17,7 @@ import (
 
 // projectCmd represents the project command
 var projectCmd = &cobra.Command{
-	Use:     "project",
+	Use:     "project(p)",
 	Short:   "获取项目编号",
 	Aliases: []string{"p"},
 	RunE: func(cmd *cobra.Command, args []string) error {

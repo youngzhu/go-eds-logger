@@ -27,6 +27,7 @@ var rootCmd = &cobra.Command{
 	SilenceErrors: true,
 	// 所有操作都需要登录，所以放在这里
 	// PreRun 达不到效果
+	// 这里的代码会被子命令覆盖，要注意！！！
 	//PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 	//},
 	// Uncomment the following line if your bare application

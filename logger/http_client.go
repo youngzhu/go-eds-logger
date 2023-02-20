@@ -33,7 +33,7 @@ func CheckURL(url string) error {
 }
 
 func Login(loginURL, userId, password string) error {
-	log.Println("登陆...")
+	//log.Println("登陆...")
 
 	// data := `{"UserId":"###", "UserPsd":"***"}`
 	// data := "UserId=###&UserPsd=***"
@@ -42,8 +42,8 @@ func Login(loginURL, userId, password string) error {
 	// 	"UserPsd": {"***"},
 	// }
 	params := url.Values{}
-	params.Add("UserId", userId)
-	params.Add("UserPsd", password)
+	params.Set("UserId", userId)
+	params.Set("UserPsd", password)
 	// var request *http.Request
 	// request, err = http.NewRequest(http.MethodPost, URL_LOGIN, strings.NewReader(data))
 	// request, err = http.NewRequest(http.MethodPost, loginUrl, strings.NewReader(params.Encode()))
