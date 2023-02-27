@@ -168,7 +168,7 @@ func DoWeekly(urlWeekly, urlDaily, projectID string, lc LogContent) error {
 
 	// 再写日报
 	for _, day := range workdays {
-		err = Daily(urlDaily, day.String(), projectID, lc.DailyWorkContent)
+		err = Daily(urlDaily, projectID, day.String(), lc.DailyWorkContent)
 		if err != nil {
 			return err
 		}
@@ -183,7 +183,7 @@ func DoWeekly(urlWeekly, urlDaily, projectID string, lc LogContent) error {
 	for _, dd := range []string{sat.String(), sun.String()} {
 		if _, ok := extraDays[dd]; ok {
 			log.Println("调休", dd)
-			err = Daily(urlDaily, dd, projectID, lc.DailyWorkContent)
+			err = Daily(urlDaily, projectID, dd, lc.DailyWorkContent)
 			if err != nil {
 				return err
 			}
