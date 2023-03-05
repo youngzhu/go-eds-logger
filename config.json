@@ -1,6 +1,6 @@
 {
   "logContent": {
-    "dailyWorkContent": "常规任务开发测试与联调",
+    "dailyWorkContent": "需求开发测试与联调",
     "weeklyWorkContent": "需求分析设计与开发",
     "weeklyStudyContent": "重构代码。不是为了效率，而是为了方便维护",
     "weeklySummary": "优化就要测试要比较。并发不一定就比顺序执行效率高，用数据说话",
