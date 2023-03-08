@@ -2,6 +2,7 @@ package logger
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
 	"log"
@@ -16,23 +17,26 @@ type dayTime struct {
 	endTime   string
 }
 
-var am = dayTime{startTime: "10:00", endTime: "12:00"}
-var pm = dayTime{startTime: "13:00", endTime: "18:00"}
+var (
+	am = dayTime{startTime: "10:00", endTime: "12:00"}
+	pm = dayTime{startTime: "13:00", endTime: "18:00"}
+)
 
-func Daily(url, logDate, logContent, projectID string) error {
-	url = url + "&LogDate=" + logDate
+func Daily(logUrl, projectID, logDate, logContent string) error {
+	logUrl = logUrl + "&LogDate=" + logDate
+	log.Println(logUrl)
 
 	// 先通过get获取一些隐藏参数，用作后台校验
-	hiddenParams, err := getHiddenParams(url)
+	hiddenParams, err := getHiddenParams(logUrl)
 	if err != nil {
 		return err
 	}
-	// fmt.Println(hiddenParams)
+	//fmt.Println(hiddenParams)
 
 	for _, t := range []dayTime{am, pm} {
-		err := doWorkLog(url, logDate, logContent, projectID, t, hiddenParams)
+		err := doWorkLog(logUrl, projectID, logDate, logContent, t, hiddenParams)
 		if err != nil {
-			return err
+			return fmt.Errorf("日志操作失败：%w", err)
 		}
 	}
 
@@ -42,7 +46,7 @@ func Daily(url, logDate, logContent, projectID string) error {
 	return nil
 }
 
-func doWorkLog(workLogUrl, logDate, logContent, projectID string, dt dayTime, hiddenParams map[string]string) error {
+func doWorkLog(workLogUrl, projectID, logDate, logContent string, dt dayTime, hiddenParams map[string]string) error {
 	startTime, endTime := dt.startTime, dt.endTime
 
 	logParams := url.Values{}
@@ -74,6 +78,7 @@ func doWorkLog(workLogUrl, logDate, logContent, projectID string, dt dayTime, hi
 		logParams.Set(key, value)
 	}
 
+	//fmt.Println(logParams)
 	_, err := DoPost(workLogUrl, strings.NewReader(logParams.Encode()))
 	return err
 }
@@ -90,16 +95,17 @@ func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
 	logParams.Set("txtPlanStudy", lc.WeeklyPlanStudy)
 	logParams.Set("btnSubmit", "%E6%8F%90%E4%BA%A4")
 
+	// 周报没有校验
 	// 通过get获取一些隐藏参数，用作后台校验
-	hiddenParams, err := getHiddenParams(logUrl)
-	if err != nil {
-		return err
-	}
-	for key, value := range hiddenParams {
-		logParams.Set(key, value)
-	}
+	//hiddenParams, err := getHiddenParams(logUrl)
+	//if err != nil {
+	//	return err
+	//}
+	//for key, value := range hiddenParams {
+	//	logParams.Set(key, value)
+	//}
 
-	_, err = DoPost(logUrl, strings.NewReader(logParams.Encode()))
+	_, err := DoPost(logUrl, strings.NewReader(logParams.Encode()))
 	if err != nil {
 		return err
 	}
@@ -110,13 +116,13 @@ func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
 	return nil
 }
 
-func getHiddenParams(url string) (map[string]string, error) {
+func getHiddenParams(getUrl string) (map[string]string, error) {
 	result := make(map[string]string)
 
-	respHtml, err := DoGet(url)
+	respHtml, err := DoGet(getUrl)
 	if err != nil {
 		//log.Println("getHiddenParams error:", err)
-		return nil, err
+		return nil, fmt.Errorf("获取参数失败：%w", err)
 	}
 	//println(respHtml)
 
@@ -162,7 +168,7 @@ func DoWeekly(urlWeekly, urlDaily, projectID string, lc LogContent) error {
 
 	// 再写日报
 	for _, day := range workdays {
-		err = Daily(urlDaily, day.String(), projectID, lc.DailyWorkContent)
+		err = Daily(urlDaily, projectID, day.String(), lc.DailyWorkContent)
 		if err != nil {
 			return err
 		}
@@ -177,7 +183,7 @@ func DoWeekly(urlWeekly, urlDaily, projectID string, lc LogContent) error {
 	for _, dd := range []string{sat.String(), sun.String()} {
 		if _, ok := extraDays[dd]; ok {
 			log.Println("调休", dd)
-			err = Daily(urlDaily, dd, projectID, lc.DailyWorkContent)
+			err = Daily(urlDaily, projectID, dd, lc.DailyWorkContent)
 			if err != nil {
 				return err
 			}

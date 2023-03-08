@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	// "os"
 )
@@ -18,7 +17,7 @@ var postProperties = make(map[string]string)
 var getProperties = make(map[string]string)
 
 func init() {
-	log.Println("http init")
+	//log.Println("http init")
 
 	// post
 	postProperties["Host"] = HOST

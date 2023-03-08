@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/viper"
 	"github.com/youngzhu/godate"
 	"goeds/logger"
-	"log"
 	"strconv"
 )
 
@@ -19,7 +18,7 @@ import (
 var dailyCmd = &cobra.Command{
 	Use:     "daily(d) m n",
 	Aliases: []string{"d"},
-	Short:   "A brief description of your command",
+	Short:   "按天填写日志",
 	Args:    cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// 获取参数
@@ -43,8 +42,9 @@ func dailyAction(logUrl, projectID string, from, days int) error {
 	//log.Println(from + 1)
 	//log.Println(days + 1)
 
-	log.Println("projectID:", projectID)
-	log.Println(logContent.DailyWorkContent)
+	//log.Println("logUrl:", logUrl)
+	//log.Println("projectID:", projectID)
+	//log.Println(logContent.DailyWorkContent)
 
 	var logDay godate.Date
 	for i := 0; i < days; i++ {
@@ -55,7 +55,7 @@ func dailyAction(logUrl, projectID string, from, days int) error {
 			logDay, _ = godate.Today().SubDay(-diff)
 		}
 
-		return logger.Daily(logUrl, logDay.String(), projectID, logContent.DailyWorkContent)
+		return logger.Daily(logUrl, projectID, logDay.String(), logContent.DailyWorkContent)
 	}
 
 	return nil
