@@ -7,7 +7,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
 	"log"
-	"net/http"
 	"net/url"
 	"os"
 	"strings"
@@ -34,13 +33,6 @@ func New() *EDSLogger {
 	return edsLogger
 }
 
-func SetProjectID(projectID string) {
-	lg.SetProjectID(projectID)
-}
-func (e *EDSLogger) SetProjectID(projectID string) {
-	e.projectID = projectID
-}
-
 func AddUrl(key, val string) {
 	lg.AddUrl(key, val)
 }
@@ -57,8 +49,7 @@ func (e EDSLogger) Login(userId, password string) error {
 	params.Set("UserId", userId)
 	params.Set("UserPsd", password)
 
-	resp, err := doRequest(e.urls["login"], http.MethodPost,
-		strings.NewReader(params.Encode()))
+	resp, err := doPost(e.urls["login"], strings.NewReader(params.Encode()))
 	if err != nil {
 		return fmt.Errorf("登录错误：%w", err)
 	}
@@ -76,7 +67,7 @@ func RetrieveProjectID() error {
 	return lg.RetrieveProjectID()
 }
 func (e *EDSLogger) RetrieveProjectID() error {
-	respHtml, _ := DoGet(e.urls["daily"])
+	respHtml, _ := doGet(e.urls["daily"])
 	//println(respHtml)
 
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(respHtml))
@@ -178,7 +169,7 @@ func doWorkLog(workLogUrl, projectID, logDate, logContent string, dt dayTime, hi
 	}
 
 	//fmt.Println(logParams)
-	_, err := DoPost(workLogUrl, strings.NewReader(logParams.Encode()))
+	_, err := doPost(workLogUrl, strings.NewReader(logParams.Encode()))
 	return err
 }
 
@@ -204,7 +195,7 @@ func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
 	//	logParams.Set(key, value)
 	//}
 
-	_, err := DoPost(logUrl, strings.NewReader(logParams.Encode()))
+	_, err := doPost(logUrl, strings.NewReader(logParams.Encode()))
 	if err != nil {
 		return err
 	}
@@ -218,7 +209,7 @@ func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
 func getHiddenParams(getUrl string) (map[string]string, error) {
 	result := make(map[string]string)
 
-	respHtml, err := DoGet(getUrl)
+	respHtml, err := doGet(getUrl)
 	if err != nil {
 		//log.Println("getHiddenParams error:", err)
 		return nil, fmt.Errorf("获取参数失败：%w", err)

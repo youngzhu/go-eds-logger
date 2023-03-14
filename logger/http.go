@@ -43,10 +43,10 @@ func init() {
 	getProperties["Host"] = HOST
 }
 
-func DoGet(url string) (string, error) {
+func doGet(url string) (string, error) {
 	return doRequest(url, http.MethodGet, nil)
 }
-func DoPost(url string, body io.Reader) (string, error) {
+func doPost(url string, body io.Reader) (string, error) {
 	return doRequest(url, http.MethodPost, body)
 }
 
