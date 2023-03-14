@@ -12,6 +12,40 @@ import (
 	"time"
 )
 
+// 学 viper 设置一个影子变量
+var lg *EDSLogger
+
+func init() {
+	lg = New()
+}
+
+type EDSLogger struct {
+	projectID string // 项目编号
+	urls      map[string]string
+}
+
+func New() *EDSLogger {
+	edsLogger := new(EDSLogger)
+
+	edsLogger.urls = make(map[string]string)
+
+	return edsLogger
+}
+
+func SetProjectID(projectID string) {
+	lg.SetProjectID(projectID)
+}
+func (e *EDSLogger) SetProjectID(projectID string) {
+	e.projectID = projectID
+}
+
+func ProjectID() string {
+	return lg.projectID
+}
+func (e *EDSLogger) ProjectID() string {
+	return e.projectID
+}
+
 type dayTime struct {
 	startTime string
 	endTime   string
