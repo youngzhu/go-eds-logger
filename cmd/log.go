@@ -44,10 +44,10 @@ var logCmd = &cobra.Command{
 
 		// 登录
 		// 获取参数
-		loginURL := viper.GetString("urls.login")
+		logger.AddUrl("login", viper.GetString("urls.login"))
 		userID := viper.GetString("usr-id")
 		userPwd := viper.GetString("usr-pwd")
-		err = logger.Login(loginURL, userID, userPwd)
+		err = logger.Login(userID, userPwd)
 		if err != nil {
 			return err
 		}

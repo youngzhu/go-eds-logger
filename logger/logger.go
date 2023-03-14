@@ -6,6 +6,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
 	"log"
+	"net/http"
 	"net/url"
 	"os"
 	"strings"
@@ -39,6 +40,37 @@ func (e *EDSLogger) SetProjectID(projectID string) {
 	e.projectID = projectID
 }
 
+func AddUrl(key, val string) {
+	lg.AddUrl(key, val)
+}
+func (e *EDSLogger) AddUrl(key, val string) {
+	e.urls[key] = val
+}
+
+func Login(userId, password string) error {
+	return lg.Login(userId, password)
+}
+
+func (e EDSLogger) Login(userId, password string) error {
+	params := url.Values{}
+	params.Set("UserId", userId)
+	params.Set("UserPsd", password)
+
+	resp, err := doRequest(e.urls["login"], http.MethodPost,
+		strings.NewReader(params.Encode()))
+	if err != nil {
+		return fmt.Errorf("登录错误：%w", err)
+	}
+
+	if strings.Contains(resp, ErrInvalidUser.Error()) {
+		return ErrInvalidUser
+	}
+
+	log.Println("登陆成功")
+
+	return nil
+}
+
 func ProjectID() string {
 	return lg.projectID
 }
@@ -46,6 +78,7 @@ func (e *EDSLogger) ProjectID() string {
 	return e.projectID
 }
 
+////
 type dayTime struct {
 	startTime string
 	endTime   string
