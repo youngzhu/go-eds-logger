@@ -2,6 +2,7 @@ package logger
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
@@ -67,6 +68,37 @@ func (e EDSLogger) Login(userId, password string) error {
 	}
 
 	log.Println("登陆成功")
+
+	return nil
+}
+
+func RetrieveProjectID() error {
+	return lg.RetrieveProjectID()
+}
+func (e *EDSLogger) RetrieveProjectID() error {
+	respHtml, _ := DoGet(e.urls["daily"])
+	//println(respHtml)
+
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(respHtml))
+
+	if err != nil {
+		return err
+	}
+
+	var projectId string
+	doc.Find("select").Each(func(i int, s *goquery.Selection) {
+		id, _ := s.Attr("id")
+		if id == "ddlProjectList" {
+			projectId, _ = s.Children().Attr("value")
+			return
+		}
+	})
+
+	if projectId == "" {
+		return errors.New("未能获取项目编号")
+	}
+
+	e.projectID = projectId
 
 	return nil
 }

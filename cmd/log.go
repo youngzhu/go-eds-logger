@@ -7,15 +7,12 @@ Check LICENSE for details.
 package cmd
 
 import (
-	"errors"
-	"github.com/PuerkitoBio/goquery"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"goeds/logger"
 	"log"
 	"path/filepath"
-	"strings"
 )
 
 var logContent logger.LogContent
@@ -53,7 +50,8 @@ var logCmd = &cobra.Command{
 		}
 
 		// 获取项目编号
-		err = retrieveProjectID(viper.GetString("urls.daily"))
+		logger.AddUrl("daily", viper.GetString("urls.daily"))
+		err = logger.RetrieveProjectID()
 
 		return err
 	},
@@ -64,34 +62,6 @@ func loadLoggerFile(path string) (err error) {
 	logContent, err = logger.RetrieveLogContent(path)
 
 	return
-}
-
-func retrieveProjectID(reqUrl string) error {
-	respHtml, _ := logger.DoGet(reqUrl)
-	//println(respHtml)
-
-	doc, err := goquery.NewDocumentFromReader(strings.NewReader(respHtml))
-
-	if err != nil {
-		return err
-	}
-
-	var projectId string
-	doc.Find("select").Each(func(i int, s *goquery.Selection) {
-		id, _ := s.Attr("id")
-		if id == "ddlProjectList" {
-			projectId, _ = s.Children().Attr("value")
-			return
-		}
-	})
-
-	if projectId == "" {
-		return errors.New("未能获取项目编号")
-	}
-
-	logger.SetProjectID(projectId)
-
-	return nil
 }
 
 func init() {
