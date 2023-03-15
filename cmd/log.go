@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"goeds/logger"
-	"log"
 	"path/filepath"
 )
 
@@ -34,7 +33,7 @@ var logCmd = &cobra.Command{
 			loggerFilePath = filepath.Join(home, "edsLogger.json")
 		}
 
-		err = loadLoggerFile(loggerFilePath)
+		err = logger.RetrieveLogContent(loggerFilePath)
 		if err != nil {
 			return err
 		}
@@ -53,15 +52,12 @@ var logCmd = &cobra.Command{
 		logger.AddUrl("daily", viper.GetString("urls.daily"))
 		err = logger.RetrieveProjectID()
 
+		// 给logger添加其他配置
+		logger.AddUrl("home", viper.GetString("urls.home"))
+		logger.AddUrl("weekly", viper.GetString("urls.weekly"))
+
 		return err
 	},
-}
-
-func loadLoggerFile(path string) (err error) {
-	log.Printf("加载日志内容[%s]...", path)
-	logContent, err = logger.RetrieveLogContent(path)
-
-	return
 }
 
 func init() {

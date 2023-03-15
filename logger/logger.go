@@ -23,6 +23,8 @@ func init() {
 type EDSLogger struct {
 	projectID string // 项目编号
 	urls      map[string]string
+
+	lc LogContent
 }
 
 func New() *EDSLogger {
