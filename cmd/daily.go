@@ -8,10 +8,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/youngzhu/godate"
 	"goeds/logger"
-	"log"
 	"strconv"
 )
 
@@ -23,9 +21,6 @@ var dailyCmd = &cobra.Command{
 	Args:    cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// 获取参数
-		logUrl := viper.GetString("urls.daily")
-		projectID := viper.GetString("projectID")
-
 		from, err := strconv.Atoi(args[0])
 		if err != nil {
 			return err
@@ -35,18 +30,13 @@ var dailyCmd = &cobra.Command{
 			return err
 		}
 
-		return dailyAction(logUrl, projectID, from, days)
+		return dailyAction(from, days)
 	},
 }
 
-func dailyAction(logUrl, projectID string, from, days int) error {
+func dailyAction(from, days int) error {
 	//log.Println(from + 1)
 	//log.Println(days + 1)
-
-	//log.Println("logUrl:", logUrl)
-	//log.Println(logContent.DailyWorkContent)
-
-	log.Println("projectID:", logger.ProjectID())
 
 	var logDay godate.Date
 	for i := 0; i < days; i++ {
@@ -57,7 +47,7 @@ func dailyAction(logUrl, projectID string, from, days int) error {
 			logDay, _ = godate.Today().SubDay(-diff)
 		}
 
-		return logger.Daily(logUrl, projectID, logDay.String(), logContent.DailyWorkContent)
+		return logger.DailyLog(logDay.String())
 	}
 
 	return nil
