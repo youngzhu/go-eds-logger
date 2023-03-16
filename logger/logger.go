@@ -23,6 +23,7 @@ func init() {
 type EDSLogger struct {
 	projectID string // 项目编号
 	urls      map[string]string
+	cookie    string
 
 	lc LogContent
 }
@@ -42,6 +43,13 @@ func (e *EDSLogger) AddUrl(key, val string) {
 	e.urls[key] = val
 }
 
+func SetCookie(cookie string) {
+	lg.SetCookie(cookie)
+}
+func (e *EDSLogger) SetCookie(cookie string) {
+	e.cookie = cookie
+}
+
 func Login(userId, password string) error {
 	return lg.Login(userId, password)
 }
@@ -51,7 +59,7 @@ func (e EDSLogger) Login(userId, password string) error {
 	params.Set("UserId", userId)
 	params.Set("UserPsd", password)
 
-	resp, err := doPost(e.urls["login"], strings.NewReader(params.Encode()))
+	resp, err := e.doPost(e.urls["login"], strings.NewReader(params.Encode()))
 	if err != nil {
 		return fmt.Errorf("登录错误：%w", err)
 	}
@@ -69,7 +77,7 @@ func RetrieveProjectID() error {
 	return lg.RetrieveProjectID()
 }
 func (e *EDSLogger) RetrieveProjectID() error {
-	respHtml, _ := doGet(e.urls["daily"])
+	respHtml, _ := e.doGet(e.urls["daily"])
 	//println(respHtml)
 
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(respHtml))
@@ -77,6 +85,8 @@ func (e *EDSLogger) RetrieveProjectID() error {
 	if err != nil {
 		return err
 	}
+
+	//fmt.Println("cookie:", e.cookie)
 
 	var projectId string
 	doc.Find("select").Each(func(i int, s *goquery.Selection) {
@@ -180,7 +190,7 @@ func (e EDSLogger) doWorkLog(workLogUrl, logDate string, dt dayTime, hiddenParam
 	}
 
 	//fmt.Println(logParams)
-	_, err := doPost(workLogUrl, strings.NewReader(logParams.Encode()))
+	_, err := e.doPost(workLogUrl, strings.NewReader(logParams.Encode()))
 	return err
 }
 
@@ -206,7 +216,7 @@ func (e EDSLogger) doWeeklyLog(monday string) error {
 	//	logParams.Set(key, value)
 	//}
 
-	_, err := doPost(e.urls["weekly"], strings.NewReader(logParams.Encode()))
+	_, err := e.doPost(e.urls["weekly"], strings.NewReader(logParams.Encode()))
 	if err != nil {
 		return err
 	}
@@ -263,6 +273,9 @@ func WeeklyLog() error {
 func (e EDSLogger) WeeklyLog() error {
 	today := godate.Today()
 	workdays := today.Workdays()
+
+	//fmt.Println("cookie:", e.cookie)
+	//return nil
 
 	// 先写周报
 	// 只能填写本周周报（周一）!!!

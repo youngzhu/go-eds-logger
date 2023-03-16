@@ -44,15 +44,16 @@ func init() {
 }
 
 func doGet(url string) (string, error) {
-	return doRequest(url, http.MethodGet, nil)
+	return lg.doRequest(url, http.MethodGet, nil)
 }
-func doPost(url string, body io.Reader) (string, error) {
-	return doRequest(url, http.MethodPost, body)
+func (e EDSLogger) doGet(url string) (string, error) {
+	return e.doRequest(url, http.MethodGet, nil)
+}
+func (e EDSLogger) doPost(url string, body io.Reader) (string, error) {
+	return e.doRequest(url, http.MethodPost, body)
 }
 
-const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
-
-func doRequest(url, method string, body io.Reader) (string, error) {
+func (e EDSLogger) doRequest(url, method string, body io.Reader) (string, error) {
 	request, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return "", err
@@ -69,7 +70,7 @@ func doRequest(url, method string, body io.Reader) (string, error) {
 	}
 
 	request.Header.Set("Referer", url)
-	request.Header.Set("Cookie", cookie)
+	request.Header.Set("Cookie", e.cookie)
 
 	resp, err := newClient().Do(request)
 	if err != nil {
