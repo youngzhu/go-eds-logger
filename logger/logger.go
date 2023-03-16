@@ -184,16 +184,16 @@ func (e EDSLogger) doWorkLog(workLogUrl, logDate string, dt dayTime, hiddenParam
 	return err
 }
 
-func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
+func (e EDSLogger) doWeeklyLog(monday string) error {
 	logParams := url.Values{}
 	logParams.Set("hidCurrRole", "")
 	logParams.Set("hidWeeklyState", "")
-	logParams.Set("WeekReportDate", logDate)
-	logParams.Set("txtWorkContent", lc.WeeklyWorkContent)
-	logParams.Set("txtStudyContent", lc.WeeklyStudyContent)
-	logParams.Set("txtSummary", lc.WeeklySummary)
-	logParams.Set("txtPlanWork", lc.WeeklyPlanWork)
-	logParams.Set("txtPlanStudy", lc.WeeklyPlanStudy)
+	logParams.Set("WeekReportDate", monday)
+	logParams.Set("txtWorkContent", e.lc.WeeklyWorkContent)
+	logParams.Set("txtStudyContent", e.lc.WeeklyStudyContent)
+	logParams.Set("txtSummary", e.lc.WeeklySummary)
+	logParams.Set("txtPlanWork", e.lc.WeeklyPlanWork)
+	logParams.Set("txtPlanStudy", e.lc.WeeklyPlanStudy)
 	logParams.Set("btnSubmit", "%E6%8F%90%E4%BA%A4")
 
 	// 周报没有校验
@@ -206,12 +206,12 @@ func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
 	//	logParams.Set(key, value)
 	//}
 
-	_, err := doPost(logUrl, strings.NewReader(logParams.Encode()))
+	_, err := doPost(e.urls["weekly"], strings.NewReader(logParams.Encode()))
 	if err != nil {
 		return err
 	}
 
-	log.Println("周报填写成功", logDate)
+	log.Println("周报填写成功", monday)
 	time.Sleep(2 * time.Second)
 
 	return nil
@@ -256,40 +256,44 @@ func getValueFromHtml(html, key string) string {
 
 	return value
 }
-func DoWeekly(urlWeekly, urlDaily, projectID string, lc LogContent) error {
+
+func WeeklyLog() error {
+	return lg.WeeklyLog()
+}
+func (e EDSLogger) WeeklyLog() error {
 	today := godate.Today()
 	workdays := today.Workdays()
 
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
-	err := doWeeklyLog(urlWeekly, workdays[0].String(), lc)
+	err := e.doWeeklyLog(workdays[0].String())
 	if err != nil {
 		return err
 	}
 
 	// 再写日报
-	//for _, day := range workdays {
-	//	err = Daily(urlDaily, projectID, day.String(), lc.DailyWorkContent)
-	//	if err != nil {
-	//		return err
-	//	}
-	//}
+	for _, day := range workdays {
+		err = e.DailyLog(day.String())
+		if err != nil {
+			return err
+		}
+	}
 
 	// 周末调休
-	//sat, _ := today.AddDay(5)
-	//sun, _ := today.AddDay(6)
-	//
-	//extraDays := RetrieveExtraDays()
+	sat, _ := today.AddDay(5)
+	sun, _ := today.AddDay(6)
 
-	//for _, dd := range []string{sat.String(), sun.String()} {
-	//	if _, ok := extraDays[dd]; ok {
-	//		log.Println("调休", dd)
-	//		err = Daily(urlDaily, projectID, dd, lc.DailyWorkContent)
-	//		if err != nil {
-	//			return err
-	//		}
-	//	}
-	//}
+	extraDays := RetrieveExtraDays()
+
+	for _, dd := range []string{sat.String(), sun.String()} {
+		if _, ok := extraDays[dd]; ok {
+			log.Println("调休", dd)
+			err = e.DailyLog(dd)
+			if err != nil {
+				return err
+			}
+		}
+	}
 
 	return nil
 }
