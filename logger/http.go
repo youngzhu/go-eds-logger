@@ -8,7 +8,6 @@ import (
 	// "os"
 )
 
-const HOST = "eds.newtouch.cn"
 const UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"
 const AcceptLanguage = "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7"
 const AcceptEncoding = "gzip, deflate"
@@ -20,7 +19,6 @@ func init() {
 	//log.Println("http init")
 
 	// post
-	postProperties["Host"] = HOST
 	postProperties["Content-Length"] = "6955"
 	postProperties["Cache-Control"] = "max-age=0"
 	postProperties["Origin"] = "http://eds.newtouch.cn"
@@ -40,7 +38,6 @@ func init() {
 	getProperties["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
 	getProperties["Accept-Encoding"] = AcceptEncoding
 	getProperties["Accept-Language"] = AcceptLanguage
-	getProperties["Host"] = HOST
 }
 
 func doGet(url string) (string, error) {
@@ -71,6 +68,7 @@ func (e EDSLogger) doRequest(url, method string, body io.Reader) (string, error)
 
 	request.Header.Set("Referer", url)
 	request.Header.Set("Cookie", e.cookie)
+	request.Header.Set("Host", e.host)
 
 	resp, err := newClient().Do(request)
 	if err != nil {

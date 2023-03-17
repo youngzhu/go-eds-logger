@@ -24,6 +24,7 @@ type EDSLogger struct {
 	projectID string // 项目编号
 	urls      map[string]string
 	cookie    string
+	host      string
 
 	lc LogContent
 }
@@ -48,6 +49,13 @@ func SetCookie(cookie string) {
 }
 func (e *EDSLogger) SetCookie(cookie string) {
 	e.cookie = cookie
+}
+
+func SetHost(host string) {
+	lg.SetHost(host)
+}
+func (e *EDSLogger) SetHost(host string) {
+	e.host = host
 }
 
 func Login(userId, password string) error {

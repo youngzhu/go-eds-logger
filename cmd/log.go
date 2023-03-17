@@ -42,6 +42,7 @@ var logCmd = &cobra.Command{
 		// 获取参数
 		logger.AddUrl("login", viper.GetString("urls.login"))
 		logger.SetCookie(viper.GetString("cookie"))
+		logger.SetHost(viper.GetString("host"))
 		userID := viper.GetString("usr-id")
 		userPwd := viper.GetString("usr-pwd")
 		err = logger.Login(userID, userPwd)
