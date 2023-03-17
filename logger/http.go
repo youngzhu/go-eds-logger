@@ -12,32 +12,26 @@ const UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/5
 const AcceptLanguage = "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7"
 const AcceptEncoding = "gzip, deflate"
 
-var postProperties = make(map[string]string)
-var getProperties = make(map[string]string)
+var postProperties = map[string]string{
+	"Content-Length":            "6955",
+	"Cache-Control":             "max-age=0",
+	"Upgrade-Insecure-Requests": "1",
+	"Content-Type":              "application/x-www-form-urlencoded",
+	"User-Agent":                "Mozilla/5.0",
+	"Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+	"Accept-Encoding":           AcceptEncoding,
+	"Accept-Language":           AcceptLanguage,
+	"connection":                "Keep-Alive",
+	"accept":                    "*/*",
+	"user-agent":                "Mozilla/5.0",
+}
 
-func init() {
-	//log.Println("http init")
-
-	// post
-	postProperties["Content-Length"] = "6955"
-	postProperties["Cache-Control"] = "max-age=0"
-	postProperties["Origin"] = "http://eds.newtouch.cn"
-	postProperties["Upgrade-Insecure-Requests"] = "1"
-	postProperties["Content-Type"] = "application/x-www-form-urlencoded"
-	postProperties["User-Agent"] = "Mozilla/5.0"
-	postProperties["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
-	postProperties["Accept-Encoding"] = AcceptEncoding
-	postProperties["Accept-Language"] = AcceptLanguage
-	postProperties["connection"] = "Keep-Alive"
-	postProperties["accept"] = "*/*"
-	postProperties["user-agent"] = "Mozilla/5.0"
-
-	// get
-	getProperties["Upgrade-Insecure-Requests"] = "1"
-	getProperties["User-Agent"] = UserAgent
-	getProperties["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
-	getProperties["Accept-Encoding"] = AcceptEncoding
-	getProperties["Accept-Language"] = AcceptLanguage
+var getProperties = map[string]string{
+	"Upgrade-Insecure-Requests": "1",
+	"User-Agent":                UserAgent,
+	"Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+	"Accept-Encoding":           AcceptEncoding,
+	"Accept-Language":           AcceptLanguage,
 }
 
 func doGet(url string) (string, error) {
@@ -69,6 +63,7 @@ func (e EDSLogger) doRequest(url, method string, body io.Reader) (string, error)
 	request.Header.Set("Referer", url)
 	request.Header.Set("Cookie", e.cookie)
 	request.Header.Set("Host", e.host)
+	request.Header.Set("Origin", e.urls["home"])
 
 	resp, err := newClient().Do(request)
 	if err != nil {
