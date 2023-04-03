@@ -214,17 +214,17 @@ func (e EDSLogger) doWeeklyLog(monday string) error {
 	logParams.Set("txtPlanStudy", e.lc.WeeklyPlanStudy)
 	logParams.Set("btnSubmit", "%E6%8F%90%E4%BA%A4")
 
-	// 周报没有校验
 	// 通过get获取一些隐藏参数，用作后台校验
-	//hiddenParams, err := getHiddenParams(logUrl)
-	//if err != nil {
-	//	return err
-	//}
-	//for key, value := range hiddenParams {
-	//	logParams.Set(key, value)
-	//}
+	logUrl := e.urls["weekly"]
+	hiddenParams, err := getHiddenParams(logUrl)
+	if err != nil {
+		return err
+	}
+	for key, value := range hiddenParams {
+		logParams.Set(key, value)
+	}
 
-	_, err := e.doPost(e.urls["weekly"], strings.NewReader(logParams.Encode()))
+	_, err = e.doPost(logUrl, strings.NewReader(logParams.Encode()))
 	if err != nil {
 		return err
 	}
