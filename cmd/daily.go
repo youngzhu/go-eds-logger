@@ -14,6 +14,7 @@ import (
 )
 
 // dailyCmd represents the daily command
+// 参数不能支持负数？？
 var dailyCmd = &cobra.Command{
 	Use:     "daily(d) m n",
 	Aliases: []string{"d"},
