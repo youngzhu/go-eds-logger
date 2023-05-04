@@ -10,7 +10,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/youngzhu/godate"
 	"goeds/logger"
-	"log"
 )
 
 var (
@@ -41,8 +40,8 @@ var dailyCmd = &cobra.Command{
 }
 
 func dailyAction() error {
-	log.Println(logStart + 1)
-	log.Println(logDays + 1)
+	//log.Println(logStart + 1)
+	//log.Println(logDays + 1)
 
 	var logDay godate.Date
 	for i := 0; i < logDays; i++ {
@@ -53,7 +52,10 @@ func dailyAction() error {
 			logDay, _ = godate.Today().SubDay(-diff)
 		}
 
-		return logger.DailyLog(logDay.String())
+		err := logger.DailyLog(logDay.String())
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
