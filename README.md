@@ -1,4 +1,9 @@
 # go-eds-logger
+
+## 使用
+```shell
+goeds log w #填写本周日志
+```
 ## 设置环境变量
 **Windows 10**
 1. 搜索框中输入“环境变量”
