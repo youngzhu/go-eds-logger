@@ -1,10 +1,10 @@
 {
   "logContent": {
-    "dailyWorkContent": "开发测试与联调",
-    "weeklyWorkContent": "需求分析设计与开发",
+    "dailyWorkContent": "开发、测试与联调",
+    "weeklyWorkContent": "需求分析、设计与开发",
     "weeklyStudyContent": "重构代码。不是为了效率，而是为了方便维护",
     "weeklySummary": "优化就要测试要比较。并发不一定就比顺序执行效率高，用数据说话",
-    "weeklyPlanWork": "整理文档",
+    "weeklyPlanWork": "清理安全漏洞，整理弱密码问题",
     "weeklyPlanStudy": "学习消息中间件 RabbitMQ"
   },
   "urls": {
