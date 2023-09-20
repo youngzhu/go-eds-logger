@@ -3,6 +3,7 @@ package main
 import (
 	"edser/config"
 	"edser/logger"
+	smail "github.com/youngzhu/go-smail"
 	"github.com/youngzhu/godate"
 	"log"
 )
@@ -31,9 +32,9 @@ func main() {
 var today = godate.Today()
 
 func sendSuccessfulMail() {
-	logger.SendMail(today.String()+"成功", "RT")
+	smail.SendMail(today.String()+"成功", "")
 }
 
 func sendFailedMail(errMsg string) {
-	logger.SendMail(today.String()+"失败", errMsg)
+	smail.SendMail(today.String()+"失败", errMsg)
 }
