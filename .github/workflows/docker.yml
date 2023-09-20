@@ -2,7 +2,7 @@ name: Log Every Mon via Docker
 
 on:
   schedule:
-  - cron: '31 1 * * Mon'
+  - cron: '1 1 * * Mon'
   
   workflow_dispatch:
 
@@ -39,9 +39,9 @@ jobs:
           build-args: |
             EDS_USR_ID=${{ secrets.LOGIN_ID }}
             EDS_USR_PWD=${{ secrets.LOGIN_PWD }}
-            MAIL_FROM=${{ secrets.MAIL_FROM }}
-            MAIL_FROM_PWD=${{ secrets.MAIL_FROM_PWD }}
-            MAIL_TO=${{ secrets.MAIL_TO }}
+            GO_MAIL_FROM: ${{ secrets.GO_MAIL_FROM }}
+            GO_MAIL_FROM_PWD: ${{ secrets.GO_MAIL_FROM_PWD }}
+            GO_MAIL_TO: ${{ secrets.GO_MAIL_TO }}
           builder: ${{ steps.buildx.outputs.name }}
           push:    false
           load:    true
