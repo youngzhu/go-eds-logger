@@ -2,10 +2,10 @@
   "logContent": {
     "dailyWorkContent": "开发、测试与联调",
     "weeklyWorkContent": "需求分析、设计与开发",
-    "weeklyStudyContent": "研究过滤器，研究数据脱敏问题",
-    "weeklySummary": "优化就要测试要比较。并发不一定就比顺序执行效率高，用数据说话",
-    "weeklyPlanWork": "处理数据脱敏需求",
-    "weeklyPlanStudy": "学习消息中间件 RabbitMQ"
+    "weeklyStudyContent": "熟悉新系统",
+    "weeklySummary": "人的时间成本比机器的更高",
+    "weeklyPlanWork": "熟悉新系统",
+    "weeklyPlanStudy": "熟悉新系统"
   },
   "urls": {
     "home": "http://eds.newtouch.cn",
