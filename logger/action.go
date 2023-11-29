@@ -9,7 +9,7 @@ type actionLogger struct{}
 
 func init() {
 	var action actionLogger
-	register("action", action)
+	register("Action", action)
 }
 
 // Execute 每周一自动执行，填写周报和5天的日报

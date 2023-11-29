@@ -26,3 +26,8 @@ func TestRetrieveLogContent(t *testing.T) {
 
 	t.Log(days)
 }
+
+func TestRetrieveHplb(t *testing.T) {
+	hplb := logger.RetrieveHplb(cfg)
+	t.Log("WorkType:", hplb.WorkType, "Action:", hplb.Action)
+}

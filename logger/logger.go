@@ -25,10 +25,10 @@ var loggers = make(map[string]EDSLogger)
 func Run(cfg config.Configuration) (err error) {
 	// 不测试了，反正也经常失败
 	// 检验网站是否正常
-// 	err = http.CheckURL(cfg.GetStringDefault("urls:home", ""))
-// 	if err != nil {
-// 		return err
-// 	}
+	// 	err = http.CheckURL(cfg.GetStringDefault("urls:home", ""))
+	// 	if err != nil {
+	// 		return err
+	// 	}
 
 	// 登录
 	err = login(cfg)
@@ -45,7 +45,7 @@ func Run(cfg config.Configuration) (err error) {
 	//
 	edsLogger, exists := loggers["manual"]
 	if !exists {
-		edsLogger = loggers["action"]
+		edsLogger = loggers["Action"]
 	}
 	edsLogger.Execute(cfg)
 
@@ -105,10 +105,14 @@ func login(cfg config.Configuration) error {
 
 var (
 	ddlProjectList string
+
+	hplbInfo hplb
 )
 
 func prepareData(cfg config.Configuration) error {
 	ddlProjectList = RetrieveProjectID(cfg)
+
+	hplbInfo = RetrieveHplb(cfg)
 
 	return nil
 }
@@ -149,8 +153,8 @@ func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams 
 	logParams.Set("txtStartTime", startTime)
 	logParams.Set("txtEndTime", endTime)
 	logParams.Set("ddlProjectList", ddlProjectList)
-	logParams.Set("hplbWorkType", "0106")
-	logParams.Set("hplbAction", "010601")
+	logParams.Set("hplbWorkType", hplbInfo.WorkType)
+	logParams.Set("hplbAction", hplbInfo.Action)
 	logParams.Set("TextBox1", "")
 	logParams.Set("txtMemo", logContent)
 	logParams.Set("btnSave", "+%E7%A1%AE+%E5%AE%9A+")
