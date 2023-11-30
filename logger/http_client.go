@@ -3,10 +3,7 @@ package logger
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
-	"net/url"
-	"strings"
 	"time"
 )
 
@@ -29,36 +26,5 @@ func CheckURL(url string) error {
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("%w, statusCode: %d", ErrConnection, resp.StatusCode)
 	}
-	return nil
-}
-
-func Login(loginURL, userId, password string) error {
-	//log.Println("登陆...")
-
-	// data := `{"UserId":"###", "UserPsd":"***"}`
-	// data := "UserId=###&UserPsd=***"
-	// params := url.Values{
-	// 	"UserId":  {"###"},
-	// 	"UserPsd": {"***"},
-	// }
-	params := url.Values{}
-	params.Set("UserId", userId)
-	params.Set("UserPsd", password)
-	// var request *http.Request
-	// request, err = http.NewRequest(http.MethodPost, URL_LOGIN, strings.NewReader(data))
-	// request, err = http.NewRequest(http.MethodPost, loginUrl, strings.NewReader(params.Encode()))
-
-	resp, err := doRequest(loginURL, http.MethodPost,
-		strings.NewReader(params.Encode()))
-	if err != nil {
-		return fmt.Errorf("登录错误：%w", err)
-	}
-
-	if strings.Contains(resp, ErrInvalidUser.Error()) {
-		return ErrInvalidUser
-	}
-
-	log.Println("登陆成功")
-
 	return nil
 }

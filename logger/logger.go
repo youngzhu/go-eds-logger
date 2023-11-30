@@ -2,6 +2,7 @@ package logger
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
@@ -12,6 +13,115 @@ import (
 	"time"
 )
 
+// 学 viper 设置一个影子变量
+var lg *EDSLogger
+
+func init() {
+	lg = New()
+}
+
+type EDSLogger struct {
+	projectID string // 项目编号
+	urls      map[string]string
+	cookie    string
+	host      string
+
+	lc LogContent
+}
+
+func New() *EDSLogger {
+	edsLogger := new(EDSLogger)
+
+	edsLogger.urls = make(map[string]string)
+
+	return edsLogger
+}
+
+func AddUrl(key, val string) {
+	lg.AddUrl(key, val)
+}
+func (e *EDSLogger) AddUrl(key, val string) {
+	e.urls[key] = val
+}
+
+func SetCookie(cookie string) {
+	lg.SetCookie(cookie)
+}
+func (e *EDSLogger) SetCookie(cookie string) {
+	e.cookie = cookie
+}
+
+func SetHost(host string) {
+	lg.SetHost(host)
+}
+func (e *EDSLogger) SetHost(host string) {
+	e.host = host
+}
+
+func Login(userId, password string) error {
+	return lg.Login(userId, password)
+}
+
+func (e EDSLogger) Login(userId, password string) error {
+	params := url.Values{}
+	params.Set("UserId", userId)
+	params.Set("UserPsd", password)
+
+	resp, err := e.doPost(e.urls["login"], strings.NewReader(params.Encode()))
+	if err != nil {
+		return fmt.Errorf("登录错误：%w", err)
+	}
+
+	if strings.Contains(resp, ErrInvalidUser.Error()) {
+		return ErrInvalidUser
+	}
+
+	log.Println("登陆成功")
+
+	return nil
+}
+
+func RetrieveProjectID() error {
+	return lg.RetrieveProjectID()
+}
+func (e *EDSLogger) RetrieveProjectID() error {
+	respHtml, _ := e.doGet(e.urls["daily"])
+	//println(respHtml)
+
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(respHtml))
+
+	if err != nil {
+		return err
+	}
+
+	//fmt.Println("cookie:", e.cookie)
+
+	var projectId string
+	doc.Find("select").Each(func(i int, s *goquery.Selection) {
+		id, _ := s.Attr("id")
+		if id == "ddlProjectList" {
+			projectId, _ = s.Children().Attr("value")
+			return
+		}
+	})
+
+	if projectId == "" {
+		return errors.New("未能获取项目编号")
+	}
+
+	e.projectID = projectId
+
+	return nil
+}
+
+//func ProjectID() string {
+//	return lg.projectID
+//}
+//func (e *EDSLogger) ProjectID() string {
+//	return e.projectID
+//}
+
+////
 type dayTime struct {
 	startTime string
 	endTime   string
@@ -22,9 +132,16 @@ var (
 	pm = dayTime{startTime: "13:00", endTime: "18:00"}
 )
 
-func Daily(logUrl, projectID, logDate, logContent string) error {
+func DailyLog(logDate string) error {
+	return lg.DailyLog(logDate)
+}
+func (e EDSLogger) DailyLog(logDate string) error {
+	logUrl := e.urls["daily"]
+	if logUrl == "" {
+		return errors.New("logUrl为空")
+	}
+
 	logUrl = logUrl + "&LogDate=" + logDate
-	log.Println(logUrl)
 
 	// 先通过get获取一些隐藏参数，用作后台校验
 	hiddenParams, err := getHiddenParams(logUrl)
@@ -33,8 +150,10 @@ func Daily(logUrl, projectID, logDate, logContent string) error {
 	}
 	//fmt.Println(hiddenParams)
 
+	//log.Println("logContent:", e.lc.DailyWorkContent)
+
 	for _, t := range []dayTime{am, pm} {
-		err := doWorkLog(logUrl, projectID, logDate, logContent, t, hiddenParams)
+		err := e.doWorkLog(logUrl, logDate, t, hiddenParams)
 		if err != nil {
 			return fmt.Errorf("日志操作失败：%w", err)
 		}
@@ -46,7 +165,7 @@ func Daily(logUrl, projectID, logDate, logContent string) error {
 	return nil
 }
 
-func doWorkLog(workLogUrl, projectID, logDate, logContent string, dt dayTime, hiddenParams map[string]string) error {
+func (e EDSLogger) doWorkLog(workLogUrl, logDate string, dt dayTime, hiddenParams map[string]string) error {
 	startTime, endTime := dt.startTime, dt.endTime
 
 	logParams := url.Values{}
@@ -57,11 +176,11 @@ func doWorkLog(workLogUrl, projectID, logDate, logContent string, dt dayTime, hi
 	logParams.Set("txtDate", logDate)
 	logParams.Set("txtStartTime", startTime)
 	logParams.Set("txtEndTime", endTime)
-	logParams.Set("ddlProjectList", projectID)
+	logParams.Set("ddlProjectList", e.projectID)
 	logParams.Set("hplbWorkType", "0106")
 	logParams.Set("hplbAction", "010601")
 	logParams.Set("TextBox1", "")
-	logParams.Set("txtMemo", logContent)
+	logParams.Set("txtMemo", e.lc.DailyWorkContent)
 	logParams.Set("btnSave", "+%E7%A1%AE+%E5%AE%9A+")
 	logParams.Set("txtnodate", logDate)
 	logParams.Set("txtnoStartTime", startTime)
@@ -79,38 +198,38 @@ func doWorkLog(workLogUrl, projectID, logDate, logContent string, dt dayTime, hi
 	}
 
 	//fmt.Println(logParams)
-	_, err := DoPost(workLogUrl, strings.NewReader(logParams.Encode()))
+	_, err := e.doPost(workLogUrl, strings.NewReader(logParams.Encode()))
 	return err
 }
 
-func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
+func (e EDSLogger) doWeeklyLog(monday string) error {
 	logParams := url.Values{}
 	logParams.Set("hidCurrRole", "")
 	logParams.Set("hidWeeklyState", "")
-	logParams.Set("WeekReportDate", logDate)
-	logParams.Set("txtWorkContent", lc.WeeklyWorkContent)
-	logParams.Set("txtStudyContent", lc.WeeklyStudyContent)
-	logParams.Set("txtSummary", lc.WeeklySummary)
-	logParams.Set("txtPlanWork", lc.WeeklyPlanWork)
-	logParams.Set("txtPlanStudy", lc.WeeklyPlanStudy)
+	logParams.Set("WeekReportDate", monday)
+	logParams.Set("txtWorkContent", e.lc.WeeklyWorkContent)
+	logParams.Set("txtStudyContent", e.lc.WeeklyStudyContent)
+	logParams.Set("txtSummary", e.lc.WeeklySummary)
+	logParams.Set("txtPlanWork", e.lc.WeeklyPlanWork)
+	logParams.Set("txtPlanStudy", e.lc.WeeklyPlanStudy)
 	logParams.Set("btnSubmit", "%E6%8F%90%E4%BA%A4")
 
-	// 周报没有校验
 	// 通过get获取一些隐藏参数，用作后台校验
-	//hiddenParams, err := getHiddenParams(logUrl)
-	//if err != nil {
-	//	return err
-	//}
-	//for key, value := range hiddenParams {
-	//	logParams.Set(key, value)
-	//}
+	logUrl := e.urls["weekly"]
+	hiddenParams, err := getHiddenParams(logUrl)
+	if err != nil {
+		return err
+	}
+	for key, value := range hiddenParams {
+		logParams.Set(key, value)
+	}
 
-	_, err := DoPost(logUrl, strings.NewReader(logParams.Encode()))
+	_, err = e.doPost(logUrl, strings.NewReader(logParams.Encode()))
 	if err != nil {
 		return err
 	}
 
-	log.Println("周报填写成功", logDate)
+	log.Println("周报填写成功", monday)
 	time.Sleep(2 * time.Second)
 
 	return nil
@@ -119,7 +238,7 @@ func doWeeklyLog(logUrl, logDate string, lc LogContent) error {
 func getHiddenParams(getUrl string) (map[string]string, error) {
 	result := make(map[string]string)
 
-	respHtml, err := DoGet(getUrl)
+	respHtml, err := doGet(getUrl)
 	if err != nil {
 		//log.Println("getHiddenParams error:", err)
 		return nil, fmt.Errorf("获取参数失败：%w", err)
@@ -155,20 +274,27 @@ func getValueFromHtml(html, key string) string {
 
 	return value
 }
-func DoWeekly(urlWeekly, urlDaily, projectID string, lc LogContent) error {
+
+func WeeklyLog() error {
+	return lg.WeeklyLog()
+}
+func (e EDSLogger) WeeklyLog() error {
 	today := godate.Today()
 	workdays := today.Workdays()
 
+	//fmt.Println("cookie:", e.cookie)
+	//return nil
+
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
-	err := doWeeklyLog(urlWeekly, workdays[0].String(), lc)
+	err := e.doWeeklyLog(workdays[0].String())
 	if err != nil {
 		return err
 	}
 
 	// 再写日报
 	for _, day := range workdays {
-		err = Daily(urlDaily, projectID, day.String(), lc.DailyWorkContent)
+		err = e.DailyLog(day.String())
 		if err != nil {
 			return err
 		}
@@ -183,7 +309,7 @@ func DoWeekly(urlWeekly, urlDaily, projectID string, lc LogContent) error {
 	for _, dd := range []string{sat.String(), sun.String()} {
 		if _, ok := extraDays[dd]; ok {
 			log.Println("调休", dd)
-			err = Daily(urlDaily, projectID, dd, lc.DailyWorkContent)
+			err = e.DailyLog(dd)
 			if err != nil {
 				return err
 			}

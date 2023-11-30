@@ -17,7 +17,10 @@ type LogContent struct {
 	WeeklyPlanStudy    string `json:"weeklyPlanStudy"`
 }
 
-func RetrieveLogContent(path string) (LogContent, error) {
+func RetrieveLogContent(path string) error {
+	return lg.RetrieveLogContent(path)
+}
+func (e *EDSLogger) RetrieveLogContent(path string) error {
 	if path != "" {
 		_, err := os.Stat(path)
 		if err != nil {
@@ -30,18 +33,24 @@ func RetrieveLogContent(path string) (LogContent, error) {
 
 	if path == "" {
 		path = defaultPath
-		log.Println("use", path)
 	}
+
+	log.Printf("加载日志内容[%s]...", path)
 
 	file, err := os.Open(path)
 	if err != nil {
-		return LogContent{}, err
+		return err
 	}
 
 	defer file.Close()
 
 	var content LogContent
 	err = json.NewDecoder(file).Decode(&content)
+	if err != nil {
+		return err
+	}
 
-	return content, err
+	e.lc = content
+
+	return nil
 }

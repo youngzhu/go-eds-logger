@@ -8,51 +8,43 @@ import (
 	// "os"
 )
 
-const HOST = "eds.newtouch.cn"
 const UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"
 const AcceptLanguage = "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7"
 const AcceptEncoding = "gzip, deflate"
 
-var postProperties = make(map[string]string)
-var getProperties = make(map[string]string)
-
-func init() {
-	//log.Println("http init")
-
-	// post
-	postProperties["Host"] = HOST
-	postProperties["Content-Length"] = "6955"
-	postProperties["Cache-Control"] = "max-age=0"
-	postProperties["Origin"] = "http://eds.newtouch.cn"
-	postProperties["Upgrade-Insecure-Requests"] = "1"
-	postProperties["Content-Type"] = "application/x-www-form-urlencoded"
-	postProperties["User-Agent"] = "Mozilla/5.0"
-	postProperties["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
-	postProperties["Accept-Encoding"] = AcceptEncoding
-	postProperties["Accept-Language"] = AcceptLanguage
-	postProperties["connection"] = "Keep-Alive"
-	postProperties["accept"] = "*/*"
-	postProperties["user-agent"] = "Mozilla/5.0"
-
-	// get
-	getProperties["Upgrade-Insecure-Requests"] = "1"
-	getProperties["User-Agent"] = UserAgent
-	getProperties["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
-	getProperties["Accept-Encoding"] = AcceptEncoding
-	getProperties["Accept-Language"] = AcceptLanguage
-	getProperties["Host"] = HOST
+var postProperties = map[string]string{
+	"Content-Length":            "6955",
+	"Cache-Control":             "max-age=0",
+	"Upgrade-Insecure-Requests": "1",
+	"Content-Type":              "application/x-www-form-urlencoded",
+	"User-Agent":                "Mozilla/5.0",
+	"Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+	"Accept-Encoding":           AcceptEncoding,
+	"Accept-Language":           AcceptLanguage,
+	"connection":                "Keep-Alive",
+	"accept":                    "*/*",
+	"user-agent":                "Mozilla/5.0",
 }
 
-func DoGet(url string) (string, error) {
-	return doRequest(url, http.MethodGet, nil)
-}
-func DoPost(url string, body io.Reader) (string, error) {
-	return doRequest(url, http.MethodPost, body)
+var getProperties = map[string]string{
+	"Upgrade-Insecure-Requests": "1",
+	"User-Agent":                UserAgent,
+	"Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+	"Accept-Encoding":           AcceptEncoding,
+	"Accept-Language":           AcceptLanguage,
 }
 
-const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
+func doGet(url string) (string, error) {
+	return lg.doRequest(url, http.MethodGet, nil)
+}
+func (e EDSLogger) doGet(url string) (string, error) {
+	return e.doRequest(url, http.MethodGet, nil)
+}
+func (e EDSLogger) doPost(url string, body io.Reader) (string, error) {
+	return e.doRequest(url, http.MethodPost, body)
+}
 
-func doRequest(url, method string, body io.Reader) (string, error) {
+func (e EDSLogger) doRequest(url, method string, body io.Reader) (string, error) {
 	request, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return "", err
@@ -69,7 +61,9 @@ func doRequest(url, method string, body io.Reader) (string, error) {
 	}
 
 	request.Header.Set("Referer", url)
-	request.Header.Set("Cookie", cookie)
+	request.Header.Set("Cookie", e.cookie)
+	request.Header.Set("Host", e.host)
+	request.Header.Set("Origin", e.urls["home"])
 
 	resp, err := newClient().Do(request)
 	if err != nil {

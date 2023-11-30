@@ -22,7 +22,7 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:           "goeds",
 	Short:         "Do EDS log via Golang",
-	Version:       "0.1",
+	Version:       "1.0",
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	// 所有操作都需要登录，所以放在这里

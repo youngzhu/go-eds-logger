@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"goeds/logger"
-	"log"
 	"path/filepath"
 )
 
@@ -22,6 +21,8 @@ var logCmd = &cobra.Command{
 	Use:   "log",
 	Short: "Do EDS log",
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		var err error
+
 		// 获取参数
 		loggerFilePath := viper.GetString("logger-file")
 		if loggerFilePath == "" {
@@ -32,26 +33,33 @@ var logCmd = &cobra.Command{
 			loggerFilePath = filepath.Join(home, "edsLogger.json")
 		}
 
-		err := loadLoggerFile(loggerFilePath)
+		err = logger.RetrieveLogContent(loggerFilePath)
 		if err != nil {
 			return err
 		}
 
 		// 登录
 		// 获取参数
-		loginURL := viper.GetString("urls.login")
+		logger.AddUrl("login", viper.GetString("urls.login"))
+		logger.SetCookie(viper.GetString("cookie"))
+		logger.SetHost(viper.GetString("host"))
 		userID := viper.GetString("usr-id")
 		userPwd := viper.GetString("usr-pwd")
+		err = logger.Login(userID, userPwd)
+		if err != nil {
+			return err
+		}
 
-		return logger.Login(loginURL, userID, userPwd)
+		// 获取项目编号
+		logger.AddUrl("daily", viper.GetString("urls.daily"))
+		err = logger.RetrieveProjectID()
+
+		// 给logger添加其他配置
+		logger.AddUrl("home", viper.GetString("urls.home"))
+		logger.AddUrl("weekly", viper.GetString("urls.weekly"))
+
+		return err
 	},
-}
-
-func loadLoggerFile(path string) (err error) {
-	log.Printf("加载日志内容[%s]...", path)
-	logContent, err = logger.RetrieveLogContent(path)
-
-	return
 }
 
 func init() {
