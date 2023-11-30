@@ -26,6 +26,9 @@ type EDSLogger struct {
 	cookie    string
 	host      string
 
+	hplbWorkType string
+	hplbAction   string
+
 	lc LogContent
 }
 
@@ -85,6 +88,8 @@ func RetrieveProjectID() error {
 	return lg.RetrieveProjectID()
 }
 func (e *EDSLogger) RetrieveProjectID() error {
+	log.Println("Retrieve ProjectID...")
+
 	respHtml, _ := e.doGet(e.urls["daily"])
 	//println(respHtml)
 
@@ -120,6 +125,48 @@ func (e *EDSLogger) RetrieveProjectID() error {
 //func (e *EDSLogger) ProjectID() string {
 //	return e.projectID
 //}
+
+func RetrieveHplb(workTypeName string) error {
+	return lg.RetrieveHplb(workTypeName)
+}
+func (e *EDSLogger) RetrieveHplb(workTypeName string) error {
+	log.Println("Retrieve hplb info...")
+
+	respHtml, _ := e.doGet(e.urls["daily"])
+
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(respHtml))
+
+	if err != nil {
+		return err
+	}
+
+	var workTypeId, actionId string
+
+	doc.Find("select").Each(func(i int, s *goquery.Selection) {
+		id, _ := s.Attr("id")
+		if id == "hplbWorkType" {
+			for _, node := range s.Children().Nodes {
+				if node.FirstChild.Data == workTypeName {
+					workTypeId = node.Attr[0].Val
+					break
+				}
+			}
+		}
+	})
+
+	if workTypeId == "" {
+		return errors.New("未能获取工作类型")
+	}
+
+	if actionId == "" {
+		actionId = workTypeId + "01"
+	}
+
+	e.hplbWorkType = workTypeId
+	e.hplbAction = actionId
+
+	return nil
+}
 
 ////
 type dayTime struct {
@@ -177,8 +224,8 @@ func (e EDSLogger) doWorkLog(workLogUrl, logDate string, dt dayTime, hiddenParam
 	logParams.Set("txtStartTime", startTime)
 	logParams.Set("txtEndTime", endTime)
 	logParams.Set("ddlProjectList", e.projectID)
-	logParams.Set("hplbWorkType", "0106")
-	logParams.Set("hplbAction", "010601")
+	logParams.Set("hplbWorkType", e.hplbWorkType)
+	logParams.Set("hplbAction", e.hplbAction)
 	logParams.Set("TextBox1", "")
 	logParams.Set("txtMemo", e.lc.DailyWorkContent)
 	logParams.Set("btnSave", "+%E7%A1%AE+%E5%AE%9A+")

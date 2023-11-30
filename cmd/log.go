@@ -34,9 +34,7 @@ var logCmd = &cobra.Command{
 		}
 
 		err = logger.RetrieveLogContent(loggerFilePath)
-		if err != nil {
-			return err
-		}
+		cobra.CheckErr(err)
 
 		// 登录
 		// 获取参数
@@ -46,19 +44,23 @@ var logCmd = &cobra.Command{
 		userID := viper.GetString("usr-id")
 		userPwd := viper.GetString("usr-pwd")
 		err = logger.Login(userID, userPwd)
-		if err != nil {
-			return err
-		}
+		cobra.CheckErr(err)
 
 		// 获取项目编号
 		logger.AddUrl("daily", viper.GetString("urls.daily"))
 		err = logger.RetrieveProjectID()
+		cobra.CheckErr(err)
+
+		// 获取工作类型
+		workType := viper.GetString("hplb.workType")
+		err = logger.RetrieveHplb(workType)
+		cobra.CheckErr(err)
 
 		// 给logger添加其他配置
 		logger.AddUrl("home", viper.GetString("urls.home"))
 		logger.AddUrl("weekly", viper.GetString("urls.weekly"))
 
-		return err
+		return nil
 	},
 }
 

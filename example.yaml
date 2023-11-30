@@ -3,3 +3,6 @@ urls:
   login: http://eds.newtouch.cn/eds3/DefaultLogin.aspx?lan=zh-cn
   daily: http://eds.newtouch.cn/eds3/worklog.aspx?tabid=0
   weekly: http://eds.newtouch.cn/eds36web/WorkWeekly/WorkWeeklyInfo.aspx
+hplb:
+  workType: xx
+  action: ""
