@@ -2,8 +2,8 @@
   "logContent": {
     "dailyWorkContent": "了解新系统",
     "weeklyWorkContent": "了解新系统",
-    "weeklyStudyContent": "了解新系统",
-    "weeklySummary": "人的时间成本比机器的更高。所以，可以用简单的代码让机器去做相对复杂且重复性的任务",
+    "weeklyStudyContent": "进一步学习Java函数式编程",
+    "weeklySummary": "函数式编程的优点：简明、高效。缺点：对异常处理不友好",
     "weeklyPlanWork": "了解新系统",
     "weeklyPlanStudy": "了解新系统"
   },
