@@ -10,6 +10,8 @@ github.com/youngzhu/godate v0.2.1 h1:uUXCcLgVWakP0VCtTxirtbul1b6/q5Hzp3akvpIcPxc
 github.com/youngzhu/godate v0.2.1/go.mod h1:t7JdbUghILQVWmHNCjDJVVewNoc7CNK5xuNVUo+gTZs=
 github.com/youngzhu/godate v0.5.1 h1:Z5cokKJAmWuekGdBWmERgg54F5W122+EW++NhteV0/c=
 github.com/youngzhu/godate v0.5.1/go.mod h1:lI0NrBB4zGGwtY0E7mTltbs24JnT4JHiuiWzcRnovYw=
+github.com/youngzhu/godate v0.6.1 h1:M0gAGjOWKfZfSa0GKCgKNNhI2BIFZDD3yk5LlP2gdqA=
+github.com/youngzhu/godate v0.6.1/go.mod h1:lI0NrBB4zGGwtY0E7mTltbs24JnT4JHiuiWzcRnovYw=
 golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20210614182718-04defd469f4e h1:XpT3nA5TvE525Ne3hInMh6+GETgn27Zfm9dxsThnX2Q=
 golang.org/x/net v0.0.0-20210614182718-04defd469f4e/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=

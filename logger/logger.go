@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
+	"github.com/youngzhu/godate/chinese"
 	"log"
 	"net/url"
 	"os"
@@ -254,25 +255,20 @@ func getValueFromHtml(html, key string) string {
 func logWholeWeek(cfg config.Configuration, d godate.Date) {
 	workdays := d.Workdays()
 
+	monday := workdays[0]
+
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
-	workWeeklyLog(cfg, workdays[0].String())
+	workWeeklyLog(cfg, monday.String())
 
 	// 再写日报
-	for _, day := range workdays {
-		workLog(cfg, day.String())
-	}
-
-	// 周末调休
-	sat, _ := d.AddDay(5)
-	sun, _ := d.AddDay(6)
-
-	extraDays := RetrieveExtraDays()
-
-	for _, dd := range []string{sat.String(), sun.String()} {
-		if _, ok := extraDays[dd]; ok {
-			log.Println("调休", dd)
-			workLog(cfg, dd)
+	// 直接填7天日报
+	for i := 0; i < 7; i++ {
+		date, _ := d.AddDay(i)
+		if chinese.IsWorkDayInChina(date) {
+			workLog(cfg, date.String())
+		} else {
+			log.Println(date, "放假")
 		}
 	}
 }
