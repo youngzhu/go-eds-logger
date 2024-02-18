@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
-	"github.com/youngzhu/godate/chinese"
+	//"github.com/youngzhu/godate/chinese"
 	"log"
 	"net/url"
 	"os"
@@ -263,13 +263,13 @@ func logWholeWeek(cfg config.Configuration, d godate.Date) {
 
 	// 再写日报
 	// 直接填7天日报
-	for i := 0; i < 7; i++ {
+	for i := 0; i < 5; i++ {
 		date, _ := d.AddDay(i)
-		if chinese.IsWorkDayInChina(date) {
+		//if chinese.IsWorkDayInChina(date) {
 			workLog(cfg, date.String())
-		} else {
-			log.Println(date, "放假")
-		}
+		//} else {
+			//log.Println(date, "放假")
+		//}
 	}
 }
 
