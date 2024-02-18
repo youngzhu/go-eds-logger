@@ -18,9 +18,9 @@ var (
 )
 
 // dailyCmd represents the daily command
-// goeds log d -s=-1 -d=1
+// goeds log d -s=0 -d=1
 var dailyCmd = &cobra.Command{
-	Use:     "daily(d) m n",
+	Use:     "d -s=0 -d=1",
 	Aliases: []string{"d"},
 	Short:   "按天填写日志",
 	//Args:    cobra.ExactArgs(2),
