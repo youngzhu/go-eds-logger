@@ -2,7 +2,7 @@ name: Log Every Mon via Docker
 
 on:
   schedule:
-  - cron: '1 10 * * Mon'
+  - cron: '10 1 * * Mon'
   
   workflow_dispatch:
 
