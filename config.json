@@ -8,10 +8,10 @@
     "weeklyPlanStudy": "依葫芦画瓢，开发新的模块"
   },
   "urls": {
-    "home": "http://eds.newtouch.cn:8081",
-    "login": "http://eds.newtouch.cn:8081/eds3/DefaultLogin.aspx?lan=zh-cn",
-    "worklog": "http://eds.newtouch.cn:8081/eds3/worklog.aspx?tabid=0",
-    "workWeekly": "http://eds.newtouch.cn:8081/eds36web/WorkWeekly/WorkWeeklyInfo.aspx"
+    "home": "http://eds.newtouch.cn",
+    "login": "http://eds.newtouch.cn/eds3/DefaultLogin.aspx?lan=zh-cn",
+    "worklog": "http://eds.newtouch.cn/eds3/worklog.aspx?tabid=0",
+    "workWeekly": "http://eds.newtouch.cn/eds36web/WorkWeekly/WorkWeeklyInfo.aspx"
   },
   "hplb": {
     "workType": "开发-计划阶段",
