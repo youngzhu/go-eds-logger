@@ -21,12 +21,6 @@ func TestGetProjectID(t *testing.T) {
 	t.Log("projectID:", logger.RetrieveProjectID(cfg))
 }
 
-func TestRetrieveLogContent(t *testing.T) {
-	days := logger.RetrieveExtraDays()
-
-	t.Log(days)
-}
-
 func TestRetrieveHplb(t *testing.T) {
 	hplb := logger.RetrieveHplb(cfg)
 	t.Log("WorkType:", hplb.WorkType, "Action:", hplb.Action)

@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"bufio"
 	"edser/config"
 	"edser/http"
 	"fmt"
@@ -282,24 +281,4 @@ func register(logType string, edsLogger EDSLogger) {
 
 	log.Println("Register logger:", logType)
 	loggers[logType] = edsLogger
-}
-
-// RetrieveExtraDays
-// 返回map方便使用（查找）
-func RetrieveExtraDays() map[string]struct{} {
-	days := make(map[string]struct{})
-
-	f, err := os.Open("data/extraDays.txt")
-	defer f.Close()
-	if err != nil {
-		log.Println(err)
-		return days
-	}
-
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		days[scanner.Text()] = struct{}{}
-	}
-
-	return days
 }
