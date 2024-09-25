@@ -132,7 +132,7 @@ func workLog(cfg config.Configuration, logDate string) {
 
 	// 先通过get获取一些隐藏参数，用作后台校验
 	hiddenParams := getHiddenParams(url)
-	// fmt.Println(hiddenParams)
+	//fmt.Println(len(hiddenParams))
 
 	logContent := cfg.GetStringDefault("logContent:dailyWorkContent", "")
 	for _, t := range []dayTime{am, pm} {
@@ -212,24 +212,6 @@ func workWeeklyLog(cfg config.Configuration, logDate string) {
 
 	log.Println("周报填写成功", logDate)
 	time.Sleep(2 * time.Second)
-}
-
-func getHiddenParams(url string) map[string]string {
-	result := make(map[string]string)
-
-	respHtml, err := http.DoGet(url)
-	if err != nil {
-		log.Println("getHiddenParams error:", err)
-	}
-	//println(respHtml)
-
-	keys := []string{"__EVENTVALIDATION", "__VIEWSTATE"}
-
-	for _, k := range keys {
-		result[k] = getValueFromHtml(respHtml, k)
-	}
-
-	return result
 }
 
 func getValueFromHtml(html, key string) string {
