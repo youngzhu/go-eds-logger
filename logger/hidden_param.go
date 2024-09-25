@@ -30,12 +30,13 @@ func (s hiddenParamStats) String() string {
 
 var hiddenParamKeys = []string{"__EVENTVALIDATION", "__VIEWSTATE"}
 
-func getHiddenParams(url string) map[string]string {
+func getHiddenParams(url string) (map[string]string, error) {
 	result := make(map[string]string)
 
 	respHtml, err := http.DoGet(url)
 	if err != nil {
-		log.Println("getHiddenParams error:", err)
+		//log.Println("getHiddenParams error:", err)
+		return nil, err
 	}
 	//println(respHtml)
 
@@ -49,7 +50,7 @@ func getHiddenParams(url string) map[string]string {
 	//	hiddenParamObserver = append(hiddenParamObserver, hiddenParamStats{url: url, key: k, value: v, occurrence: 1})
 	//}
 
-	return result
+	return result, nil
 }
 
 type hiddenParamStatsSlice struct {

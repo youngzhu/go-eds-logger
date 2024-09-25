@@ -3,6 +3,7 @@ package logger
 import (
 	"edser/config"
 	"edser/http"
+	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
@@ -19,7 +20,7 @@ import (
 var d godate.Date
 
 type EDSLogger interface {
-	Execute(cfg config.Configuration)
+	Execute(cfg config.Configuration) error
 }
 
 var loggers = make(map[string]EDSLogger)
@@ -48,8 +49,10 @@ func Run(cfg config.Configuration) (err error) {
 	edsLogger, exists := loggers["manual"]
 	if !exists {
 		edsLogger = loggers["Action"]
+	} else {
+		return errors.New("手动执行，抛出异常")
 	}
-	edsLogger.Execute(cfg)
+	err = edsLogger.Execute(cfg)
 
 	return
 }
@@ -127,23 +130,31 @@ type dayTime struct {
 var am = dayTime{startTime: "10:00", endTime: "12:00"}
 var pm = dayTime{startTime: "13:00", endTime: "18:00"}
 
-func workLog(cfg config.Configuration, logDate string) {
+func workLog(cfg config.Configuration, logDate string) (err error) {
 	url := cfg.GetStringDefault("urls:worklog", "") + "&LogDate=" + logDate
 
 	// 先通过get获取一些隐藏参数，用作后台校验
-	hiddenParams := getHiddenParams(url)
+	hiddenParams, err := getHiddenParams(url)
+	if err != nil {
+		return err
+	}
 	//fmt.Println(len(hiddenParams))
 
 	logContent := cfg.GetStringDefault("logContent:dailyWorkContent", "")
 	for _, t := range []dayTime{am, pm} {
-		doWorkLog(url, logDate, logContent, t, hiddenParams)
+		err = doWorkLog(url, logDate, logContent, t, hiddenParams)
+		if err != nil {
+			return err
+		}
 	}
 
 	log.Println("日志操作成功", logDate)
 	time.Sleep(800 * time.Millisecond)
+
+	return
 }
 
-func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams map[string]string) {
+func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams map[string]string) error {
 	startTime, endTime := dt.startTime, dt.endTime
 
 	logParams := url.Values{}
@@ -175,15 +186,18 @@ func doWorkLog(workLogUrl, logDate, logContent string, dt dayTime, hiddenParams 
 		logParams.Set(key, value)
 	}
 
-	http.DoPost(workLogUrl, strings.NewReader(logParams.Encode()))
-
+	_, err := http.DoPost(workLogUrl, strings.NewReader(logParams.Encode()))
+	return err
 }
 
-func workWeeklyLog(cfg config.Configuration, logDate string) {
+func workWeeklyLog(cfg config.Configuration, logDate string) (err error) {
 	urlWeekly := cfg.GetStringDefault("urls:workWeekly", "")
 
 	// 先通过get获取一些隐藏参数，用作后台校验
-	hiddenParams := getHiddenParams(urlWeekly)
+	hiddenParams, err := getHiddenParams(urlWeekly)
+	if err != nil {
+		return err
+	}
 
 	logParams := url.Values{}
 	logParams.Set("hidCurrRole", "")
@@ -205,13 +219,18 @@ func workWeeklyLog(cfg config.Configuration, logDate string) {
 		logParams.Set(key, value)
 	}
 
-	http.DoPost(urlWeekly, strings.NewReader(logParams.Encode()))
+	_, err = http.DoPost(urlWeekly, strings.NewReader(logParams.Encode()))
+	if err != nil {
+		return err
+	}
 
 	// resp := http.DoRequest(urlWeekly, http.MethodPost, cookie, strings.NewReader(logParams.Encode()))
 	// log.Println(resp)
 
 	log.Println("周报填写成功", logDate)
 	time.Sleep(2 * time.Second)
+
+	return
 }
 
 func getValueFromHtml(html, key string) string {
@@ -235,14 +254,14 @@ func getValueFromHtml(html, key string) string {
 	return value
 }
 
-func logWholeWeek(cfg config.Configuration, d godate.Date) {
+func logWholeWeek(cfg config.Configuration, d godate.Date) (err error) {
 	workdays := d.Workdays()
 
 	monday := workdays[0]
 
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
-	workWeeklyLog(cfg, monday.String())
+	err = workWeeklyLog(cfg, monday.String())
 
 	// 再写日报
 	// 直接填7天日报
@@ -254,6 +273,8 @@ func logWholeWeek(cfg config.Configuration, d godate.Date) {
 			log.Println(date, "放假")
 		}
 	}
+
+	return
 }
 
 func register(logType string, edsLogger EDSLogger) {

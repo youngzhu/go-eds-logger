@@ -13,7 +13,9 @@ func init() {
 }
 
 // Execute 每周一自动执行，填写周报和5天的日报
-func (a actionLogger) Execute(cfg config.Configuration) {
+func (a actionLogger) Execute(cfg config.Configuration) (err error) {
 	mon := godate.NewDate()
-	logWholeWeek(cfg, mon)
+	err = logWholeWeek(cfg, mon)
+
+	return
 }
