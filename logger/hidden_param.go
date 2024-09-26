@@ -7,6 +7,35 @@ import (
 	"strings"
 )
 
+var hiddenParamKeys = []string{"__EVENTVALIDATION", "__VIEWSTATE"}
+
+func getHiddenParams(url string) (map[string]string, error) {
+	result := make(map[string]string)
+
+	respHtml, err := http.DoGet(url)
+	if err != nil {
+		log.Println("getHiddenParams error:", err)
+		return nil, err
+	}
+	//println(respHtml)
+
+	for _, k := range hiddenParamKeys {
+		result[k] = getValueFromHtml(respHtml, k)
+	}
+
+	// 观察数据是否一致，该方法是否可以只调一次？
+	// 每次结果都不一样！！必须重复调用！！！
+	//for k, v := range result {
+	//	hiddenParamObserver = append(hiddenParamObserver, hiddenParamStats{url: url, key: k, value: v, occurrence: 1})
+	//}
+
+	return result, nil
+}
+
+////////////////////////////////////////////////////
+/////////////////    以下，测试用      ///////////////
+////////////////////////////////////////////////////
+
 // 先用切片搜集数据
 // 然后遍历数据统计分析
 var hiddenParamObserver = make([]hiddenParamStats, 0)
@@ -26,31 +55,6 @@ func (s hiddenParamStats) String() string {
 		s.url, s.key, s.value, s.occurrence)
 
 	return sb.String()
-}
-
-var hiddenParamKeys = []string{"__EVENTVALIDATION", "__VIEWSTATE"}
-
-func getHiddenParams(url string) (map[string]string, error) {
-	result := make(map[string]string)
-
-	respHtml, err := http.DoGet(url)
-	if err != nil {
-		//log.Println("getHiddenParams error:", err)
-		return nil, err
-	}
-	//println(respHtml)
-
-	for _, k := range hiddenParamKeys {
-		result[k] = getValueFromHtml(respHtml, k)
-	}
-
-	// 观察数据是否一致，该方法是否可以只调一次？
-	// 每次结果都不一样！！必须重复调用！！！
-	//for k, v := range result {
-	//	hiddenParamObserver = append(hiddenParamObserver, hiddenParamStats{url: url, key: k, value: v, occurrence: 1})
-	//}
-
-	return result, nil
 }
 
 type hiddenParamStatsSlice struct {
