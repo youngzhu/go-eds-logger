@@ -2,6 +2,8 @@ package main
 
 import (
 	"edser/logger"
+	"github.com/youngzhu/godate"
+	"github.com/youngzhu/godate/chinese"
 	"log"
 	"os"
 	"testing"
@@ -24,4 +26,15 @@ func TestGetProjectID(t *testing.T) {
 func TestRetrieveHplb(t *testing.T) {
 	hplb := logger.RetrieveHplb(cfg)
 	t.Log("WorkType:", hplb.WorkType, "Action:", hplb.Action)
+}
+
+func TestGodate(t *testing.T) {
+
+	if chinese.IsOffDayInChina(godate.MustDate(2025, 1, 1)) != true {
+		t.Fail()
+	}
+
+	if chinese.IsOffDayInChina(godate.MustDate(2025, 10, 1)) == true {
+		t.Fail()
+	}
 }
