@@ -3,7 +3,6 @@ package logger
 import (
 	"edser/config"
 	"edser/http"
-	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
@@ -50,7 +49,7 @@ func Run(cfg config.Configuration) (err error) {
 	if !exists {
 		edsLogger = loggers["Action"]
 	} else {
-		return errors.New("手动执行，抛出异常")
+		//return errors.New("手动执行，抛出异常")
 	}
 	err = edsLogger.Execute(cfg)
 
