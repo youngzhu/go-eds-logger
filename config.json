@@ -1,6 +1,6 @@
 {
   "logContent": {
-    "dailyWorkContent": "开发-测试-联调",
+    "dailyWorkContent": "需求分析+开发设计+测试联调",
     "weeklyWorkContent": "开发-测试-联调",
     "weeklyStudyContent": "进一步学习并应用Java函数式编程",
     "weeklySummary": "函数式编程的优点：简明、高效。不足：对异常处理不友好",
