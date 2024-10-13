@@ -2,10 +2,10 @@
   "logContent": {
     "dailyWorkContent": "需求分析+开发设计+测试联调",
     "weeklyWorkContent": "开发-测试-联调",
-    "weeklyStudyContent": "进一步学习并应用Java函数式编程",
+    "weeklyStudyContent": "学习动态语言Groovy",
     "weeklySummary": "函数式编程的优点：简明、高效。不足：对异常处理不友好",
     "weeklyPlanWork": "开发-测试-联调",
-    "weeklyPlanStudy": "开发-测试-联调"
+    "weeklyPlanStudy": "学习动态语言Groovy"
   },
   "urls": {
     "home": "http://eds.newtouch.cn",
