@@ -1,6 +1,6 @@
 {
   "logContent": {
-    "dailyWorkContent": "需求分析+开发设计+测试联调",
+    "dailyWorkContent": "需求分析+开发设计+测试",
     "weeklyWorkContent": "开发-测试-联调",
     "weeklyStudyContent": "学习动态语言Groovy",
     "weeklySummary": "用Groovy写Util类很方便，不用管具体的类型，只要有相应的字段就可以get/set",
