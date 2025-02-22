@@ -2,10 +2,10 @@
   "logContent": {
     "dailyWorkContent": "需求分析+设计+开发+测试",
     "weeklyWorkContent": "开发-测试-联调",
-    "weeklyStudyContent": "学习动态语言Groovy",
+    "weeklyStudyContent": "1.学习大语言模型\n2.学习Python",
     "weeklySummary": "用Groovy写Util类很方便，不用管具体的参数类型，只要有相应的字段就可以get/set",
     "weeklyPlanWork": "开发-测试-联调",
-    "weeklyPlanStudy": "学习动态语言Groovy"
+    "weeklyPlanStudy": "1.学习大语言模型\n2.学习Python"
   },
   "urls": {
     "home": "http://eds.newtouch.cn",
