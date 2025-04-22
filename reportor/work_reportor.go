@@ -17,13 +17,14 @@ func init() {
 }
 
 type WorkReportor struct {
-	urls map[string]string
+	//urls map[string]string
+	workReport WorkReport // 周报内容
 }
 
 func New() *WorkReportor {
 	wr := new(WorkReportor)
 
-	wr.urls = make(map[string]string)
+	//wr.urls = make(map[string]string)
 
 	return wr
 }
@@ -33,8 +34,7 @@ func login() (err error) {
 	return _reportor.login()
 }
 
-// 登录
-func (r WorkReportor) login() (err error) {
+func (r *WorkReportor) login() (err error) {
 	userID := viper.GetString("usr-id")
 	passcode := viper.GetString("usr-pwd")
 	if userID == "" || passcode == "" {
@@ -57,4 +57,13 @@ func (r WorkReportor) login() (err error) {
 	log.Println("登陆成功")
 
 	return
+}
+
+// 装载周报内容
+func loadWorkReport() {
+	_reportor.loadWorkReport()
+}
+
+func (r *WorkReportor) loadWorkReport() {
+	r.workReport = retrieveWorkReport()
 }

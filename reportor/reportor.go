@@ -48,5 +48,9 @@ func Run() (err error) {
 		return
 	}
 
+	// 获取周报内容
+	// 可与登录同步进行
+	loadWorkReport()
+
 	return
 }
