@@ -3,6 +3,9 @@ package reportor
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"github.com/youngzhu/godate"
+	"github.com/youngzhu/godate/chinese"
+	"log"
 	"os"
 	"strings"
 )
@@ -51,6 +54,24 @@ func Run() (err error) {
 	// 获取周报内容
 	// 可与登录同步进行
 	loadWorkReport()
+
+	// 填周报
+	err = fillWeeklyReport()
+	if err != nil {
+		return
+	}
+
+	// 填日报
+	// 直接填7天日报
+	monday := godate.Today()
+	for i := 0; i < 7; i++ {
+		date, _ := monday.AddDay(i)
+		if chinese.IsWorkDayInChina(date) {
+			fillDailyReport(date.String())
+		} else {
+			log.Println(date, "放假")
+		}
+	}
 
 	return
 }

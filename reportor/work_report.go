@@ -6,7 +6,10 @@ import (
 	"github.com/youngzhu/godate"
 	"io"
 	"log"
+	"math/rand"
 	"os"
+	"strings"
+	"time"
 )
 
 //
@@ -14,11 +17,33 @@ import (
 //
 
 type WorkReport struct {
-	LastWeekWorkContent  string   `json:"lastWeekWorkContent"`
-	LastWeekStudyContent string   `json:"lastWeekStudyContent"`
-	LastWeekSummary      string   `json:"lastWeekSummary"`
-	WorkPlan             []string `json:"workPlan"`
-	StudyPlan            string   `json:"studyPlan"`
+	//上周工作任务完成情况
+	LastWeekWorkContent string `json:"lastWeekWorkContent"`
+	//上周学习完成任务情况
+	LastWeekStudyContent string `json:"lastWeekStudyContent"`
+	// 经验和收获总结
+	LastWeekSummary string `json:"lastWeekSummary"`
+	//本周工作计划与重点
+	WorkPlan []string `json:"workPlan"`
+	//本周学习计划
+	StudyPlan string `json:"studyPlan"`
+}
+
+// 以文本形式返回本周工作计划
+func (r WorkReport) workPlanWeekly() string {
+	return strings.Join(r.WorkPlan, "\n")
+}
+
+// 日报
+// 从工作计划中随机获取一条
+func (r WorkReport) workPlanDaily() string {
+	// 初始化随机种子
+	rand.Seed(time.Now().UnixNano())
+
+	// 生成随机索引
+	randomIndex := rand.Intn(len(r.WorkPlan))
+	
+	return r.WorkPlan[randomIndex]
 }
 
 // 获取周报和日报的内容
