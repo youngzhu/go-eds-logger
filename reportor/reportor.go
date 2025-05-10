@@ -56,6 +56,7 @@ func Run() (err error) {
 	loadWorkReport()
 
 	// 填周报
+	// TODO 还是要取当周的工作日，因为不一定都在周一执行，如服务器故障等
 	err = fillWeeklyReport()
 	if err != nil {
 		return
