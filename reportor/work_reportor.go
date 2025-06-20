@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/spf13/viper"
-	"github.com/youngzhu/godate"
 	"log"
 	"net/url"
 	"strings"
@@ -72,15 +71,13 @@ func (r *WorkReportor) loadWorkReport() {
 }
 
 // 填周报
-func fillWeeklyReport() (err error) {
-	return _reportor.fillWeeklyReport()
+func fillWeeklyReport(reportDate string) (err error) {
+	return _reportor.fillWeeklyReport(reportDate)
 }
 
-func (r WorkReportor) fillWeeklyReport() (err error) {
+func (r WorkReportor) fillWeeklyReport(reportDate string) (err error) {
 	reportUrl := viper.GetString("urls.weekly")
 	// 只能填写本周周报（周一）!!!
-	// action 执行在周一
-	monday := godate.Today().String()
 
 	// 先通过get获取一些隐藏参数，用作后台校验
 	hiddenParams, err := getHiddenParams(reportUrl)
@@ -92,7 +89,7 @@ func (r WorkReportor) fillWeeklyReport() (err error) {
 	logParams := url.Values{}
 	logParams.Set("hidCurrRole", "")
 	logParams.Set("hidWeeklyState", "")
-	logParams.Set("WeekReportDate", monday)
+	logParams.Set("WeekReportDate", reportDate)
 	logParams.Set("txtWorkContent", r.workReport.LastWeekWorkContent)
 	logParams.Set("txtStudyContent", r.workReport.StudyPlan)
 	logParams.Set("txtSummary", r.workReport.LastWeekSummary)
@@ -110,7 +107,7 @@ func (r WorkReportor) fillWeeklyReport() (err error) {
 		return err
 	}
 
-	log.Println("周报填写成功", monday)
+	log.Println("周报填写成功", reportDate)
 	time.Sleep(2 * time.Second)
 
 	return

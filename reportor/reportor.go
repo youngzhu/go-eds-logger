@@ -56,15 +56,17 @@ func Run() (err error) {
 	loadWorkReport()
 
 	// 填周报
-	// TODO 还是要取当周的工作日，因为不一定都在周一执行，如服务器故障等
-	err = fillWeeklyReport()
+	// 还是要取当周的工作日，因为不一定都在周一执行，如服务器故障等
+	today := godate.Today()
+
+	monday := today.Workdays()[0]
+	err = fillWeeklyReport(monday.String())
 	if err != nil {
 		return
 	}
 
 	// 填日报
 	// 直接填7天日报
-	monday := godate.Today()
 	for i := 0; i < 7; i++ {
 		date, _ := monday.AddDay(i)
 		if chinese.IsWorkDayInChina(date) {
