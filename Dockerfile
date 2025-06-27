@@ -19,6 +19,7 @@ COPY main.go ./
 COPY config.json ./
 COPY http ./http/
 COPY logger/*.go ./logger/
+COPY reportor/*.go ./reportor/
 #COPY data ./data/
 COPY config ./config/
 

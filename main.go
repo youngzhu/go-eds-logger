@@ -2,7 +2,7 @@ package main
 
 import (
 	"edser/config"
-	"edser/logger"
+	"edser/reportor"
 	smail "github.com/youngzhu/go-smail"
 	"github.com/youngzhu/godate"
 	"log"
@@ -25,7 +25,8 @@ func main() {
 	var err error
 	// github action 最多执行6分钟，所以尝试5次
 	for i := 0; i < 5; i++ {
-		err = logger.Run(cfg)
+		//err = logger.Run(cfg)
+		err = reportor.Run()
 		if err == nil {
 			// 成功
 			break

@@ -42,7 +42,7 @@ func (r WorkReport) workPlanDaily() string {
 
 	// 生成随机索引
 	randomIndex := rand.Intn(len(r.WorkPlan))
-	
+
 	return r.WorkPlan[randomIndex]
 }
 
@@ -78,7 +78,7 @@ func retrieveWorkReportFromLocal() (workReport WorkReport) {
 
 func retrieveWorkReportFromInternet() (WorkReport, error) {
 	url := fmt.Sprintf("https://cdn.jsdelivr.net/gh/youngzhu/edspy/data/work-report-%s.json", godate.Today().Workdays()[0])
-	url = "https://cdn.jsdelivr.net/gh/youngzhu/edspy/data/work-report-2025-04-16.json"
+	//url = "https://cdn.jsdelivr.net/gh/youngzhu/edspy/data/work-report-2025-04-16.json"
 	get, err := newClient().Get(url)
 	//get, err := http.Get(url)
 	if err != nil {
