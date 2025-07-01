@@ -24,7 +24,7 @@ func readConfigViaViper() {
 
 	// 配置文件的默认名：config
 	// 默认首先使用 json ，所以这里用完整的文件名
-	viper.SetConfigName("config.yaml")
+	viper.SetConfigName("config.yml")
 	viper.SetConfigType("yaml")
 
 	err := viper.ReadInConfig() // 查找并读取配置文件
