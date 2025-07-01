@@ -7,5 +7,4 @@ func Test_login(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log("login success")
 }

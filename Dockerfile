@@ -17,6 +17,7 @@ RUN go mod download
 # https://docs.docker.com/engine/reference/builder/#copy
 COPY main.go ./
 COPY config.json ./
+COPY config.yml ./
 COPY http ./http/
 COPY logger/*.go ./logger/
 COPY reportor/*.go ./reportor/

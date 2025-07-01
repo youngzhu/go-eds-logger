@@ -47,7 +47,9 @@ func (r *WorkReportor) login() (err error) {
 	params.Set("UserId", userID)
 	params.Set("UserPsd", passcode)
 
-	resp, err := r.doPost(viper.GetString("urls.login"), strings.NewReader(params.Encode()))
+	loginUrl := viper.GetString("urls.login")
+	log.Println(loginUrl, "登录中...")
+	resp, err := r.doPost(loginUrl, strings.NewReader(params.Encode()))
 	if err != nil {
 		return fmt.Errorf("登录错误：%w", err)
 	}
