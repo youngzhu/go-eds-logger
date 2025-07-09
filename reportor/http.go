@@ -2,9 +2,11 @@ package reportor
 
 import (
 	"fmt"
+	"github.com/spf13/viper"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 	// "os"
 )
@@ -37,6 +39,22 @@ var getProperties = map[string]string{
 
 const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
 
+func buildCookie() string {
+	value := map[string]string{
+		"PersonId":          viper.GetString("usr-id"),
+		"ASP.NET_SessionId": "4khtnz55xiyhbmncrzmzyzzc",
+		"ActionSelect":      "010601",
+		"Hm_lvt_416c770ac83a9d996d7b3793f8c4994d":  "1569767826",
+		"Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d": "1569767826",
+	}
+
+	var pairs []string
+	for k, v := range value {
+		pairs = append(pairs, k+"="+v)
+	}
+	return strings.Join(pairs, "; ")
+}
+
 func newClient() *http.Client {
 	return &http.Client{
 		Timeout: 30 * time.Second,
@@ -68,7 +86,7 @@ func (r WorkReportor) doRequest(url, method string, body io.Reader) (string, err
 
 	request.Header.Set("Referer", url)
 	// cookie 不能省，否则做其他请求报错，如获取隐藏参数
-	request.Header.Set("Cookie", cookie)
+	request.Header.Set("Cookie", buildCookie())
 	//request.Header.Set("Host", e.host)
 	//request.Header.Set("Origin", e.urls["home"])
 
@@ -91,6 +109,8 @@ func (r WorkReportor) doRequest(url, method string, body io.Reader) (string, err
 		return "", fmt.Errorf("%w: %s, %s",
 			err, http.StatusText(resp.StatusCode), msg)
 	}
+
+	//log.Printf("Set-Cookie headers: %s", resp.Header.Values("Set-Cookie"))
 
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
