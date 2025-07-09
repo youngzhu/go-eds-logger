@@ -37,7 +37,6 @@ var getProperties = map[string]string{
 	"Accept-Language":           AcceptLanguage,
 }
 
-
 func buildCookie() string {
 	value := map[string]string{
 		"PersonId":          viper.GetString("usr-id"),
