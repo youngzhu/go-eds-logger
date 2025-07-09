@@ -35,6 +35,8 @@ var getProperties = map[string]string{
 	"Accept-Language":           AcceptLanguage,
 }
 
+const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
+
 func newClient() *http.Client {
 	return &http.Client{
 		Timeout: 30 * time.Second,
@@ -65,7 +67,8 @@ func (r WorkReportor) doRequest(url, method string, body io.Reader) (string, err
 	}
 
 	request.Header.Set("Referer", url)
-	//request.Header.Set("Cookie", e.cookie)
+	// cookie 不能省，否则做其他请求报错，如获取隐藏参数
+	request.Header.Set("Cookie", cookie)
 	//request.Header.Set("Host", e.host)
 	//request.Header.Set("Origin", e.urls["home"])
 

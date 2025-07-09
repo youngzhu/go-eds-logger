@@ -14,7 +14,7 @@ func getHiddenParams(url string) (map[string]string, error) {
 
 	respHtml, err := http.DoGet(url)
 	if err != nil {
-		log.Println("getHiddenParams error:", err)
+		//log.Println("getHiddenParams error:", err)
 		return nil, err
 	}
 	//println(respHtml)

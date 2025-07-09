@@ -54,10 +54,13 @@ func (r *WorkReportor) login() (err error) {
 		return fmt.Errorf("登录错误：%w", err)
 	}
 
+	//log.Println(resp)
+
 	if strings.Contains(resp, ErrInvalidUser.Error()) {
 		return ErrInvalidUser
 	}
 
+	//time.Sleep(2 * time.Second)
 	log.Println("登陆成功")
 
 	return
