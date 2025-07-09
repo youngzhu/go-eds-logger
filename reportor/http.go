@@ -37,7 +37,6 @@ var getProperties = map[string]string{
 	"Accept-Language":           AcceptLanguage,
 }
 
-const cookie = "ASP.NET_SessionId=4khtnz55xiyhbmncrzmzyzzc; ActionSelect=010601; Hm_lvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; Hm_lpvt_416c770ac83a9d996d7b3793f8c4994d=1569767826; PersonId=12234"
 
 func buildCookie() string {
 	value := map[string]string{
