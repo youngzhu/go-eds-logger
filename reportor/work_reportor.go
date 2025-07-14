@@ -133,6 +133,14 @@ var (
 	pm = dayTime{startTime: "13:00", endTime: "18:00"}
 )
 
+type dailyReport struct {
+	reportUrl     string
+	reportDate    string
+	reportContent string
+	startTime     string
+	endTime       string
+}
+
 func (r WorkReportor) fillDailyReport(reportDate string) (err error) {
 	reportUrl := fmt.Sprintf("%s&LogDate=%s", viper.GetString("urls.daily"), reportDate)
 
@@ -143,7 +151,14 @@ func (r WorkReportor) fillDailyReport(reportDate string) (err error) {
 	}
 
 	for _, t := range []dayTime{am, pm} {
-		err := r.fillDailyReportAMPM(reportUrl, reportDate, t, hiddenParams)
+		dr := dailyReport{
+			reportUrl:     reportUrl,
+			reportDate:    reportDate,
+			reportContent: r.workReport.workPlanDaily(),
+			startTime:     t.startTime,
+			endTime:       t.endTime,
+		}
+		err := r.fillDailyReportAMPM(dr, hiddenParams)
 		if err != nil {
 			return fmt.Errorf("日志操作失败：%w", err)
 		}
@@ -155,31 +170,29 @@ func (r WorkReportor) fillDailyReport(reportDate string) (err error) {
 	return
 }
 
-func (r WorkReportor) fillDailyReportAMPM(reportUrl, reportDate string, dt dayTime, hiddenParams map[string]string) error {
-	startTime, endTime := dt.startTime, dt.endTime
-
+func (r WorkReportor) fillDailyReportAMPM(dr dailyReport, hiddenParams map[string]string) error {
 	logParams := url.Values{}
 	logParams.Set("__EVENTTARGET", "hplbWorkType")
 	logParams.Set("__EVENTARGUMENT", "")
 	logParams.Set("__LASTFOCUS", "")
 	logParams.Set("__VIEWSTATEGENERATOR", "3A8BE513")
-	logParams.Set("txtDate", reportDate)
-	logParams.Set("txtStartTime", startTime)
-	logParams.Set("txtEndTime", endTime)
+	logParams.Set("txtDate", dr.reportDate)
+	logParams.Set("txtStartTime", dr.startTime)
+	logParams.Set("txtEndTime", dr.endTime)
 	logParams.Set("ddlProjectList", r.getProjectId())
 	logParams.Set("hplbWorkType", "0106")
 	logParams.Set("hplbAction", "010601")
 	logParams.Set("TextBox1", "")
-	logParams.Set("txtMemo", r.workReport.workPlanDaily())
+	logParams.Set("txtMemo", dr.reportContent)
 	logParams.Set("btnSave", "+%E7%A1%AE+%E5%AE%9A+")
-	logParams.Set("txtnodate", reportDate)
-	logParams.Set("txtnoStartTime", startTime)
-	logParams.Set("txtnoEndTime", endTime)
+	logParams.Set("txtnodate", dr.reportDate)
+	logParams.Set("txtnoStartTime", dr.startTime)
+	logParams.Set("txtnoEndTime", dr.endTime)
 	logParams.Set("TextBox6", "")
 	logParams.Set("txtnoMemo", "")
-	logParams.Set("txtCRMDate", reportDate)
-	logParams.Set("txtCRMStartTime", startTime)
-	logParams.Set("txtCRMEndTime", endTime)
+	logParams.Set("txtCRMDate", dr.reportDate)
+	logParams.Set("txtCRMStartTime", dr.startTime)
+	logParams.Set("txtCRMEndTime", dr.endTime)
 	logParams.Set("TextBox5", "")
 	logParams.Set("txtCRMMemo", "")
 
@@ -187,7 +200,7 @@ func (r WorkReportor) fillDailyReportAMPM(reportUrl, reportDate string, dt dayTi
 		logParams.Set(key, value)
 	}
 
-	_, err := r.doPost(reportUrl, strings.NewReader(logParams.Encode()))
+	_, err := r.doPost(dr.reportUrl, strings.NewReader(logParams.Encode()))
 	return err
 }
 
