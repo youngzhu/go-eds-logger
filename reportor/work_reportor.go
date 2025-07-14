@@ -139,7 +139,7 @@ func (r WorkReportor) fillDailyReport(reportDate string) (err error) {
 	// 先通过get获取一些隐藏参数，用作后台校验
 	hiddenParams, err := getHiddenParams(reportUrl)
 	if err != nil {
-		return err
+		return fmt.Errorf("获取隐藏参数失败：%w", err)
 	}
 
 	for _, t := range []dayTime{am, pm} {

@@ -1,7 +1,6 @@
 package reportor
 
 import (
-	"edser/http"
 	"fmt"
 	"log"
 	"strings"
@@ -10,9 +9,13 @@ import (
 var hiddenParamKeys = []string{"__EVENTVALIDATION", "__VIEWSTATE"}
 
 func getHiddenParams(url string) (map[string]string, error) {
+	return _reportor.getHiddenParams(url)
+}
+
+func (r WorkReportor) getHiddenParams(url string) (map[string]string, error) {
 	result := make(map[string]string)
 
-	respHtml, err := http.DoGet(url)
+	respHtml, err := r.doGet(url)
 	if err != nil {
 		//log.Println("getHiddenParams error:", err)
 		return nil, err

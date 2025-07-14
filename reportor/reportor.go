@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 )
 
 func init() {
@@ -73,12 +74,14 @@ func Run() (err error) {
 			err = fillDailyReport(date.String())
 			if err != nil {
 				log.Println("填日报失败:", date, err)
+				return err
 			} else {
 				log.Println("填日报成功:", date)
 			}
 		} else {
 			log.Println(date, "放假")
 		}
+		time.Sleep(time.Second * 2)
 	}
 
 	return
