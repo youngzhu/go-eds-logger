@@ -149,7 +149,7 @@ func (r WorkReportor) fillDailyReport(reportDate string) (err error) {
 		}
 	}
 
-	log.Println("日志操作成功", reportDate)
+	//log.Println("日志操作成功", reportDate)
 	time.Sleep(time.Second)
 
 	return

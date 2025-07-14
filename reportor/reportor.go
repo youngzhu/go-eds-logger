@@ -70,7 +70,12 @@ func Run() (err error) {
 	for i := 0; i < 7; i++ {
 		date, _ := monday.AddDay(i)
 		if chinese.IsWorkDayInChina(date) {
-			fillDailyReport(date.String())
+			err = fillDailyReport(date.String())
+			if err != nil {
+				log.Println("填日报失败:", date, err)
+			} else {
+				log.Println("填日报成功:", date)
+			}
 		} else {
 			log.Println(date, "放假")
 		}
