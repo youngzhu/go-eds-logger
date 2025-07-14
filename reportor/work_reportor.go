@@ -183,6 +183,10 @@ func (r WorkReportor) fillDailyReportAMPM(reportUrl, reportDate string, dt dayTi
 	logParams.Set("TextBox5", "")
 	logParams.Set("txtCRMMemo", "")
 
+	for key, value := range hiddenParams {
+		logParams.Set(key, value)
+	}
+
 	_, err := r.doPost(reportUrl, strings.NewReader(logParams.Encode()))
 	return err
 }
