@@ -26,7 +26,8 @@ type EDSLogger struct {
 	cookie    string
 	host      string
 
-	lc LogContent
+	lc         LogContent
+	workReport WorkReport
 }
 
 func New() *EDSLogger {
