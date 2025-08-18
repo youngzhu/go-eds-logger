@@ -33,7 +33,8 @@ var logCmd = &cobra.Command{
 			loggerFilePath = filepath.Join(home, "edsLogger.json")
 		}
 
-		err = logger.RetrieveLogContent(loggerFilePath)
+		//err = logger.RetrieveLogContent(loggerFilePath)
+		err = logger.RetrieveWorkReportRandom()
 		if err != nil {
 			return err
 		}
