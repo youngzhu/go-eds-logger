@@ -153,8 +153,11 @@ func (e EDSLogger) DailyLog(logDate string) error {
 
 	//log.Println("logContent:", e.lc.DailyWorkContent)
 
+	workPlanDaily := e.workReport.workPlanDaily()
+
 	for _, t := range []dayTime{am, pm} {
-		err := e.doWorkLog(logUrl, logDate, t, hiddenParams)
+		//err := e.doWorkLog(logUrl, logDate, t, hiddenParams)
+		err := e.doWorkLogSameDaily(logUrl, logDate, workPlanDaily, t, hiddenParams)
 		if err != nil {
 			return fmt.Errorf("日志操作失败：%w", err)
 		}
@@ -183,6 +186,44 @@ func (e EDSLogger) doWorkLog(workLogUrl, logDate string, dt dayTime, hiddenParam
 	logParams.Set("TextBox1", "")
 	//logParams.Set("txtMemo", e.lc.DailyWorkContent)
 	logParams.Set("txtMemo", e.workReport.workPlanDaily())
+	logParams.Set("btnSave", "+%E7%A1%AE+%E5%AE%9A+")
+	logParams.Set("txtnodate", logDate)
+	logParams.Set("txtnoStartTime", startTime)
+	logParams.Set("txtnoEndTime", endTime)
+	logParams.Set("TextBox6", "")
+	logParams.Set("txtnoMemo", "")
+	logParams.Set("txtCRMDate", logDate)
+	logParams.Set("txtCRMStartTime", startTime)
+	logParams.Set("txtCRMEndTime", endTime)
+	logParams.Set("TextBox5", "")
+	logParams.Set("txtCRMMemo", "")
+
+	for key, value := range hiddenParams {
+		logParams.Set(key, value)
+	}
+
+	//fmt.Println(logParams)
+	_, err := e.doPost(workLogUrl, strings.NewReader(logParams.Encode()))
+	return err
+}
+
+// doWorkLogSameDaily 上午、下午的日志内容相同
+func (e EDSLogger) doWorkLogSameDaily(workLogUrl, logDate, workPlan string, dt dayTime, hiddenParams map[string]string) error {
+	startTime, endTime := dt.startTime, dt.endTime
+
+	logParams := url.Values{}
+	logParams.Set("__EVENTTARGET", "hplbWorkType")
+	logParams.Set("__EVENTARGUMENT", "")
+	logParams.Set("__LASTFOCUS", "")
+	logParams.Set("__VIEWSTATEGENERATOR", "3A8BE513")
+	logParams.Set("txtDate", logDate)
+	logParams.Set("txtStartTime", startTime)
+	logParams.Set("txtEndTime", endTime)
+	logParams.Set("ddlProjectList", e.projectID)
+	logParams.Set("hplbWorkType", "0106")
+	logParams.Set("hplbAction", "010601")
+	logParams.Set("TextBox1", "")
+	logParams.Set("txtMemo", workPlan)
 	logParams.Set("btnSave", "+%E7%A1%AE+%E5%AE%9A+")
 	logParams.Set("txtnodate", logDate)
 	logParams.Set("txtnoStartTime", startTime)
