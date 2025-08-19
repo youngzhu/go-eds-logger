@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/youngzhu/godate"
+	"github.com/youngzhu/godate/chinese"
 	"log"
 	"net/url"
 	"os"
@@ -324,8 +325,46 @@ func getValueFromHtml(html, key string) string {
 }
 
 func WeeklyLog() error {
-	return lg.WeeklyLog()
+	//return lg.WeeklyLog()
+	return lg.WeeklyLogWithGodateChinese()
 }
+func (e EDSLogger) WeeklyLogWithGodateChinese() error {
+	// 填周报
+	// 还是要取当周的工作日，因为不一定都在周一执行，如服务器故障等
+	today := godate.Today()
+
+	//fmt.Println("cookie:", e.cookie)
+	//return nil
+
+	// 先写周报
+	// 只能填写本周周报（周一）!!!
+	monday := today.Workdays()[0]
+	err := e.doWeeklyLog(monday.String())
+	if err != nil {
+		return err
+	}
+
+	// 填日报
+	// 直接填7天日报
+	for i := 0; i < 7; i++ {
+		date, _ := monday.AddDay(i)
+		if chinese.IsWorkDayInChina(date) {
+			err = e.DailyLog(date.String())
+			if err != nil {
+				log.Println("填日报失败:", date, err)
+				return err
+			} else {
+				log.Println("填日报成功:", date)
+			}
+		} else {
+			log.Println(date, "放假")
+		}
+		time.Sleep(time.Second * 2)
+	}
+
+	return nil
+}
+
 func (e EDSLogger) WeeklyLog() error {
 	today := godate.Today()
 	workdays := today.Workdays()
