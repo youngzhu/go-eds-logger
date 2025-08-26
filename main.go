@@ -27,9 +27,9 @@ func main() {
 var today = godate.Today()
 
 func sendSuccessfulMail() {
-	smail.SendMail(today.String()+"成功", "")
+	smail.SendMail(today.String()+"任务计划成功", "")
 }
 
 func sendFailedMail(errMsg string) {
-	smail.SendMail(today.String()+"失败", errMsg)
+	smail.SendMail(today.String()+"任务计划失败", errMsg)
 }
