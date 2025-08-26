@@ -6,8 +6,30 @@ Check LICENSE for details.
 */
 package main
 
-import "goeds/cmd"
+import (
+	"github.com/youngzhu/go-smail"
+	"github.com/youngzhu/godate"
+	"goeds/cmd"
+	"log"
+)
 
 func main() {
-	cmd.Execute()
+	err := cmd.Execute()
+
+	if err != nil {
+		sendFailedMail(err.Error())
+		log.Fatalln(err) // 结束
+	}
+
+	sendSuccessfulMail()
+}
+
+var today = godate.Today()
+
+func sendSuccessfulMail() {
+	smail.SendMail(today.String()+"成功", "")
+}
+
+func sendFailedMail(errMsg string) {
+	smail.SendMail(today.String()+"失败", errMsg)
 }

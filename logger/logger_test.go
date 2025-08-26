@@ -1,9 +1,11 @@
 package logger
 
 import (
+	"github.com/youngzhu/go-smail"
 	"github.com/youngzhu/godate"
 	"github.com/youngzhu/godate/chinese"
 	"testing"
+	"time"
 )
 
 //func TestRetrieveLogContent(t *testing.T) {
@@ -36,4 +38,8 @@ func TestGodate_IsWorkday(t *testing.T) {
 	t.Logf("Date: %s, Is Workday: %v", day10_1, day10_1.IsWorkday())
 	t.Logf("Date: %s, Is Workday: %v", day10_1, chinese.IsWorkDayInChina(day10_1))
 	t.Logf("Date: %s, Is Offday: %v", day10_1, chinese.IsOffDayInChina(day10_1))
+}
+
+func TestSmail(t *testing.T) {
+	smail.SendMail(time.Now().String()+"成功", "")
 }
