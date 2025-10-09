@@ -6,5 +6,11 @@ import (
 )
 
 func TestDailyReport(t *testing.T) {
-	logger.DailyReport("2025-09-29")
+
+	logger.RetrieveWorkReportRandom()
+
+	err := logger.DailyReport("2025-10-12")
+	if err != nil {
+		t.Fatal(err)
+	}
 }

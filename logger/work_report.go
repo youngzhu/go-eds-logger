@@ -93,7 +93,7 @@ func (e *EDSLogger) RetrieveWorkReportRandom() error {
 
 	e.workReport = workReport
 
-	log.Printf("读取到的工作报告: %+v\n", workReport)
+	//log.Printf("读取到的工作报告: %+v\n", workReport)
 
 	return nil
 }

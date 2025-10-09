@@ -46,13 +46,59 @@ func (e EDSLogger) DailyReport(logDate string) error {
 		return errors.New("logUrl为空")
 	}
 
+	/*
+		{
+		    "id": "",
+		    "depId": "35",
+		    "departmentId": "68cfbca7-f4be-11ee-89b1-fa163ea58b38",
+		    "thirdDepId": "35",
+		    "reportDate": "2025-10-09",
+		    "workFrom": "08:30",
+		    "workTo": "16:30",
+		    "action1Id": "",
+		    "action2Id": "",
+		    "actionFirstId": "",
+		    "actionSecondId": "",
+		    "workDesc1": "投连产品",
+		    "workDesc2": "PC",
+		    "workHours": 8,
+		    "isHaveProject": "有",
+		    "proRecordId": 16205,
+		    "proId": "Q2503017",
+		    "timeType": 0
+		}
+	*/
+	/*
+		{
+		    "id": "",
+		    "depId": "35",
+		    "departmentId": "68cfbca7-f4be-11ee-89b1-fa163ea58b38",
+		    "thirdDepId": "35",
+		    "reportDate": "2025-10-11",
+		    "workFrom": "08:30",
+		    "workTo": "16:30",
+		    "action1Id": "",
+		    "action2Id": "",
+		    "actionFirstId": "",
+		    "actionSecondId": "",
+		    "workDesc1": "撤退减保，投连账户优化",
+		    "workDesc2": "PC",
+		    "workHours": 8,
+		    "isHaveProject": "有",
+		    "proRecordId": 16205,
+		    "proId": "Q2503017",
+		    "timeType": 0
+		}
+	*/
 	var addBody = AddBody{
-		Id:            "011a8c96e68471a0cde20c4805f09198",
+		// 不需要，大概是查询用的
+		//Id:            "",
 		DepId:         "35",
 		DepartmentId:  "68cfbca7-f4be-11ee-89b1-fa163ea58b38",
 		ThirdDepId:    "35",
 		WorkFrom:      "08:30",
 		WorkTo:        "16:30",
+		WorkDesc2:     "PC",
 		WorkHours:     8,
 		IsHaveProject: "有",
 		ProRecordId:   16205,
@@ -100,7 +146,9 @@ func doRequest(url, method string, body io.Reader) ([]byte, error) {
 		return nil, err
 	}
 
-	request.Header.Set("Authorization", "eyJhbGciOiJIUzUxMiJ9.eyJjbGllbnQ6bG9naW5fdXNlcl9rZXkiOiI4ODg0ZDNmZS1lMjIzLTQ0NGItYmZhZC0yZGI4YmRmOGM2MzIifQ.pMuI_03uJHf1mdQDYvlajkY0TJawXDyNSDKOQjrH4vIyFj4l15vD8H2ez04Wrj4TyLO0bq-My-W_ZyoUoVYfKQ")
+	// 很重要，代替了以前的安全校验
+	request.Header.Set("Authorization", "eyJhbGciOiJIUzUxMiJ9.eyJjbGllbnQ6bG9naW5fdXNlcl9rZXkiOiJmM2Q5ZTJmNy01NTYwLTQzYTEtYjcxNi05MjYzOGFmYjIzYWEifQ.qYQZUJ-yDoo95RtZ2BCET1LBJ-0KmJi1WshQY9aCFcs5UyPejkLukqt0xN-wPm56MynAKSyX-iQuIJXZShtDPA")
+
 	request.Header.Set("Content-Type", "application/json")
 
 	resp, err := httpClient.Do(request)
