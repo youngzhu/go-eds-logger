@@ -17,7 +17,7 @@ var weeklyCmd = &cobra.Command{
 	Short:   "填写这一周的日志",
 	Aliases: []string{"w"},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return logger.WeeklyLog()
+		return logger.WeeklyReport()
 	},
 }
 

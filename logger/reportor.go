@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/spf13/viper"
+	"github.com/youngzhu/godate"
+	"github.com/youngzhu/godate/chinese"
 	"io"
 	"io/ioutil"
 	"log"
@@ -246,4 +248,46 @@ func (re Reportor) doRequest(url, method string, body io.Reader) ([]byte, error)
 	}
 
 	return respBody, nil
+}
+
+func WeeklyReport() error {
+	return r.WeeklyReport()
+}
+func (re Reportor) WeeklyReport() error {
+	// 填周报
+	// 还是要取当周的工作日，因为不一定都在周一执行，如服务器故障等
+	today := godate.Today()
+
+	//fmt.Println("cookie:", e.cookie)
+	//return nil
+
+	// 先写周报
+	// 只能填写本周周报（周一）!!!
+	monday := today.Workdays()[0]
+	//err := e.doWeeklyLog(monday.String())
+	//if err != nil {
+	//	return err
+	//}
+
+	var err error
+
+	// 填日报
+	// 直接填7天日报
+	for i := 0; i < 7; i++ {
+		date, _ := monday.AddDay(i)
+		if chinese.IsWorkDayInChina(date) {
+			err = re.DailyReport(date.String())
+			if err != nil {
+				log.Println("填日报失败:", date, err)
+				return err
+			} else {
+				log.Println("填日报成功:", date)
+			}
+		} else {
+			log.Println(date, "放假")
+		}
+		time.Sleep(time.Second * 2)
+	}
+
+	return nil
 }
