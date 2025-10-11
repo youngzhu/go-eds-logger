@@ -12,6 +12,77 @@ import (
 	"time"
 )
 
+type Reportor struct {
+	Token      string
+	workReport WorkReport
+}
+
+// 学 viper 设置一个影子变量
+var r *Reportor
+
+func init() {
+	r = new(Reportor)
+}
+
+// 登录的请求和响应体
+type (
+	LoginReq struct {
+		LoginType      string `json:"loginType"`
+		EnterpriseCode string `json:"enterpriseCode"`
+		EmployeeId     string `json:"employeeId"`
+		Password       string `json:"password"`
+	}
+
+	LoginResp struct {
+		Msg   string `json:"msg"`
+		Code  int    `json:"code"`
+		Token string `json:"token"`
+	}
+)
+
+func LoginX(userId, password string) error {
+	return r.Login(userId, password)
+}
+
+func (re *Reportor) Login(userId, password string) error {
+	/*
+		{
+		    "loginType": "password",
+		    "enterpriseCode": "Newtouch",
+		    "employeeId": "",
+		    "password": ""
+		}
+	*/
+	var loginBody = LoginReq{
+		LoginType:      "password",
+		EnterpriseCode: "Newtouch",
+		EmployeeId:     userId,
+		Password:       password,
+	}
+	loginUrl := viper.GetString("loginUrl")
+	loginUrl = "https://eds.newtouch.com/api/login"
+
+	resp, err := re.postJSON(loginUrl, loginBody)
+	if err != nil {
+		return err
+	}
+
+	var loginResp LoginResp
+	err = json.Unmarshal(resp, &loginResp)
+	if err != nil {
+		return err
+	}
+	if loginResp.Code != 200 {
+		return errors.New("登录失败: " + loginResp.Msg)
+	}
+
+	re.Token = loginResp.Token
+
+	log.Println("登陆成功")
+
+	return nil
+}
+
 type AddBody struct {
 	Id             string `json:"id"`
 	DepId          string `json:"depId"`
@@ -33,13 +104,14 @@ type AddBody struct {
 	TimeType       int    `json:"timeType"`
 }
 
+// DailyReport 填日报
+// 注意：只填空白的。填过的，不会更新了
 func DailyReport(logDate string) error {
-	return lg.DailyReport(logDate)
+	return r.DailyReport(logDate)
 }
 
-func (e EDSLogger) DailyReport(logDate string) error {
-	logUrl := e.urls["daily"]
-	logUrl = viper.GetString("reportUrl")
+func (re Reportor) DailyReport(logDate string) error {
+	logUrl := viper.GetString("reportUrl")
 
 	logUrl = "https://eds.newtouch.com/api/workReport/add"
 	if logUrl == "" {
@@ -107,9 +179,9 @@ func (e EDSLogger) DailyReport(logDate string) error {
 	}
 
 	addBody.ReportDate = logDate
-	addBody.WorkDesc1 = e.workReport.workPlanDaily()
+	addBody.WorkDesc1 = re.workReport.workPlanDaily()
 
-	_, err := doPost(logUrl, addBody)
+	_, err := re.postJSON(logUrl, addBody)
 	if err != nil {
 		return err
 	}
@@ -128,26 +200,28 @@ func init() {
 	}
 }
 
-func doPost(url string, entry interface{}) ([]byte, error) {
+func (re Reportor) postJSON(url string, entry interface{}) ([]byte, error) {
 	entryJson, err := json.Marshal(entry)
 	if err != nil {
 		return nil, err
 	}
-	return doRequest(url, http.MethodPost, strings.NewReader(string(entryJson)))
+	return re.doRequest(url, http.MethodPost, strings.NewReader(string(entryJson)))
 }
 
 //type postEntry interface {
 //	Body() io.Reader
 //}
 
-func doRequest(url, method string, body io.Reader) ([]byte, error) {
+func (re Reportor) doRequest(url, method string, body io.Reader) ([]byte, error) {
 	request, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return nil, err
 	}
 
 	// 很重要，代替了以前的安全校验
-	request.Header.Set("Authorization", "eyJhbGciOiJIUzUxMiJ9.eyJjbGllbnQ6bG9naW5fdXNlcl9rZXkiOiJmM2Q5ZTJmNy01NTYwLTQzYTEtYjcxNi05MjYzOGFmYjIzYWEifQ.qYQZUJ-yDoo95RtZ2BCET1LBJ-0KmJi1WshQY9aCFcs5UyPejkLukqt0xN-wPm56MynAKSyX-iQuIJXZShtDPA")
+	if re.Token != "" {
+		request.Header.Set("Authorization", re.Token)
+	}
 
 	request.Header.Set("Content-Type", "application/json")
 

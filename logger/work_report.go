@@ -44,11 +44,11 @@ const edspy_root = "E:\\workspace\\GitHub\\edspy"
 
 // RetrieveWorkReportRandom 从本地 edspy 项目中随机读取一个日志文件
 func RetrieveWorkReportRandom() error {
-	return lg.RetrieveWorkReportRandom()
+	return r.RetrieveWorkReportRandom()
 }
 
 // RetrieveWorkReportRandom 从本地 edspy 项目中随机读取一个日志文件
-func (e *EDSLogger) RetrieveWorkReportRandom() error {
+func (re *Reportor) RetrieveWorkReportRandom() error {
 	// 设置随机种子
 	rand.Seed(time.Now().UnixNano())
 
@@ -91,7 +91,7 @@ func (e *EDSLogger) RetrieveWorkReportRandom() error {
 		log.Fatalf("解析JSON失败: %v", err)
 	}
 
-	e.workReport = workReport
+	re.workReport = workReport
 
 	//log.Printf("读取到的工作报告: %+v\n", workReport)
 

@@ -52,7 +52,7 @@ func dailyAction() error {
 			logDay, _ = godate.Today().SubDay(-diff)
 		}
 
-		err := logger.DailyLog(logDay.String())
+		err := logger.DailyReport(logDay.String())
 		if err != nil {
 			return err
 		}

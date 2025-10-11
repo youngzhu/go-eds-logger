@@ -41,23 +41,23 @@ var logCmd = &cobra.Command{
 
 		// 登录
 		// 获取参数
-		logger.AddUrl("login", viper.GetString("urls.login"))
-		logger.SetCookie(viper.GetString("cookie"))
-		logger.SetHost(viper.GetString("host"))
+		//logger.AddUrl("login", viper.GetString("urls.login"))
+		//logger.SetCookie(viper.GetString("cookie"))
+		//logger.SetHost(viper.GetString("host"))
 		userID := viper.GetString("usr-id")
 		userPwd := viper.GetString("usr-pwd")
-		err = logger.Login(userID, userPwd)
+		err = logger.LoginX(userID, userPwd)
 		if err != nil {
 			return err
 		}
 
 		// 获取项目编号
-		logger.AddUrl("daily", viper.GetString("urls.daily"))
-		err = logger.RetrieveProjectID()
+		//logger.AddUrl("daily", viper.GetString("urls.daily"))
+		//err = logger.RetrieveProjectID()
 
 		// 给logger添加其他配置
-		logger.AddUrl("home", viper.GetString("urls.home"))
-		logger.AddUrl("weekly", viper.GetString("urls.weekly"))
+		//logger.AddUrl("home", viper.GetString("urls.home"))
+		//logger.AddUrl("weekly", viper.GetString("urls.weekly"))
 
 		return err
 	},
