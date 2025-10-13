@@ -108,11 +108,11 @@ type AddBody struct {
 
 // DailyReport 填日报
 // 注意：只填空白的。填过的，不会更新了
-func DailyReport(logDate string) error {
-	return r.DailyReport(logDate)
+func DailyReport(reportDate string) error {
+	return r.DailyReport(reportDate)
 }
 
-func (re Reportor) DailyReport(logDate string) error {
+func (re Reportor) DailyReport(reportDate string) error {
 	logUrl := viper.GetString("reportUrl")
 
 	logUrl = "https://eds.newtouch.com/api/workReport/add"
@@ -180,7 +180,7 @@ func (re Reportor) DailyReport(logDate string) error {
 		TimeType:      0,
 	}
 
-	addBody.ReportDate = logDate
+	addBody.ReportDate = reportDate
 	addBody.WorkDesc1 = re.workReport.workPlanDaily()
 
 	_, err := re.postJSON(logUrl, addBody)
@@ -188,8 +188,8 @@ func (re Reportor) DailyReport(logDate string) error {
 		return err
 	}
 
-	log.Println("日志操作成功", logDate)
-	time.Sleep(800 * time.Millisecond)
+	log.Println("日志操作成功", reportDate)
+	//time.Sleep(800 * time.Millisecond)
 
 	return nil
 }
@@ -264,10 +264,13 @@ func (re Reportor) WeeklyReport() error {
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
 	monday := today.Workdays()[0]
-	//err := e.doWeeklyLog(monday.String())
-	//if err != nil {
-	//	return err
-	//}
+	// 周一是工作日才填周报
+	if chinese.IsWorkDayInChina(monday) {
+		err := re.WeekReport(monday.String())
+		if err != nil {
+			return err
+		}
+	}
 
 	var err error
 
@@ -280,14 +283,65 @@ func (re Reportor) WeeklyReport() error {
 			if err != nil {
 				log.Println("填日报失败:", date, err)
 				return err
-			} else {
-				log.Println("填日报成功:", date)
 			}
 		} else {
 			log.Println(date, "放假")
 		}
 		time.Sleep(time.Second * 2)
 	}
+
+	return nil
+}
+
+type WeekReportReq struct {
+	Weekreportdate string `json:"weekreportdate"`
+	Id             string `json:"id"`
+	Unfinishwork   string `json:"unfinishwork"`
+	Workproblem    string `json:"workproblem"`
+	Remark         string `json:"remark"`
+	Arrangement    string `json:"arrangement"`
+	Planwork       string `json:"planwork"`
+	Weekstate      string `json:"weekstate"`
+}
+
+// WeekReport 填周报
+func WeekReport(reportDate string) error {
+	return r.WeekReport(reportDate)
+}
+
+func (re *Reportor) WeekReport(reportDate string) error {
+	/*
+		{
+		    "weekreportdate": "2025-10-13",
+		    "id": "",
+		    "unfinishwork": "1 完成一个优化任务\n2 投连需求",
+		    "workproblem": "退保挽留通知流程",
+		    "remark": "通知流程更熟悉了",
+		    "arrangement": "1 代办流程\n2 选卡优化",
+		    "planwork": "CodeBuddy",
+		    "weekstate": "1"
+		}
+	*/
+	var req = WeekReportReq{
+		Weekreportdate: reportDate,
+		Unfinishwork:   re.workReport.LastWeekWorkContent,
+		Workproblem:    re.workReport.LastWeekStudyContent,
+		Remark:         re.workReport.LastWeekSummary,
+		Arrangement:    re.workReport.workPlanWeekly(),
+		Planwork:       re.workReport.StudyPlan,
+		Weekstate:      "1",
+	}
+
+	logUrl := viper.GetString("weekReportUrl")
+	logUrl = "https://eds.newtouch.com/api/weekReport/submit"
+
+	_, err := re.postJSON(logUrl, req)
+	if err != nil {
+		return err
+	}
+
+	log.Println("周报填写成功", reportDate)
+	time.Sleep(2 * time.Second)
 
 	return nil
 }

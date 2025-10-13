@@ -14,7 +14,7 @@ func TestDailyReport(t *testing.T) {
 
 	logger.RetrieveWorkReportRandom()
 
-	err = logger.DailyReport("2025-10-13")
+	err = logger.DailyReport("2025-10-14")
 	if err != nil {
 		t.Fatal(err)
 	}
