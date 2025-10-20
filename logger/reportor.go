@@ -287,7 +287,9 @@ func (re Reportor) WeeklyReport() error {
 		} else {
 			log.Println(date, "放假")
 		}
-		time.Sleep(time.Second * 2)
+		// 间隔时间太短了？隔一天失败一次
+		// 接口成功了，但数据没写进去
+		time.Sleep(time.Second * 5)
 	}
 
 	return nil
