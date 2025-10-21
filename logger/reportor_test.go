@@ -15,6 +15,7 @@ func TestMain(m *testing.M) {
 	// 执行初始化操作
 	//setupDatabase()
 	//loadConfig()
+	logger.InitConfig()
 
 	// 运行所有测试
 	exitCode := m.Run()
@@ -27,7 +28,7 @@ func TestMain(m *testing.M) {
 
 func TestDailyReport(t *testing.T) {
 
-	err := logger.LoginX("12234", "young12234")
+	err := logger.LoginX()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,7 +42,7 @@ func TestDailyReport(t *testing.T) {
 }
 
 func TestLoginX(t *testing.T) {
-	err := logger.LoginX("12234", "young122341")
+	err := logger.LoginX()
 	if err != nil {
 		t.Fatal(err)
 	}

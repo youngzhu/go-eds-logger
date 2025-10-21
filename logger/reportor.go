@@ -66,8 +66,10 @@ type (
 	}
 )
 
-func LoginX(userId, password string) error {
-	return r.Login(userId, password)
+func LoginX() error {
+	userID := viper.GetString("usr-id")
+	userPwd := viper.GetString("usr-pwd")
+	return r.Login(userID, userPwd)
 }
 
 func (re *Reportor) Login(userId, password string) error {
@@ -86,7 +88,6 @@ func (re *Reportor) Login(userId, password string) error {
 		Password:       password,
 	}
 	loginUrl := viper.GetString("loginUrl")
-	loginUrl = "https://eds.newtouch.com/api/login"
 
 	resp, err := re.postJSON(loginUrl, loginBody)
 	if err != nil {
@@ -139,7 +140,6 @@ func DailyReport(reportDate string) error {
 func (re Reportor) DailyReport(reportDate string) error {
 	logUrl := viper.GetString("reportUrl")
 
-	logUrl = "https://eds.newtouch.com/api/workReport/add"
 	if logUrl == "" {
 		return errors.New("logUrl为空")
 	}
@@ -359,7 +359,6 @@ func (re *Reportor) WeekReport(reportDate string) error {
 	}
 
 	logUrl := viper.GetString("weekReportUrl")
-	logUrl = "https://eds.newtouch.com/api/weekReport/submit"
 
 	_, err := re.postJSON(logUrl, req)
 	if err != nil {
