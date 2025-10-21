@@ -3,6 +3,8 @@ package logger
 import (
 	"encoding/json"
 	"errors"
+	"github.com/mitchellh/go-homedir"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/youngzhu/godate"
 	"github.com/youngzhu/godate/chinese"
@@ -13,6 +15,28 @@ import (
 	"strings"
 	"time"
 )
+
+// InitConfig 初始化配置
+func InitConfig() error {
+	// 读取环境变量
+	replacer := strings.NewReplacer("-", "_")
+	viper.SetEnvKeyReplacer(replacer)
+	viper.SetEnvPrefix("EDS")
+	viper.AutomaticEnv() // read in environment variables that match
+
+	// 读取配置文件
+	// Find home directory.
+	home, err := homedir.Dir()
+	cobra.CheckErr(err)
+
+	// Search config in home directory with name ".goeds" (without extension).
+	viper.AddConfigPath(home)
+	viper.SetConfigName(".goeds")
+
+	// If a config file is found, read it in.
+	return viper.ReadInConfig()
+
+}
 
 type Reportor struct {
 	Token      string

@@ -1,9 +1,29 @@
 package logger_test
 
 import (
+	"fmt"
+	"github.com/spf13/viper"
 	"goeds/logger"
+	"os"
 	"testing"
 )
+
+func TestMain(m *testing.M) {
+	// 在所有测试运行前执行一次（类似 @BeforeClass）
+	fmt.Println("Global setup - runs once before all tests")
+
+	// 执行初始化操作
+	//setupDatabase()
+	//loadConfig()
+
+	// 运行所有测试
+	exitCode := m.Run()
+
+	// 在所有测试运行后执行（类似 @AfterClass）
+	//teardownDatabase()
+
+	os.Exit(exitCode)
+}
 
 func TestDailyReport(t *testing.T) {
 
@@ -21,8 +41,26 @@ func TestDailyReport(t *testing.T) {
 }
 
 func TestLoginX(t *testing.T) {
-	err := logger.LoginX("12234", "young12234")
+	err := logger.LoginX("12234", "young122341")
 	if err != nil {
 		t.Fatal(err)
 	}
+}
+
+func TestInitConfig(t *testing.T) {
+	err := logger.InitConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testVal := viper.GetString("test")
+	if testVal != "123" {
+		t.Fatalf("Expected '123', got '%s'", testVal)
+	}
+
+	home := viper.GetString("urls.home")
+	if home == "" {
+		t.Fatal("Expected non-empty 'urls.home'")
+	}
+
 }
