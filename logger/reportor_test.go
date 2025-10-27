@@ -65,3 +65,29 @@ func TestInitConfig(t *testing.T) {
 	}
 
 }
+
+func TestReportor_QueryDailyReport(t *testing.T) {
+	logger.LoginX()
+	//logger.QueryDailyReport("2025-10-27")
+	logger.QueryDailyReport("2025-10-21")
+}
+
+func TestReportor_HasReport(t *testing.T) {
+	logger.LoginX()
+
+	var testcases = []struct {
+		reportDate string
+		except     bool
+	}{
+		{"2025-10-26", false},
+		{"2025-10-27", true},
+	}
+
+	for _, testcase := range testcases {
+		got := logger.HasReport(testcase.reportDate)
+		if got != testcase.except {
+			t.Errorf("got: %v, want: %v", got, testcase.except)
+		}
+	}
+
+}

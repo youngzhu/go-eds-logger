@@ -1,8 +1,10 @@
 package logger
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -216,6 +218,111 @@ func (re Reportor) DailyReport(reportDate string) error {
 	//time.Sleep(800 * time.Millisecond)
 
 	return nil
+}
+
+type (
+	QueryResp struct {
+		Msg  string              `json:"msg"`
+		Code int                 `json:"code"`
+		Data []DailyReportDetail `json:"data"`
+	}
+
+	DailyReportDetail struct {
+		Id                    string      `json:"id"`
+		CstCreate             string      `json:"cstCreate"`
+		CreateUserId          string      `json:"createUserId"`
+		CstModified           string      `json:"cstModified"`
+		UpdateUserId          string      `json:"updateUserId"`
+		DeleteUserId          interface{} `json:"deleteUserId"`
+		CstDeleted            interface{} `json:"cstDeleted"`
+		DeleteFlag            bool        `json:"deleteFlag"`
+		Version               int         `json:"version"`
+		NewEdsId              int         `json:"newEdsId"`
+		EmpId                 string      `json:"empId"`
+		EmployeeName          string      `json:"employeeName"`
+		EmployeeId            string      `json:"employeeId"`
+		DepartmentId          string      `json:"departmentId"`
+		CompanyId             string      `json:"companyId"`
+		DepId                 string      `json:"depId"`
+		ThirdDepId            string      `json:"thirdDepId"`
+		ReportDate            string      `json:"reportDate"`
+		WorkTimeFrom          string      `json:"workTimeFrom"`
+		WorkTimeTo            string      `json:"workTimeTo"`
+		Action1Id             string      `json:"action1Id"`
+		Action2Id             string      `json:"action2Id"`
+		ActionFirstId         string      `json:"actionFirstId"`
+		ActionSecondId        string      `json:"actionSecondId"`
+		WorkDesc1             string      `json:"workDesc1"`
+		WorkDesc2             string      `json:"workDesc2"`
+		Sci                   string      `json:"sci"`
+		WorkHours             float64     `json:"workHours"`
+		AssnUid               interface{} `json:"assnUid"`
+		IsHaveProject         string      `json:"isHaveProject"`
+		ProId                 string      `json:"proId"`
+		ProRecordId           int         `json:"proRecordId"`
+		ProjId                interface{} `json:"projId"`
+		SbsId                 int         `json:"sbsId"`
+		CreateDate            string      `json:"createDate"`
+		WorkHours2            interface{} `json:"workHours2"`
+		Complainant           interface{} `json:"complainant"`
+		TimeType              int         `json:"timeType"`
+		ProjName              string      `json:"projName"`
+		DepartmentName        interface{} `json:"departmentName"`
+		Action1Name           interface{} `json:"action1Name"`
+		Action2Name           interface{} `json:"action2Name"`
+		IsSettlement          interface{} `json:"isSettlement"`
+		ProjectDepartmentName interface{} `json:"projectDepartmentName"`
+		LogType               interface{} `json:"logType"`
+		LastFillTime          interface{} `json:"lastFillTime"`
+		ViewIfOperate         interface{} `json:"viewIfOperate"`
+	}
+)
+
+func QueryDailyReport(reportDate string) (DailyReportDetail, error) {
+	return r.QueryDailyReport(reportDate)
+}
+
+func (re Reportor) QueryDailyReport(reportDate string) (DailyReportDetail, error) {
+	var detail DailyReportDetail
+
+	queryUrl := viper.GetString("urls.query")
+	if queryUrl == "" {
+		return detail, errors.New("queryUrl为空")
+	}
+	queryUrl = fmt.Sprintf(queryUrl, reportDate)
+
+	resp, err := re.doRequest(queryUrl, http.MethodGet, nil)
+	if err != nil {
+		return detail, err
+	}
+	//log.Println("查询返回", resp)
+
+	var queryResp QueryResp
+	json.NewDecoder(bytes.NewReader(resp)).Decode(&queryResp)
+	if queryResp.Code != 200 {
+		return detail, errors.New("查询日志失败：" + queryResp.Msg)
+	} else {
+		if len(queryResp.Data) == 0 {
+			return detail, errors.New("未查询到对应日期的日志")
+		}
+		detail = queryResp.Data[0]
+	}
+
+	return detail, nil
+}
+
+// HasReport 判断是否有日志
+func HasReport(reportDate string) bool {
+	return r.HasReport(reportDate)
+}
+
+func (re Reportor) HasReport(reportDate string) bool {
+	detail, err := re.QueryDailyReport(reportDate)
+	if err == nil && detail.Id != "" {
+		return true
+	}
+
+	return false
 }
 
 var httpClient *http.Client
