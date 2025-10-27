@@ -89,7 +89,7 @@ func (re *Reportor) Login(userId, password string) error {
 		EmployeeId:     userId,
 		Password:       password,
 	}
-	loginUrl := viper.GetString("loginUrl")
+	loginUrl := viper.GetString("urls.login")
 
 	resp, err := re.postJSON(loginUrl, loginBody)
 	if err != nil {
@@ -140,7 +140,7 @@ func DailyReport(reportDate string) error {
 }
 
 func (re Reportor) DailyReport(reportDate string) error {
-	logUrl := viper.GetString("reportUrl")
+	logUrl := viper.GetString("urls.daily")
 
 	if logUrl == "" {
 		return errors.New("logUrl为空")
@@ -465,7 +465,7 @@ func (re *Reportor) WeekReport(reportDate string) error {
 		Weekstate:      "1",
 	}
 
-	logUrl := viper.GetString("weekReportUrl")
+	logUrl := viper.GetString("urls.weekly")
 
 	_, err := re.postJSON(logUrl, req)
 	if err != nil {
