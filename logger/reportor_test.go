@@ -79,8 +79,8 @@ func TestReportor_HasReport(t *testing.T) {
 		reportDate string
 		except     bool
 	}{
-		{"2025-10-26", false},
-		{"2025-10-27", true},
+		{"2025-11-09", false},
+		{"2025-11-10", true},
 	}
 
 	for _, testcase := range testcases {

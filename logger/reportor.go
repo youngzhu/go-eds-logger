@@ -214,7 +214,7 @@ func (re Reportor) DailyReport(reportDate string) error {
 		return err
 	}
 
-	log.Println("日志操作成功", reportDate)
+	//log.Println("日志操作成功", reportDate)
 	//time.Sleep(800 * time.Millisecond)
 
 	return nil
@@ -325,6 +325,32 @@ func (re Reportor) HasReport(reportDate string) bool {
 	return false
 }
 
+// DailyReportSafe 保证日志填写成功
+// 填完日志查询一下，没有再填一次，最多尝试3次
+func DailyReportSafe(reportDate string) {
+	// 尝试3次
+	for i := 0; i < 3; i++ {
+		err := DailyReport(reportDate)
+		if err != nil {
+			log.Println("日志填写错误", err)
+		}
+
+		// 等待0.8秒，避免请求过快被拒绝
+		time.Sleep(time.Millisecond * 800)
+
+		// 查询是否填写成功
+		if HasReport(reportDate) {
+			log.Println("日志填写成功", reportDate)
+			return
+		} else {
+			count := i + 1
+			time.Sleep(time.Second * time.Duration(count)) // 等待更久一些
+			log.Println("第", count, "次填写失败")
+		}
+	}
+
+}
+
 var httpClient *http.Client
 
 func init() {
@@ -403,24 +429,25 @@ func (re Reportor) WeeklyReport() error {
 		}
 	}
 
-	var err error
+	//var err error
 
 	// 填日报
 	// 直接填7天日报
 	for i := 0; i < 7; i++ {
 		date, _ := monday.AddDay(i)
 		if chinese.IsWorkDayInChina(date) {
-			err = re.DailyReport(date.String())
-			if err != nil {
-				log.Println("填日报失败:", date, err)
-				return err
-			}
+			//err = re.DailyReport(date.String())
+			//if err != nil {
+			//	log.Println("填日报失败:", date, err)
+			//	return err
+			//}
+			DailyReportSafe(date.String())
 		} else {
 			log.Println(date, "放假")
 		}
 		// 间隔时间太短了？隔一天失败一次
 		// 接口成功了，但数据没写进去
-		time.Sleep(time.Second * 5)
+		//time.Sleep(time.Second * 5)
 	}
 
 	return nil
