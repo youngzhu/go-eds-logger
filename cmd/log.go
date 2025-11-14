@@ -44,9 +44,9 @@ var logCmd = &cobra.Command{
 		//logger.AddUrl("login", viper.GetString("urls.login"))
 		//logger.SetCookie(viper.GetString("cookie"))
 		//logger.SetHost(viper.GetString("host"))
-		userID := viper.GetString("usr-id")
-		userPwd := viper.GetString("usr-pwd")
-		err = logger.LoginX(userID, userPwd)
+		//userID := viper.GetString("usr-id")
+		//userPwd := viper.GetString("usr-pwd")
+		err = logger.LoginX()
 		if err != nil {
 			return err
 		}
