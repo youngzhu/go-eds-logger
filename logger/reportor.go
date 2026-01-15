@@ -420,35 +420,50 @@ func (re Reportor) WeeklyReport() error {
 
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
-	monday := today.Workdays()[0]
+	monday := chinese.NewCNDate(today.Workdays()[0])
 	// 周一是工作日才填周报
-	if chinese.IsWorkDayInChina(monday) {
-		err := re.WeekReport(monday.String())
+	if !monday.Offday {
+		err := WeekReport(monday.String())
 		if err != nil {
 			return err
 		}
 	}
 
-	//var err error
+	// 循环一周填写日报
+	date := monday
+	for {
+		if date.Offday {
+			log.Println(date, "放假-", date.Name)
+		} else {
+			DailyReportSafe(date.String())
+		}
+
+		date = date.NextDay()
+
+		// 下周一了，结束
+		if date.Weekday() == godate.Monday {
+			break
+		}
+	}
 
 	// 填日报
 	// 直接填7天日报
-	for i := 0; i < 7; i++ {
-		date, _ := monday.AddDay(i)
-		if chinese.IsWorkDayInChina(date) {
-			//err = re.DailyReport(date.String())
-			//if err != nil {
-			//	log.Println("填日报失败:", date, err)
-			//	return err
-			//}
-			DailyReportSafe(date.String())
-		} else {
-			log.Println(date, "放假")
-		}
-		// 间隔时间太短了？隔一天失败一次
-		// 接口成功了，但数据没写进去
-		//time.Sleep(time.Second * 5)
-	}
+	//for i := 0; i < 7; i++ {
+	//	date, _ := monday.AddDay(i)
+	//	if chinese.IsWorkDayInChina(date) {
+	//		//err = re.DailyReport(date.String())
+	//		//if err != nil {
+	//		//	log.Println("填日报失败:", date, err)
+	//		//	return err
+	//		//}
+	//		DailyReportSafe(date.String())
+	//	} else {
+	//		log.Println(date, "放假")
+	//	}
+	//	// 间隔时间太短了？隔一天失败一次
+	//	// 接口成功了，但数据没写进去
+	//	//time.Sleep(time.Second * 5)
+	//}
 
 	return nil
 }

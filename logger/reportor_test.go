@@ -3,7 +3,10 @@ package logger_test
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"github.com/youngzhu/godate"
+	"github.com/youngzhu/godate/chinese"
 	"goeds/logger"
+	"log"
 	"os"
 	"testing"
 )
@@ -90,4 +93,20 @@ func TestReportor_HasReport(t *testing.T) {
 		}
 	}
 
+}
+
+func TestAWeek(t *testing.T) {
+	today := godate.Today()
+	monday := chinese.NewCNDate(today.Workdays()[0])
+
+	date := monday
+	for {
+		log.Println(date, "-", date.Name)
+
+		date = date.NextDay()
+
+		if date.Weekday() == godate.Monday {
+			break
+		}
+	}
 }
