@@ -28,7 +28,7 @@ func TestEDSLogger_LoadWorkReportRandomly(t *testing.T) {
 	}
 }
 
-func TestEDSLogger_LoadWorkReportRandomly_humanable(t *testing.T) {
+func TestEDSLogger_LoadWorkReportRandomly_humanReadable(t *testing.T) {
 	err := r.LoadWorkReportRandomly()
 	if err != nil {
 		t.Errorf("LoadWorkReportRandomly() error = %v", err)
