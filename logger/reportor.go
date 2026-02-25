@@ -407,6 +407,7 @@ func (re Reportor) doRequest(url, method string, body io.Reader) ([]byte, error)
 	return respBody, nil
 }
 
+// WeeklyReport 填写周报和整周的日报
 func WeeklyReport() error {
 	return r.WeeklyReport()
 }
@@ -414,9 +415,6 @@ func (re Reportor) WeeklyReport() error {
 	// 填周报
 	// 还是要取当周的工作日，因为不一定都在周一执行，如服务器故障等
 	today := godate.Today()
-
-	//fmt.Println("cookie:", e.cookie)
-	//return nil
 
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
@@ -446,37 +444,18 @@ func (re Reportor) WeeklyReport() error {
 		}
 	}
 
-	// 填日报
-	// 直接填7天日报
-	//for i := 0; i < 7; i++ {
-	//	date, _ := monday.AddDay(i)
-	//	if chinese.IsWorkDayInChina(date) {
-	//		//err = re.DailyReport(date.String())
-	//		//if err != nil {
-	//		//	log.Println("填日报失败:", date, err)
-	//		//	return err
-	//		//}
-	//		DailyReportSafe(date.String())
-	//	} else {
-	//		log.Println(date, "放假")
-	//	}
-	//	// 间隔时间太短了？隔一天失败一次
-	//	// 接口成功了，但数据没写进去
-	//	//time.Sleep(time.Second * 5)
-	//}
-
 	return nil
 }
 
 type WeekReportReq struct {
-	Weekreportdate string `json:"weekreportdate"`
+	WeekReportDate string `json:"weekreportdate"`
 	Id             string `json:"id"`
-	Unfinishwork   string `json:"unfinishwork"`
-	Workproblem    string `json:"workproblem"`
+	UnfinishWork   string `json:"unfinishwork"`
+	WorkProblem    string `json:"workproblem"`
 	Remark         string `json:"remark"`
 	Arrangement    string `json:"arrangement"`
-	Planwork       string `json:"planwork"`
-	Weekstate      string `json:"weekstate"`
+	PlanWork       string `json:"planwork"`
+	WeekState      string `json:"weekstate"`
 }
 
 // WeekReport 填周报
@@ -498,13 +477,13 @@ func (re *Reportor) WeekReport(reportDate string) error {
 		}
 	*/
 	var req = WeekReportReq{
-		Weekreportdate: reportDate,
-		Unfinishwork:   re.workReport.LastWeekWorkContent,
-		Workproblem:    re.workReport.LastWeekStudyContent,
+		WeekReportDate: reportDate,
+		UnfinishWork:   re.workReport.LastWeekWorkContent,
+		WorkProblem:    re.workReport.LastWeekStudyContent,
 		Remark:         re.workReport.LastWeekSummary,
 		Arrangement:    re.workReport.workPlanWeekly(),
-		Planwork:       re.workReport.StudyPlan,
-		Weekstate:      "1",
+		PlanWork:       re.workReport.StudyPlan,
+		WeekState:      "1",
 	}
 
 	logUrl := viper.GetString("urls.weekly")
