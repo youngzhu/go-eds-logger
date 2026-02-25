@@ -58,13 +58,16 @@ func (e *EDSLogger) RetrieveLogContent(path string) error {
 	return nil
 }
 
+const cdn = "https://fastly.jsdelivr.net"
+
 func RetrieveLogContentViaWeb() error {
 	return lg.RetrieveLogContentViaWeb()
 }
 func (e *EDSLogger) RetrieveLogContentViaWeb() error {
 	// 定义要获取的URL
-	url := "https://cdn.jsdelivr.net/gh/youngzhu/edspy/data/work-report-2025-08-11.json"
-	url = "https://github.com/youngzhu/edspy/blob/main/data/work-report-2025-08-11.json"
+	//url := "https://cdn.jsdelivr.net/gh/youngzhu/edspy/data/work-report-2025-08-11.json"
+	//url = "https://github.com/youngzhu/edspy/blob/main/data/work-report-2025-08-11.json"
+	url := fmt.Sprintf("%s/gh/youngzhu/edspy/data/work-report-2026-02-09.json", cdn)
 
 	// 发送HTTP GET请求
 	resp, err := http.Get(url)

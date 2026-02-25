@@ -34,7 +34,7 @@ var logCmd = &cobra.Command{
 		}
 
 		//err = logger.RetrieveLogContent(loggerFilePath)
-		err = logger.RetrieveWorkReportRandom()
+		err = logger.LoadWorkReportRandomly()
 		if err != nil {
 			return err
 		}

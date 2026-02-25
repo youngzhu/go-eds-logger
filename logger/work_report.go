@@ -40,20 +40,19 @@ func (r WorkReport) workPlanDaily() string {
 	return r.WorkPlan[randomIndex]
 }
 
-const edspy_root = "E:\\workspace\\GitHub\\edspy"
+const edspyRoot = "E:\\workspace\\GitHub\\edspy"
 
-// RetrieveWorkReportRandom 从本地 edspy 项目中随机读取一个日志文件
-func RetrieveWorkReportRandom() error {
-	return r.RetrieveWorkReportRandom()
+// LoadWorkReportRandomly 从本地 edspy 项目中随机加载一个周报文件
+func LoadWorkReportRandomly() error {
+	return r.LoadWorkReportRandomly()
 }
 
-// RetrieveWorkReportRandom 从本地 edspy 项目中随机读取一个日志文件
-func (re *Reportor) RetrieveWorkReportRandom() error {
+func (re *Reportor) LoadWorkReportRandomly() error {
 	// 设置随机种子
 	rand.Seed(time.Now().UnixNano())
 
 	// 指定目录路径
-	dirPath := filepath.Join(edspy_root, "data")
+	dirPath := filepath.Join(edspyRoot, "data")
 
 	// 读取目录中的所有文件
 	files, err := ioutil.ReadDir(dirPath)
