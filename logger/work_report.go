@@ -6,6 +6,7 @@ import (
 	"log"
 	"math/rand"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -52,7 +53,8 @@ func (re *Reportor) LoadWorkReportRandomly() error {
 	rand.Seed(time.Now().UnixNano())
 
 	// 指定目录路径
-	dirPath := filepath.Join(edspyRoot, "data")
+	currentYear := strconv.Itoa(time.Now().Year())
+	dirPath := filepath.Join(edspyRoot, "data", currentYear)
 
 	// 读取目录中的所有文件
 	files, err := ioutil.ReadDir(dirPath)

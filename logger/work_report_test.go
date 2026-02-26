@@ -34,6 +34,10 @@ func TestEDSLogger_LoadWorkReportRandomly_humanReadable(t *testing.T) {
 		t.Errorf("LoadWorkReportRandomly() error = %v", err)
 	}
 
+	printReportDetail(t)
+}
+
+func printReportDetail(t *testing.T) {
 	// 检查周报内容
 	t.Logf("上周工作任务完成情况: %s", r.workReport.LastWeekWorkContent)
 	t.Logf("上周学习完成任务情况: %s", r.workReport.LastWeekStudyContent)
@@ -42,11 +46,6 @@ func TestEDSLogger_LoadWorkReportRandomly_humanReadable(t *testing.T) {
 	t.Logf("本周工作计划与重点: %s", r.workReport.workPlanWeekly())
 
 	// 日报，周一至周五随机获取一条工作计划
-	printDailyPlan(t)
-
-}
-
-func printDailyPlan(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		// 加上休眠，避免随机数相同
 		time.Sleep(100 * time.Millisecond)
@@ -60,14 +59,5 @@ func TestEDSLogger_RetrieveLogContentViaWeb(t *testing.T) {
 		t.Errorf("LoadWorkReportRandomly() error = %v", err)
 	}
 
-	// 检查周报内容
-	t.Logf("上周工作任务完成情况: %s", r.workReport.LastWeekWorkContent)
-	t.Logf("上周学习完成任务情况: %s", r.workReport.LastWeekStudyContent)
-	t.Logf("经验和收获总结: %s", r.workReport.LastWeekSummary)
-	t.Logf("本周学习计划: %s", r.workReport.StudyPlan)
-	t.Logf("本周工作计划与重点: %s", r.workReport.workPlanWeekly())
-
-	// 日报，周一至周五随机获取一条工作计划
-	printDailyPlan(t)
-
+	printReportDetail(t)
 }
