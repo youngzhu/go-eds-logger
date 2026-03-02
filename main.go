@@ -11,7 +11,14 @@ import (
 	"github.com/youngzhu/godate"
 	"goeds/cmd"
 	"log"
+	"math/rand"
+	"time"
 )
+
+func init() {
+	// 在 init 函数中设置一次种子（程序启动时执行）
+	rand.Seed(time.Now().UnixNano())
+}
 
 func main() {
 	err := cmd.Execute()

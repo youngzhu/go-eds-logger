@@ -32,9 +32,6 @@ func (r WorkReport) workPlanWeekly() string {
 // 日报
 // 从工作计划中随机获取一条
 func (r WorkReport) workPlanDaily() string {
-	// 初始化随机种子
-	rand.Seed(time.Now().UnixNano())
-
 	// 生成随机索引
 	randomIndex := rand.Intn(len(r.WorkPlan))
 
@@ -49,9 +46,6 @@ func LoadWorkReportRandomly() error {
 }
 
 func (re *Reportor) LoadWorkReportRandomly() error {
-	// 设置随机种子
-	rand.Seed(time.Now().UnixNano())
-
 	// 指定目录路径
 	currentYear := strconv.Itoa(time.Now().Year())
 	dirPath := filepath.Join(edspyRoot, "data", currentYear)
