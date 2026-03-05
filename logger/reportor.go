@@ -147,26 +147,26 @@ func (re Reportor) DailyReport(reportDate string) error {
 	}
 
 	/*
-		{
-	    "id": "620bfcb05cfda352341d0aa03c4aa3d1",
-	    "depId": "35",
-	    "departmentId": "68cfbca7-f4be-11ee-89b1-fa163ea58b38",
-	    "thirdDepId": "35",
-	    "reportDate": "2026-02-28",
-	    "workFrom": "08:30",
-	    "workTo": "16:30",
-	    "action1Id": "",
-	    "action2Id": "",
-	    "actionFirstId": "",
-	    "actionSecondId": "",
-	    "workDesc1": "处理测试环境新发现的3个待修复问题",
-	    "workDesc2": "PC",
-	    "workHours": 8,
-	    "isHaveProject": "有",
-	    "proRecordId": 18026,
-	    "proId": "Q2602062",
-	    "timeType": 0
-	}
+			{
+		    "id": "620bfcb05cfda352341d0aa03c4aa3d1",
+		    "depId": "35",
+		    "departmentId": "68cfbca7-f4be-11ee-89b1-fa163ea58b38",
+		    "thirdDepId": "35",
+		    "reportDate": "2026-02-28",
+		    "workFrom": "08:30",
+		    "workTo": "16:30",
+		    "action1Id": "",
+		    "action2Id": "",
+		    "actionFirstId": "",
+		    "actionSecondId": "",
+		    "workDesc1": "处理测试环境新发现的3个待修复问题",
+		    "workDesc2": "PC",
+		    "workHours": 8,
+		    "isHaveProject": "有",
+		    "proRecordId": 18026,
+		    "proId": "Q2602062",
+		    "timeType": 0
+		}
 	*/
 	var addBody = AddBody{
 		// 不需要，大概是查询用的
@@ -179,10 +179,13 @@ func (re Reportor) DailyReport(reportDate string) error {
 		WorkDesc2:     "PC",
 		WorkHours:     8,
 		IsHaveProject: "有",
-		ProRecordId:   18026,
-		ProId:         "Q2602062",
-		TimeType:      0,
+		//ProRecordId:   18026,
+		//ProId:         "Q2602062",
+		TimeType: 0,
 	}
+
+	addBody.ProRecordId = viper.GetInt("project.recordId")
+	addBody.ProId = viper.GetString("project.id")
 
 	addBody.ReportDate = reportDate
 	addBody.WorkDesc1 = re.workReport.workPlanDaily()

@@ -4,4 +4,8 @@ urls:
   weekly: https://eds.newtouch.com/api/weekReport/submit
   query: https://eds.newtouch.com/api/workReport/queryReportByDay?queryDate=%s
 test: 123
-projectName: yyyzs # 营运一站式
+project:
+  name: 营运一站式
+  code: yyyzs
+  id: Q2602062
+  recordId: 18026

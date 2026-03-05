@@ -49,7 +49,7 @@ func LoadWorkReportRandomly() error {
 func (re *Reportor) LoadWorkReportRandomly() error {
 	// 指定目录路径
 	currentYear := strconv.Itoa(time.Now().Year())
-	projectName := viper.GetString("projectName")
+	projectName := viper.GetString("project.code")
 	dirPath := filepath.Join(edspyRoot, "data", currentYear, projectName)
 
 	// 读取目录中的所有文件
