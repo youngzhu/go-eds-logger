@@ -2,6 +2,7 @@ package logger
 
 import (
 	"encoding/json"
+	"github.com/spf13/viper"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -48,7 +49,8 @@ func LoadWorkReportRandomly() error {
 func (re *Reportor) LoadWorkReportRandomly() error {
 	// 指定目录路径
 	currentYear := strconv.Itoa(time.Now().Year())
-	dirPath := filepath.Join(edspyRoot, "data", currentYear)
+	projectName := viper.GetString("projectName")
+	dirPath := filepath.Join(edspyRoot, "data", currentYear, projectName)
 
 	// 读取目录中的所有文件
 	files, err := ioutil.ReadDir(dirPath)

@@ -4,3 +4,4 @@ urls:
   weekly: https://eds.newtouch.com/api/weekReport/submit
   query: https://eds.newtouch.com/api/workReport/queryReportByDay?queryDate=%s
 test: 123
+projectName: yyyzs # 营运一站式
