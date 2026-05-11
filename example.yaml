@@ -4,9 +4,14 @@ urls:
   weekly: https://eds.newtouch.com/api/weekReport/submit
   query: https://eds.newtouch.com/api/workReport/queryReportByDay?queryDate=%s
 test: 123
+#project:
+#  name: 营运一站式
+#  code: yyyzs
+#  id: Q2602062
+#  recordId: 18026
 project:
   name: 营运一站式
-  code: yyyzs
-  id: Q2602062
-  recordId: 18026
+  code: ai_agent
+  id: 18368
+  recordId: 18368
 token: eyJhbGciOiJIUzUxMiJ9.eyJjbGllbnQ6bG9naW5fdXNlcl9rZXkiOiIyNzBiMThkMy1iZTA3LTQ3ODItYjA3Ny1hZWM0ZjVhM2QwODcifQ.3yf1jQ-5toblncqaVRWIUVYDsFRboVy-g4wNb7OMuIvOKt1OA-bd_cvClPn_QhJdEnpZeqpoMq2Dp6cmB-D1iQ

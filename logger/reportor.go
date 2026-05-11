@@ -150,23 +150,23 @@ func (re Reportor) DailyReport(reportDate string) error {
 
 	/*
 		{
-		    "id": "",
+		    "id": "fd0d433d512b40e297f9938831850033",
 		    "depId": "35",
 		    "departmentId": "68cfbca7-f4be-11ee-89b1-fa163ea58b38",
 		    "thirdDepId": "35",
-		    "reportDate": "2026-05-11",
+		    "reportDate": "2026-05-15",
 		    "workFrom": "08:30",
 		    "workTo": "16:30",
 		    "action1Id": "",
 		    "action2Id": "",
 		    "actionFirstId": "",
 		    "actionSecondId": "",
-		    "workDesc1": "开会",
+		    "workDesc1": "支持新产品的上线需求，完成业务场景的代码开发。",
 		    "workDesc2": "PC",
 		    "workHours": 8,
 		    "isHaveProject": "有",
-		    "proRecordId": 18026,
-		    "proId": "Q2602062",
+		    "proRecordId": 18368,
+		    "proId": "18368",
 		    "timeType": 0
 		}
 	*/
