@@ -105,7 +105,9 @@ func (re *Reportor) Login(userId, password string) error {
 		return errors.New("登录失败: " + loginResp.Msg)
 	}
 
-	re.Token = loginResp.Token
+	// 登录返回取消了token
+	//re.Token = loginResp.Token
+	re.Token = viper.GetString("token")
 
 	log.Println("登陆成功")
 
@@ -147,19 +149,19 @@ func (re Reportor) DailyReport(reportDate string) error {
 	}
 
 	/*
-			{
-		    "id": "620bfcb05cfda352341d0aa03c4aa3d1",
+		{
+		    "id": "",
 		    "depId": "35",
 		    "departmentId": "68cfbca7-f4be-11ee-89b1-fa163ea58b38",
 		    "thirdDepId": "35",
-		    "reportDate": "2026-02-28",
+		    "reportDate": "2026-05-11",
 		    "workFrom": "08:30",
 		    "workTo": "16:30",
 		    "action1Id": "",
 		    "action2Id": "",
 		    "actionFirstId": "",
 		    "actionSecondId": "",
-		    "workDesc1": "处理测试环境新发现的3个待修复问题",
+		    "workDesc1": "开会",
 		    "workDesc2": "PC",
 		    "workHours": 8,
 		    "isHaveProject": "有",

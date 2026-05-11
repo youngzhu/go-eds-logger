@@ -38,7 +38,7 @@ func TestDailyReport(t *testing.T) {
 
 	logger.LoadWorkReportRandomly()
 
-	err = logger.DailyReport("2025-10-14")
+	err = logger.DailyReport("2026-05-11")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -72,7 +72,10 @@ func TestInitConfig(t *testing.T) {
 func TestReportor_QueryDailyReport(t *testing.T) {
 	logger.LoginX()
 	//logger.QueryDailyReport("2025-10-27")
-	logger.QueryDailyReport("2025-10-21")
+	report, _ := logger.QueryDailyReport("2026-05-11")
+	if (report == logger.DailyReportDetail{}) {
+		t.Fatal("Expected non-empty report, got empty")
+	}
 }
 
 func TestReportor_HasReport(t *testing.T) {
