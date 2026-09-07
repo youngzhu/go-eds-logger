@@ -84,36 +84,36 @@ func (re *Reportor) Login(userId, password string) error {
 		}
 	*/
 	/*
-	var loginBody = LoginReq{
-		LoginType:      "password",
-		EnterpriseCode: "Newtouch",
-		EmployeeId:     userId,
-		Password:       password,
-	}
-	loginUrl := viper.GetString("urls.login")
+		var loginBody = LoginReq{
+			LoginType:      "password",
+			EnterpriseCode: "Newtouch",
+			EmployeeId:     userId,
+			Password:       password,
+		}
+		loginUrl := viper.GetString("urls.login")
 
-	resp, err := re.postJSON(loginUrl, loginBody)
-	if err != nil {
-		return err
-	}
+		resp, err := re.postJSON(loginUrl, loginBody)
+		if err != nil {
+			return err
+		}
 
-	var loginResp LoginResp
-	err = json.Unmarshal(resp, &loginResp)
-	if err != nil {
-		return err
-	}
+		var loginResp LoginResp
+		err = json.Unmarshal(resp, &loginResp)
+		if err != nil {
+			return err
+		}
 
-	log.Println("登录返回: ", string(resp))
-	if loginResp.Code != 200 {
-		return errors.New("登录失败: " + loginResp.Msg)
-	}
-*/
+		log.Println("登录返回: ", string(resp))
+		if loginResp.Code != 200 {
+			return errors.New("登录失败: " + loginResp.Msg)
+		}
+	*/
 
 	// 登录返回取消了token
 	//re.Token = loginResp.Token
 	re.Token = viper.GetString("token")
 
-	log.Println("登陆成功")
+	//log.Println("登陆成功")
 
 	return nil
 }

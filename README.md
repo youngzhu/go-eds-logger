@@ -4,6 +4,12 @@
 ```shell
 goeds log w #填写本周日志
 ```
+
+## 本地安装
+```shell
+go install
+```
+
 ## 设置环境变量
 **Windows 10**
 1. 搜索框中输入“环境变量”
