@@ -323,7 +323,7 @@ func DailyReportSafe(reportDate string) {
 		}
 
 		// 等待0.8秒，避免请求过快被拒绝
-		time.Sleep(time.Millisecond * 800)
+		time.Sleep(time.Millisecond * 1200)
 
 		// 查询是否填写成功
 		if HasReport(reportDate) {
