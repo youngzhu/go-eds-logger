@@ -83,6 +83,7 @@ func (re *Reportor) Login(userId, password string) error {
 		    "password": ""
 		}
 	*/
+	/*
 	var loginBody = LoginReq{
 		LoginType:      "password",
 		EnterpriseCode: "Newtouch",
@@ -101,9 +102,12 @@ func (re *Reportor) Login(userId, password string) error {
 	if err != nil {
 		return err
 	}
+
+	log.Println("登录返回: ", string(resp))
 	if loginResp.Code != 200 {
 		return errors.New("登录失败: " + loginResp.Msg)
 	}
+*/
 
 	// 登录返回取消了token
 	//re.Token = loginResp.Token
