@@ -402,6 +402,7 @@ func (re Reportor) WeeklyReport() error {
 	// 填周报
 	// 还是要取当周的工作日，因为不一定都在周一执行，如服务器故障等
 	today := godate.Today()
+	//today = today.AddDaySafe(6) // 下周
 
 	// 先写周报
 	// 只能填写本周周报（周一）!!!
