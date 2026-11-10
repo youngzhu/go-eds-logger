@@ -39,6 +39,7 @@ func (r WorkReport) workPlanDaily() string {
 	return r.WorkPlan[randomIndex]
 }
 
+// E:\workspace\GitHub\edspy\reports\2026\ai_agent
 const edspyRoot = "E:\\workspace\\GitHub\\edspy"
 
 // LoadWorkReportRandomly 从本地 edspy 项目中随机加载一个周报文件
@@ -49,8 +50,8 @@ func LoadWorkReportRandomly() error {
 func (re *Reportor) LoadWorkReportRandomly() error {
 	// 指定目录路径
 	currentYear := strconv.Itoa(time.Now().Year())
-	projectName := viper.GetString("project.code")
-	dirPath := filepath.Join(edspyRoot, "data", currentYear, projectName)
+	projectCode := viper.GetString("project.code")
+	dirPath := filepath.Join(edspyRoot, "reports", currentYear, projectCode)
 
 	// 读取目录中的所有文件
 	files, err := ioutil.ReadDir(dirPath)
