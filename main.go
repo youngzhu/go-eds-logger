@@ -24,11 +24,11 @@ func main() {
 	err := cmd.Execute()
 
 	if err != nil {
-		sendFailedMail(err.Error())
+		//sendFailedMail(err.Error())
 		log.Fatalln(err) // 结束
 	}
 
-	sendSuccessfulMail()
+	//sendSuccessfulMail()
 }
 
 var today = godate.Today()
